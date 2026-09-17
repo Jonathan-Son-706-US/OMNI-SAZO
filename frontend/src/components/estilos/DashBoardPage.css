@@ -1,0 +1,158 @@
+.dash-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.dash-sidebar {
+  width: 16rem;
+  background-color: #020617;
+  border-right: 2px solid #1e293b;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dash-brand {
+  margin-bottom: 2rem;
+  padding: 0.75rem;
+  background-color: #0f172a;
+  border-left: 4px solid #f5e600;
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+
+.dash-brand-title {
+  font-size: 1.25rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 2px;
+  color: #f5e600;
+}
+
+.dash-brand-role {
+  font-size: 0.65rem;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.dash-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dash-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.dash-link:hover {
+  background-color: #1e293b;
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.dash-link.active {
+  background: linear-gradient(90deg, #f5e600, #a3e635);
+  color: #020617;
+  font-weight: 900;
+}
+
+.dash-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dash-header {
+  height: 4rem;
+  background-color: rgba(2, 6, 23, 0.8);
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+}
+
+.dash-header-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #38bdf8;
+  letter-spacing: 1px;
+}
+
+.dash-main {
+  flex: 1;
+  padding: 1.5rem;
+  background-color: #0f172a;
+}
+
+.dash-card-outlet {
+  background-color: rgba(2, 6, 23, 0.5);
+  border: 1px solid #1e293b;
+  border-radius: 1rem;
+  padding: 1.5rem;
+  min-height: 100%;
+}
+
+.dash-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-logout {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  background-color: #dc2626;
+  color: #ffffff;
+  font-weight: 700;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  margin-top: 1rem;
+}
+
+.btn-logout:hover {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.dash-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dash-logo-img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  object-fit: cover;
+  border: 2px solid #f5e600;
+}
+
+.dash-link.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  color: #64748b;
+  pointer-events: none;
+  background-color: transparent;
+}
