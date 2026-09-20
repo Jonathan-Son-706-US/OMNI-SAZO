@@ -1,79 +1,136 @@
+@import './index.css';
+
+/* ============================================================
+   OMNI-SAZO · Layout del Dashboard + Fondo dinámico por módulo
+   ------------------------------------------------------------
+   1. DashBoardPage.jsx lee la ruta con useLocation() y le pone
+      una clase al contenedor: .theme-inicio, .theme-caja, etc.
+   2. Esa clase define --tinta-mod (el color del módulo) que usan
+      el menú, las cintas, los botones y los encabezados de tabla.
+   3. Detrás se pintan varias capas (.dash-bg-capa), una por tema.
+      Solo la activa queda en opacity:1 y el cambio es un
+      cross-fade de 0.8s. Los degradados no se pueden interpolar
+      con transition, por eso van capas y no un solo fondo.
+   ============================================================ */
+
 .dash-container {
+  position: relative;
   display: flex;
   min-height: 100vh;
-  background-color: #0f172a;
-  color: #f8fafc;
-  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  isolation: isolate;
+  transition: background 0.8s ease-in-out;
 }
 
+/* ---------- Capas de color del fondo ---------- */
+.dash-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.dash-bg-capa {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.dash-bg-capa.is-active {
+  opacity: 1;
+}
+
+/* Trama de puntos tipo impresión, encima del color */
+.dash-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.16) 1.4px, transparent 1.5px);
+  background-size: 14px 14px;
+  opacity: 0.55;
+}
+
+/* Cada tema: color plano + una banda diagonal más oscura,
+   como una pasada de rodillo de tinta. */
+.bg-inicio     { background: #1f4fd8; }
+.bg-usuarios   { background: #e0218a; }
+.bg-inventario { background: #17b26a; }
+.bg-caja       { background: #f4740b; }
+.bg-gerencia   { background: #7b3fe4; }
+.bg-proveedores { background: #e63946; }
+.bg-clientes    { background: #0e8f8f; }
+
+.dash-bg-capa::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: linear-gradient(115deg,
+              transparent 38%,
+              rgba(0, 0, 0, 0.18) 38%,
+              rgba(0, 0, 0, 0.18) 62%,
+              transparent 62%);
+}
+
+/* Variables de color por módulo (las usa todo lo demás) */
+.theme-inicio     { --tinta-mod: #1f4fd8; --tinta-mod-clara: #5b8bff; }
+.theme-usuarios   { --tinta-mod: #e0218a; --tinta-mod-clara: #ff6fb5; }
+.theme-inventario { --tinta-mod: #0e9f5e; --tinta-mod-clara: #4ede9b; }
+.theme-caja       { --tinta-mod: #e06400; --tinta-mod-clara: #ffa94d; }
+.theme-gerencia   { --tinta-mod: #7b3fe4; --tinta-mod-clara: #b18cff; }
+.theme-proveedores { --tinta-mod: #d62839; --tinta-mod-clara: #ff7a85; }
+.theme-clientes    { --tinta-mod: #0c7a7a; --tinta-mod-clara: #5fd9d9; }
+
+/* ---------- Manchas de tinta del fondo ---------- */
+.dash-mancha {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.13);
+  animation: flotarMancha 18s ease-in-out infinite;
+}
+
+.dash-mancha-1 {
+  --giro: -8deg;
+  width: 340px;
+  height: 300px;
+  top: 8%;
+  right: 6%;
+  border-radius: 62% 38% 44% 56% / 52% 60% 40% 48%;
+}
+
+.dash-mancha-2 {
+  --giro: 12deg;
+  width: 240px;
+  height: 220px;
+  bottom: 14%;
+  right: 22%;
+  animation-duration: 24s;
+  animation-direction: reverse;
+  border-radius: 44% 56% 60% 40% / 58% 42% 58% 42%;
+}
+
+/* ---------- Barra lateral ---------- */
 .dash-sidebar {
-  width: 16rem;
-  background-color: #020617;
-  border-right: 2px solid #1e293b;
-  padding: 1.25rem;
+  position: relative;
+  z-index: 3;
+  width: 16.5rem;
+  flex-shrink: 0;
+  padding: 1.25rem 1rem 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 1.5rem;
+  background-color: var(--tinta);
+  border-right: 4px solid #000;
 }
 
-.dash-brand {
-  margin-bottom: 2rem;
-  padding: 0.75rem;
-  background-color: #0f172a;
-  border-left: 4px solid #f5e600;
-  border-radius: 0 0.75rem 0.75rem 0;
-}
-
-.dash-brand-title {
-  font-size: 1.25rem;
-  font-weight: 900;
-  font-style: italic;
-  letter-spacing: 2px;
-  color: #f5e600;
-}
-
-.dash-brand-role {
-  font-size: 0.65rem;
-  color: #38bdf8;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  display: block;
-  margin-top: 0.25rem;
-}
-
-.dash-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.dash-link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  font-weight: 700;
-  font-size: 0.875rem;
-  text-transform: uppercase;
-  color: #cbd5e1;
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.dash-link:hover {
-  background-color: #1e293b;
-  color: #ffffff;
-  transform: translateX(4px);
-}
-
-.dash-link.active {
-  background: linear-gradient(90deg, #f5e600, #a3e635);
-  color: #020617;
-  font-weight: 900;
-}
-
+/* ---------- Contenido ---------- */
 .dash-content-wrapper {
+  position: relative;
+  z-index: 1;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -81,78 +138,189 @@
 }
 
 .dash-header {
-  height: 4rem;
-  background-color: rgba(2, 6, 23, 0.8);
-  border-bottom: 1px solid #1e293b;
   display: flex;
   align-items: center;
-  padding: 0 2rem;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.75rem 2rem 0.5rem;
 }
 
 .dash-header-title {
-  font-size: 1.125rem;
-  font-weight: 800;
+  margin: 0;
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  color: var(--papel);
   text-transform: uppercase;
-  color: #38bdf8;
-  letter-spacing: 1px;
+  transform: skewX(-7deg);
+  /* Contorno grueso: el título se lee sobre cualquier color */
+  -webkit-text-stroke: 3px var(--tinta);
+  paint-order: stroke fill;
+  text-shadow: 5px 5px 0 var(--tinta);
+}
+
+/* Etiqueta del módulo, como un sticker pegado con cinta */
+.dash-header-modulo {
+  position: relative;
+  display: inline-block;
+  padding: 0.5rem 1.2rem;
+  background-color: var(--papel);
+  color: var(--tinta);
+  border: var(--borde);
+  box-shadow: var(--sombra-dura-chica);
+  font-family: var(--fuente-titulo);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: rotate(1.8deg);
+}
+
+/* La tirita de cinta adhesiva arriba del sticker */
+.dash-header-modulo::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  width: 58px;
+  height: 20px;
+  transform: translateX(-50%) rotate(-4deg);
+  background-color: rgba(255, 255, 255, 0.55);
+  border: 2px solid rgba(0, 0, 0, 0.35);
 }
 
 .dash-main {
   flex: 1;
-  padding: 1.5rem;
-  background-color: #0f172a;
+  padding: 1rem 2rem 1.5rem;
+  min-width: 0;
 }
 
+/* ---------- Hoja de papel donde cae el contenido ---------- */
 .dash-card-outlet {
-  background-color: rgba(2, 6, 23, 0.5);
-  border: 1px solid #1e293b;
-  border-radius: 1rem;
-  padding: 1.5rem;
+  position: relative;
+  background-color: var(--papel);
+  border: 4px solid var(--tinta);
+  box-shadow: 10px 10px 0 rgba(0, 0, 0, 0.45);
+  padding: 1.75rem;
   min-height: 100%;
+  /* Papel arrancado: la esquina inferior derecha va cortada */
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 26px), calc(100% - 26px) 100%, 0 100%);
 }
 
-.dash-logo-container {
+/* Grapas en las esquinas de la hoja */
+.dash-card-outlet::before,
+.dash-card-outlet::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  width: 26px;
+  height: 9px;
+  background-color: #9a94a6;
+  border: 2px solid var(--tinta);
+}
+
+.dash-card-outlet::before {
+  left: 18px;
+  transform: rotate(-24deg);
+}
+
+.dash-card-outlet::after {
+  right: 18px;
+  transform: rotate(24deg);
+}
+
+/* ---------- Cinta de noticias de abajo ---------- */
+.dash-ticker {
+  position: relative;
+  z-index: 2;
+  margin: 0 2rem 1.5rem;
+  background-color: var(--tinta);
+  border: 3px solid #000;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Etiqueta fija a la izquierda, como la cabecera de un periódico */
+.dash-ticker-etiqueta {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  padding: 0.55rem 1rem;
+  background-color: var(--tinta-mod, #1f4fd8);
+  color: #fff;
+  font-family: var(--fuente-titulo);
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-right: 3px solid #000;
+  transition: background-color 0.8s ease-in-out;
 }
 
-.btn-logout {
-  width: 100%;
-  padding: 0.65rem 1rem;
-  background-color: #dc2626;
-  color: #ffffff;
-  font-weight: 700;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease;
-  margin-top: 1rem;
+.dash-ticker-pista {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  animation: correrCinta 30s linear infinite;
 }
 
-.btn-logout:hover {
-  background-color: #b91c1c;
-  transform: translateY(-1px);
+.dash-ticker:hover .dash-ticker-pista {
+  animation-play-state: paused;
 }
 
-.dash-logo-container {
+.dash-ticker-texto {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1.6rem;
+  padding: 0.55rem 0.8rem 0.55rem 1.6rem;
+  color: var(--papel);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
 }
 
-.dash-logo-img {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 0.5rem;
-  object-fit: cover;
-  border: 2px solid #f5e600;
+/* El separador entre noticias: un rombo del color del módulo */
+.dash-ticker-texto span::after {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  margin-left: 1.6rem;
+  vertical-align: middle;
+  background-color: var(--tinta-mod-clara, #fff);
+  transform: rotate(45deg);
+  transition: background-color 0.8s ease-in-out;
 }
 
-.dash-link.disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-  color: #64748b;
-  pointer-events: none;
-  background-color: transparent;
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .dash-container {
+    flex-direction: column;
+  }
+
+  .dash-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 4px solid #000;
+  }
+
+  .dash-header,
+  .dash-main {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .dash-ticker {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+
+  .dash-card-outlet {
+    /* Más aire arriba: si no, las grapas de las esquinas se
+       encaraman sobre el título cuando la pantalla es angosta. */
+    padding: 2.4rem 1.25rem 1.25rem;
+  }
+
+  .dash-mancha {
+    display: none;
+  }
 }

@@ -1,0 +1,159 @@
+/* ============================================================
+   OMNI-SAZO · Menú lateral
+   Cada enlace es un sticker con borde grueso y sombra dura.
+   Trae el color de SU módulo (--btn), así al pasar el mouse
+   ya se anticipa el color al que va a cambiar la página.
+   ============================================================ */
+
+.dash-brand {
+  padding-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.dash-brand-title {
+  margin: 0;
+  font-family: var(--fuente-titulo);
+  font-size: 1.4rem;
+  letter-spacing: 0.02em;
+  color: var(--papel);
+  text-transform: uppercase;
+  transform: skewX(-7deg);
+}
+
+.dash-brand-role {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 1px 8px;
+  background-color: var(--tinta-mod, #1f4fd8);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background-color 0.8s ease-in-out;
+}
+
+.dash-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Cada enlace: papel recortado y pegado */
+.dash-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  background-color: var(--papel-2);
+  color: var(--tinta);
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: 3px solid #000;
+  box-shadow: 4px 4px 0 #000;
+  transform: rotate(-0.6deg);
+  transition: transform 0.16s ease, box-shadow 0.16s ease,
+              background-color 0.16s ease, color 0.16s ease;
+}
+
+/* Alternamos la inclinación para que no se vean alineados a máquina */
+.dash-link:nth-child(even) {
+  transform: rotate(0.8deg);
+}
+
+/* Cuadrito de color del módulo */
+.dash-link::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  background-color: var(--btn, #6b6b6b);
+  border: 2px solid var(--tinta);
+  transform: rotate(45deg);
+}
+
+.dash-link:hover {
+  background-color: var(--btn, #ddd);
+  color: #fff;
+  transform: rotate(0deg) translate(-2px, -2px);
+  box-shadow: 7px 7px 0 #000;
+}
+
+.dash-link:hover::before {
+  background-color: var(--papel);
+}
+
+/* El activo queda "presionado" contra la barra */
+.dash-link.active {
+  background-color: var(--btn, #ddd);
+  color: #fff;
+  transform: rotate(0deg) translate(2px, 2px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.dash-link.active::before {
+  background-color: var(--papel);
+}
+
+/* --- El color propio de cada módulo --- */
+.menu-btn-inicio     { --btn: #1f4fd8; }
+.menu-btn-proveedores { --btn: #d62839; }
+.menu-btn-clientes    { --btn: #0e8f8f; }
+.menu-btn-usuarios   { --btn: #e0218a; }
+.menu-btn-inventario { --btn: #0e9f5e; }
+.menu-btn-caja       { --btn: #e06400; }
+.menu-btn-gerencia   { --btn: #7b3fe4; }
+
+/* Botón de cerrar sesión */
+.btn-logout {
+  width: 100%;
+  padding: 0.7rem;
+  background-color: #111;
+  color: var(--papel);
+  font-family: var(--fuente-texto);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 3px solid var(--papel);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease,
+              background-color 0.16s ease;
+}
+
+.btn-logout:hover {
+  background-color: #d62839;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.6);
+}
+
+.btn-logout:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+@media (max-width: 900px) {
+  .dash-brand {
+    border-bottom: none;
+    margin-bottom: 0.9rem;
+    padding-bottom: 0;
+  }
+
+  .dash-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .dash-link {
+    flex: 1 1 auto;
+  }
+
+  .btn-logout {
+    width: auto;
+    padding: 0.6rem 1.2rem;
+  }
+}

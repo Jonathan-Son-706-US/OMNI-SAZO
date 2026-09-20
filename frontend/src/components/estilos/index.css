@@ -1,0 +1,124 @@
+/* ============================================================
+   OMNI-SAZO · Base global
+   Estilo: papel de periódico + tinta. Colores planos, bordes
+   gruesos, sombras duras (sin blur). Nada de vidrio ni neón.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;1,700&display=swap');
+
+:root {
+  /* Tipografías */
+  --fuente-titulo: 'Anton', 'Arial Black', Impact, sans-serif;
+  --fuente-texto: 'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Papel y tinta */
+  --papel: #f7f3e6;
+  --papel-2: #ebe5d4;
+  --tinta: #1b1820;
+  --tinta-suave: #4a4553;
+
+  /* Bordes y sombras duras (el look de sticker) */
+  --borde: 3px solid var(--tinta);
+  --sombra-dura: 6px 6px 0 var(--tinta);
+  --sombra-dura-chica: 4px 4px 0 var(--tinta);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: var(--fuente-texto);
+  font-size: 16px;
+  color: var(--tinta);
+  background-color: #2a2730;
+  transition: background-color 0.8s ease-in-out;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* El body acompaña el color del módulo activo */
+body[data-tema="inicio"]     { background-color: #1f4fd8; }
+body[data-tema="usuarios"]   { background-color: #e0218a; }
+body[data-tema="inventario"] { background-color: #17b26a; }
+body[data-tema="caja"]       { background-color: #f4740b; }
+body[data-tema="gerencia"]   { background-color: #7b3fe4; }
+body[data-tema="proveedores"] { background-color: #e63946; }
+body[data-tema="clientes"]    { background-color: #0e8f8f; }
+
+h1, h2, h3, h4 {
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+}
+
+/* Barra de scroll con el mismo lenguaje gráfico */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tinta) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--tinta);
+  border-radius: 0;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+:focus-visible {
+  outline: 3px solid var(--tinta);
+  outline-offset: 3px;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* ---------- Animaciones compartidas ---------- */
+
+/* Cintas de texto que se desplazan (el efecto "periódico") */
+@keyframes correrCinta {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes correrCintaInversa {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* Manchas de tinta que respiran despacio */
+@keyframes flotarMancha {
+  0%, 100% { transform: translate(0, 0) rotate(var(--giro, 0deg)); }
+  50%      { transform: translate(14px, -18px) rotate(calc(var(--giro, 0deg) + 4deg)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

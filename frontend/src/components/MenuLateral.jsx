@@ -1,19 +1,21 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Logout } from './Logout';
-import './estilos/DashboardPage.css';
+import './estilos/DashBoardPage.css';
+import './estilos/MenuLateral.css';
 
-export const Sidebar = () => {
+export const MenuLateral = () => {
   const location = useLocation();
+  const rutaActual = location.pathname.replace(/\/+$/, '') || '/';
   const session = JSON.parse(localStorage.getItem('userSession'));
   const idRol = session?.idRol; 
-  const rolNombre = session?.rol || 'Usuario';  //@jonas: esto almacenada el idrol del logueo
+  const rolNombre = session?.rol || 'Usuario';  //@jonas: esto almacena el idrol del logueo
 
   return (
     <aside className="dash-sidebar">
       <div>
         <div className="dash-brand">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', color: 'inherit' }}>
             <img 
               src="/SAZOIDE.jpg" 
               alt="Logo OMNI-SAZO" 
@@ -23,45 +25,78 @@ export const Sidebar = () => {
               <h2 className="dash-brand-title">OMNI-SAZO</h2>
               <span className="dash-brand-role">{rolNombre}</span>
             </div>
-          </div>
+          </Link>
         </div>
 
         <nav className="dash-nav">
-          {/*modulo ejemplo quitar cuando puedan mucha */}
+          {/* Boton para ir al inicio o la bienvenida que no estaba antes */}
           <Link 
-            to="/dashboard/ejemplo" 
-            className={`dash-link ${location.pathname.includes('ejemplo') ? 'active' : ''}`}
+            to="/dashboard" 
+            className={`dash-link menu-btn-inicio ${rutaActual === '/dashboard' ? 'active' : ''}`}
           >
-          Módulo Ejemplo
+            Inicio
           </Link>
 
-          {/* para gerente y digitador */}
+          {/* @Abner: el modulo ejemplo ya no va, ya tenemos las 4 tablas
+              fuertes reales (Usuarios, Productos, Clientes, Proveedores) */}
+
+          {/* Administrar Usuarios (Solo Gerente) */}
+          {idRol === 3 && (
+            <Link 
+              to="/dashboard/usuarios" 
+              className={`dash-link menu-btn-usuarios ${location.pathname.includes('usuarios') ? 'active' : ''}`}
+            >
+              Administrar Usuarios
+            </Link>
+          )}
+
+          {/* Clientes (Cajero y Gerente, porque en Caja se elige el cliente) */}
+          {[2, 3].includes(idRol) && (
+            <Link 
+              to="/dashboard/clientes" 
+              className={`dash-link menu-btn-clientes ${location.pathname.includes('clientes') ? 'active' : ''}`}
+            >
+              Clientes
+            </Link>
+          )}
+
+          {/* Proveedores (Digitador y Gerente, porque ellos reciben mercaderia) */}
+          {[1, 3].includes(idRol) && (
+            <Link 
+              to="/dashboard/proveedores" 
+              className={`dash-link menu-btn-proveedores ${location.pathname.includes('proveedores') ? 'active' : ''}`}
+            >
+              Proveedores
+            </Link>
+          )}
+
+          {/* Ingreso de Datos (Gerente y Digitador) */}
           {[1, 3].includes(idRol) && (
             <Link 
               to="/dashboard/digitacion" 
-              className={`dash-link ${location.pathname.includes('digitacion') ? 'active' : ''}`}
+              className={`dash-link menu-btn-inventario ${location.pathname.includes('digitacion') ? 'active' : ''}`}
             >
-            Ingreso de Datos
+              Ingreso de Datos
             </Link>
           )}
 
-          {/*Para gerente y cajero*/}
+          {/* Modulo de Caja (Gerente y Cajero) */}
           {[2, 3].includes(idRol) && (
             <Link 
               to="/dashboard/caja" 
-              className={`dash-link ${location.pathname.includes('caja') ? 'active' : ''}`}
+              className={`dash-link menu-btn-caja ${location.pathname.includes('caja') ? 'active' : ''}`}
             >
-            Módulo de Caja
+              Módulo de Caja
             </Link>
           )}
 
-          {/*Para el gerente*/}
+          {/* Reportes de Gerencia (Solo Gerente) */}
           {idRol === 3 && (
             <Link 
               to="/dashboard/gerencia" 
-              className={`dash-link ${location.pathname.includes('gerencia') ? 'active' : ''}`}
+              className={`dash-link menu-btn-gerencia ${location.pathname.includes('gerencia') ? 'active' : ''}`}
             >
-            Reportes de Gerencia
+              Reportes de Gerencia
             </Link>
           )}
         </nav>
@@ -71,3 +106,5 @@ export const Sidebar = () => {
     </aside>
   );
 };
+
+export default MenuLateral;

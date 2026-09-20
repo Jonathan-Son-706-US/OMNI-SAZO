@@ -1,0 +1,219 @@
+/* ============================================================
+   OMNI-SAZO · Tablas y formularios
+   Todo vive sobre la hoja de papel (.dash-card-outlet), con
+   bordes gruesos y sombras duras. Sin vidrio ni desenfoques.
+   Los selectores se limitan a .dash-card-outlet para no pisar
+   el menú ni el login.
+   ============================================================ */
+
+.page-container,
+.dashboard-content {
+  color: var(--tinta);
+  padding: 0;
+}
+
+/* Título de módulo: subrayado grueso del color del módulo */
+.dash-card-outlet h2 {
+  /* block + fit-content: el subrayado abraza el texto pero igual
+     obliga a que lo que siga (botones) baje a la línea de abajo. */
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 0 1.2rem;
+  padding-bottom: 0.3rem;
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  text-transform: uppercase;
+  color: var(--tinta);
+  border-bottom: 7px solid var(--tinta-mod, #1f4fd8);
+  transition: border-color 0.8s ease-in-out;
+}
+
+.dash-card-outlet h3 {
+  margin: 0 0 1rem;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  color: var(--tinta);
+}
+
+/* ---------- Tablas ---------- */
+.table-container,
+.dash-card-outlet .data-table {
+  margin-top: 1.3rem;
+  background-color: #fff;
+  border: 3px solid var(--tinta);
+  box-shadow: var(--sombra-dura);
+  overflow-x: auto;
+}
+
+.table-container {
+  padding: 1.1rem;
+}
+
+.dash-card-outlet table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 480px;
+}
+
+.dash-card-outlet th,
+.dash-card-outlet td {
+  padding: 0.8rem 1rem;
+  text-align: left;
+}
+
+/* Encabezado: barra sólida del color del módulo */
+.dash-card-outlet thead th {
+  background-color: var(--tinta-mod, #1f4fd8);
+  color: #fff;
+  font-family: var(--fuente-titulo);
+  font-size: 0.95rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 3px solid var(--tinta);
+  transition: background-color 0.8s ease-in-out;
+}
+
+.dash-card-outlet td {
+  color: var(--tinta);
+  font-size: 0.95rem;
+  border-bottom: 2px solid rgba(27, 24, 32, 0.14);
+}
+
+/* Filas alternas, como una hoja de registro */
+.dash-card-outlet tbody tr:nth-child(even) td {
+  background-color: rgba(27, 24, 32, 0.045);
+}
+
+.dash-card-outlet tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.dash-card-outlet tbody tr:hover td {
+  background-color: var(--tinta-mod-clara, #ddd);
+  transition: background-color 0.15s ease;
+}
+
+.dash-card-outlet tfoot th {
+  background-color: var(--tinta);
+  color: var(--papel);
+  font-family: var(--fuente-titulo);
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-top: 3px solid var(--tinta);
+}
+
+/* ---------- Botones ---------- */
+.dash-card-outlet button,
+.dash-card-outlet .btn-submit {
+  background-color: var(--tinta-mod, #1f4fd8);
+  color: #fff;
+  font-family: var(--fuente-texto);
+  font-weight: 700;
+  font-size: 0.92rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.3rem;
+  border: 3px solid var(--tinta);
+  border-radius: 0;
+  cursor: pointer;
+  box-shadow: var(--sombra-dura-chica);
+  transition: transform 0.14s ease, box-shadow 0.14s ease,
+              background-color 0.8s ease-in-out;
+}
+
+.dash-card-outlet button:hover,
+.dash-card-outlet .btn-submit:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 var(--tinta);
+}
+
+/* Se hunde al hacer clic, como un botón físico */
+.dash-card-outlet button:active,
+.dash-card-outlet .btn-submit:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 var(--tinta);
+}
+
+/* ---------- Formularios ---------- */
+.dash-card-outlet .form-container {
+  position: relative;
+  background-color: #fff;
+  border: 3px solid var(--tinta);
+  box-shadow: var(--sombra-dura);
+  padding: 1.5rem;
+  margin: 1.3rem 0;
+}
+
+/* Franja de color arriba, como el lomo de una libreta */
+.dash-card-outlet .form-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background-color: var(--tinta-mod, #1f4fd8);
+  border-bottom: 3px solid var(--tinta);
+  transition: background-color 0.8s ease-in-out;
+}
+
+.dash-card-outlet .form-container h3 {
+  margin-top: 0.6rem;
+}
+
+.dash-card-outlet .form-container div {
+  margin-bottom: 1rem;
+}
+
+.dash-card-outlet .form-container label {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  margin-right: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+
+.dash-card-outlet .form-container input,
+.dash-card-outlet .form-container select {
+  padding: 0.55rem 0.7rem;
+  border: 3px solid var(--tinta);
+  border-radius: 0;
+  background-color: var(--papel);
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.dash-card-outlet .form-container input:focus,
+.dash-card-outlet .form-container select:focus {
+  outline: none;
+  background-color: #fff;
+  box-shadow: var(--sombra-dura-chica);
+}
+
+.dash-card-outlet .form-container input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  accent-color: var(--tinta-mod, #1f4fd8);
+  vertical-align: middle;
+}
+
+.dash-card-outlet .form-container hr {
+  border: none;
+  border-top: 3px dashed rgba(27, 24, 32, 0.25);
+  margin: 1.4rem 0;
+}
+
+.dash-card-outlet .form-container option {
+  background-color: #fff;
+  color: var(--tinta);
+}
