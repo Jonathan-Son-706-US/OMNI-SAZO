@@ -1,6 +1,11 @@
 const express = require('express');
 const cors = require('cors'); //@jonas: esto para las peticiones del fronted
 const authRoutes = require('./src/routes/authRoutes');
+const userRoutes = require('./src/routes/userRoutes');
+const clienteRoutes = require('./src/routes/clienteRoutes');
+const productoRoutes = require('./src/routes/productoRoutes');
+const proveedorRoutes = require('./src/routes/proveedorRoutes');
+const catalogoRoutes = require('./src/routes/catalogoRoutes');
 
 const app = express();
 
@@ -10,6 +15,12 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 
+// @javi: endpoints para el mantenimiento de las tablas fuertes
+app.use('/api/usuarios', userRoutes);
+app.use('/api/clientes', clienteRoutes);
+app.use('/api/productos', productoRoutes);
+app.use('/api/proveedores', proveedorRoutes);
+app.use('/api/catalogos', catalogoRoutes);
 
 //  PARCHES TEMPORALES DE AMBROCIO PARA QUE EL FRONTEND NO TIRE 404 que sino no miraba nadota o como iba a quedar
 // @Javi: Cuando vayas a hacer la lógica real y tus controllers, borra todo este 
@@ -24,28 +35,28 @@ app.get('/api/roles', (req, res) => {
     ]);
 });
 
-app.get('/api/usuarios', (req, res) => {
+/*app.get('/api/usuarios', (req, res) => {
     res.json([
         { IdUsuario: 1, NombreUsuario: 'ambrocio', IdRol: 3, Estado: true }
     ]);
-});
+});*/
 
-app.post('/api/usuarios', (req, res) => {
+/*app.post('/api/usuarios', (req, res) => {
     res.json({ mensaje: "Simulación: Usuario guardado en el form de Ambrocio" });
-});
+});*/
 
 // Parches para el modulo de Inventario / Caja
-app.get('/api/productos', (req, res) => {
+/*app.get('/api/productos', (req, res) => {
     res.json([
         { IdProducto: 1, NombreProducto: 'Pintura Blanca Cubeta', PrecioVentaBase: 250.00 }
     ]);
-});
+});*/
 
-app.get('/api/clientes', (req, res) => {
+/*app.get('/api/clientes', (req, res) => {
     res.json([
         { IdCliente: 1, Nombre: 'Consumidor Final (CF)' }
     ]);
-});
+});*/
 
 
 // @jonas: nuestra Configuración del puerto si es necesario cambiarlo para no interferir con arquiI
