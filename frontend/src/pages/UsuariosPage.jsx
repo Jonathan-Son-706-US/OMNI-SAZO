@@ -1,81 +1,136 @@
 import React, { useState, useEffect } from 'react';
-// Jalamos las funciones del service que se comunican con la API
-import { getUsuarios, createUsuario, getRoles } from '../services/usuariosService';
-// Importamos la estructura visual del form que dejamos en components
+import axios from 'axios';
 import UsuarioForm from '../components/UsuarioForm';
+import { getUsuarios, createUsuario, updateUsuario, deleteUsuario } from '../services/usuariosService';
 import '../components/estilos/TablasCrud.css';
 
-// @Ambrocio haciendo lo de usuarios 
-// Aca si se hacen peticiones
 const UsuariosPage = () => {
-    // Estados para guardar lo que viene del backend
+    const [mostrarForm, setMostrarForm] = useState(false);
     const [usuarios, setUsuarios] = useState([]);
     const [roles, setRoles] = useState([]);
-    const [mostrarForm, setMostrarForm] = useState(false);
+    const [usuarioAEditar, setUsuarioAEditar] = useState(null);
+    const [cargando, setCargando] = useState(true);
 
-    // Traer los datos al puerto 5000
+    // Cargar la lista de usuarios y roles
+    const cargarDatos = async () => {
+        try {
+            setCargando(true);
+            const [usuariosData, rolesRes] = await Promise.all([
+                getUsuarios(),
+                axios.get('http://localhost:5000/api/roles')
+            ]);
+            setUsuarios(usuariosData);
+            setRoles(rolesRes.data);
+        } catch (error) {
+            console.error('Error al cargar datos:', error);
+        } finally {
+            setCargando(false);
+        }
+    };
+
     useEffect(() => {
         cargarDatos();
     }, []);
 
-    const cargarDatos = async () => {
+    // Manejar Guardar (POST) o Actualizar (PUT)
+    const handleGuardarOActualizar = async (payload, idUsuario) => {
         try {
-            const users = await getUsuarios();
-            const rolesData = await getRoles();
-            setUsuarios(users || []);
-            setRoles(rolesData || []);
+            if (idUsuario) {
+                await updateUsuario(idUsuario, payload);
+                alert('¡Usuario actualizado exitosamente!');
+            } else {
+                await createUsuario(payload);
+                alert('¡Usuario registrado exitosamente!');
+            }
+            setUsuarioAEditar(null);
+            setMostrarForm(false);
+            cargarDatos();
         } catch (error) {
-            console.error("No se pudo conectar al backend ", error);
+            console.error('Error al procesar el usuario:', error);
+            alert('Error en la operación.');
         }
     };
 
-    // Esta funcion la pasamos como prop al UsuarioForm
-    const handleGuardarUsuario = async (datosUsuario) => {
-        try {
-            await createUsuario(datosUsuario);
-            alert("¡Usuario creado nítido!");
-            setMostrarForm(false);
-            cargarDatos(); // Refrescamos la tabla 
-        } catch (error) {
-            console.error("Error al guardar", error);
-            alert("Hubo un problemilla al guardar");
+    const handleEditar = (usr) => {
+        setUsuarioAEditar(usr);
+        setMostrarForm(true);
+    };
+
+    const handleEliminar = async (id) => {
+        if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+            try {
+                await deleteUsuario(id);
+                alert('Usuario eliminado correctamente.');
+                cargarDatos();
+            } catch (error) {
+                console.error('Error al eliminar usuario:', error);
+                alert('No se pudo eliminar el usuario.');
+            }
         }
     };
 
     return (
-        <div className="dashboard-content">
-            <h2>Administración de Usuarios y Roles</h2>
-            <button onClick={() => setMostrarForm(!mostrarForm)}>
-                {mostrarForm ? 'Ocultar Formulario' : 'Agregar Nuevo Usuario'}
+        <div className="page-container">
+            <h2>Módulo de Administración de Usuarios</h2>
+            <button onClick={() => { setUsuarioAEditar(null); setMostrarForm(!mostrarForm); }}>
+                {mostrarForm && !usuarioAEditar ? 'Ocultar Formulario' : 'Nuevo Usuario'}
             </button>
 
-            {/* Renderizamos el form y le pasamos los datos y la guardamos */}
-            {mostrarForm && <UsuarioForm onSubmit={handleGuardarUsuario} roles={roles} />}
+            {mostrarForm && (
+                <UsuarioForm 
+                    onSubmit={handleGuardarOActualizar}
+                    roles={roles}
+                    usuarioAEditar={usuarioAEditar}
+                    onCancelar={() => {
+                        setUsuarioAEditar(null);
+                        setMostrarForm(false);
+                    }}
+                />
+            )}
 
-            <table className="data-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre Usuario</th>
-                        <th>ID Rol</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {usuarios.length > 0 ? (
-                        usuarios.map(u => (
-                            <tr key={u.IdUsuario}>
-                                <td>{u.IdUsuario}</td>
-                                <td>{u.NombreUsuario}</td>
-                                <td>{u.IdRol}</td>
-                                <td>{u.Estado ? 'Activo' : 'Inactivo'}</td>
+            <div className="table-container mt-4">
+                {cargando ? (
+                    <p>Cargando usuarios desde la base de datos...</p>
+                ) : (
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
                             </tr>
-                        ))
-                    ) : (
-                        <tr><td colSpan="4">No hay nadie registrado</td></tr>
-                    )}
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            {usuarios.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5" style={{ textAlign: 'center' }}>
+                                        No hay usuarios registrados.
+                                    </td>
+                                </tr>
+                            ) : (
+                                usuarios.map(usr => (
+                                    <tr key={usr.IdUsuario}>
+                                        <td>{usr.IdUsuario}</td>
+                                        <td>{usr.NombreUsuario}</td>
+                                        <td>{usr.NombreRol || usr.IdRol}</td>
+                                        <td>{usr.Estado ? 'Activo' : 'Inactivo'}</td>
+                                        <td>
+                                            <button onClick={() => handleEditar(usr)} className="btn-edit">
+                                                Editar
+                                            </button>
+                                            <button onClick={() => handleEliminar(usr.IdUsuario)} className="btn-delete">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                )}
+            </div>
         </div>
     );
 };
