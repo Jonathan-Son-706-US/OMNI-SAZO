@@ -22,29 +22,32 @@ const getUsuarios = async (req, res) => {
   }
 };
 
-// 2. Crear un nuevo usuario (Maneja Salt y PasswordHash)
+// 2. Crear un nuevo usuario (Corregido desestructuración)
 const createUsuario = async (req, res) => {
-  const { usuario, password, id_rol } = req.body;
+  console.log('---> BODY RECIBIDO:', req.body); // Check de depuración
 
-  if (!usuario || !password || !id_rol) { 
+  // Se extraen las llaves exactas que manda UsuarioForm.jsx
+  const { nombreUsuario, contrasena, idRol } = req.body;
+
+  // Validación con las variables correctas
+  if (!nombreUsuario || !contrasena || !idRol) { 
     return res.status(400).json({ mensaje: 'Todos los campos son obligatorios' });
   }
 
   try {
     const pool = await sql.connect(dbConfig);
     
-    // Enviamos un Salt por defecto (0x00) o generado en varbinary para cumplir con el NOT NULL de SQL
     await pool.request()
-      .input('usuario', sql.VarChar(50), usuario)
-      .input('password', sql.VarChar(100), password)
-      .input('id_rol', sql.Int, id_rol)
+      .input('nombreUsuario', sql.VarChar(50), nombreUsuario)
+      .input('contrasena', sql.VarChar(100), contrasena)
+      .input('idRol', sql.Int, parseInt(idRol, 10))
       .query(`
         INSERT INTO dbo.USUARIOS (NombreUsuario, PasswordHash, Salt, IdRol, Estado)
         VALUES (
-          @usuario, 
-          HASHBYTES('SHA2_256', @password), 
+          @nombreUsuario, 
+          HASHBYTES('SHA2_256', @contrasena), 
           CAST('' AS VARBINARY(32)), 
-          @id_rol, 
+          @idRol, 
           1
         )
       `);
@@ -56,12 +59,11 @@ const createUsuario = async (req, res) => {
   }
 };
 
-// 3. Actualizar un usuario existente
+// 3. Actualizar un usuario existente (Corregida la columna PasswordHash)
 const updateUsuario = async (req, res) => {
   const { id } = req.params;
   const { nombreUsuario, idRol, estado, contrasena } = req.body;
 
-  // Validación de seguridad para evitar enviar NaN a sql.Int
   const parsedIdUsuario = parseInt(id, 10);
   const parsedIdRol = parseInt(idRol, 10);
 
@@ -79,7 +81,7 @@ const updateUsuario = async (req, res) => {
       .input('idRol', sql.Int, parsedIdRol)
       .input('estado', sql.Bit, estado ? 1 : 0);
 
-    // Si se escribió una nueva contraseña, la actualizamos; si no, dejamos la existente
+    // Si se escribió una nueva contraseña, actualizamos el PasswordHash
     if (contrasena && contrasena.trim() !== '') {
       request.input('contrasena', sql.VarChar(100), contrasena);
       await request.query(`
@@ -88,7 +90,7 @@ const updateUsuario = async (req, res) => {
           NombreUsuario = @nombreUsuario,
           IdRol = @idRol,
           Estado = @estado,
-          Contrasena = @contrasena
+          PasswordHash = HASHBYTES('SHA2_256', @contrasena)
         WHERE IdUsuario = @idUsuario
       `);
     } else {
@@ -116,7 +118,7 @@ const deleteUsuario = async (req, res) => {
   try {
     const pool = await sql.connect(dbConfig);
     await pool.request()
-      .input('id_usuario', sql.Int, id)
+      .input('id_usuario', sql.Int, parseInt(id, 10))
       .query('UPDATE dbo.USUARIOS SET Estado = 0 WHERE IdUsuario = @id_usuario');
 
     res.json({ ok: true, mensaje: 'Usuario desactivado correctamente' });
