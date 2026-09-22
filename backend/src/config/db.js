@@ -2,8 +2,8 @@ const sql = require('mssql');
 
 const dbConfig = {
   user: 'usuarioLejos',
-  password: 'sazo10', 
-  server: 'ABNER\\SQLEXPRESS01', 
+  password: '123', 
+  server: 'localhost', 
   database: 'OMNISAZO',
   options: { encrypt: false, trustServerCertificate: true }
 };
