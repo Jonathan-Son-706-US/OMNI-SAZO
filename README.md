@@ -57,7 +57,7 @@ ejecutar/levantar backend:
 'npm run dev'
 El servidor backend quedará escuchando en http://localhost:5000
 
-2. Iniciar el Frontend (React)
+4. Iniciar el Frontend (React)
 Abra una nueva terminal y navegue a la carpeta del cliente web:
 'cd frontend'
 Instale las dependencias de React:
