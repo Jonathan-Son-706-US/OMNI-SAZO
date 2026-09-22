@@ -48,7 +48,7 @@ const dbConfig = {
 module.exports = { sql, dbConfig };
 
 
-2. Iniciar el Backend (APIREST + NODEMON)
+3. Iniciar el Backend (APIREST + NODEMON)
 Abra una terminal en la raíz de su proyecto y navegue al directorio del proyecto
 'cd backend'
 Instale todas las dependencias del proyecto:
