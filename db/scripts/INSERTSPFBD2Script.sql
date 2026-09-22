@@ -40,7 +40,7 @@ VALUES
     ('Bolsa 1 kg');
 GO
 
--- 5. Insertar Usuario Administrador de Prueba usando tu Procedure
+-- 5. Insertar Usuario Administrador de Prueba 
 -- (El IdRol 3 corresponde a 'Gerente' según la secuencia del INSERT)
 EXEC dbo.sp_RegistrarUsuario 
     @IdRol = 3, 
