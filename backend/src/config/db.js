@@ -5,6 +5,7 @@ const dbConfig = {
   password: '123', 
   server: 'localhost', 
   database: 'OMNISAZO',
+
   options: { encrypt: false, trustServerCertificate: true }
 };
 

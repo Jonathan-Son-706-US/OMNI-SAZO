@@ -81,7 +81,7 @@ export const MenuLateral = () => {
           )}
 
           {/* Modulo de Caja (Gerente y Cajero) */}
-          {[2, 3].includes(idRol) && (
+          {[0].includes(idRol) && (
             <Link 
               to="/dashboard/caja" 
               className={`dash-link menu-btn-caja ${location.pathname.includes('caja') ? 'active' : ''}`}
@@ -90,8 +90,8 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Reportes de Gerencia (Solo Gerente) */}
-          {idRol === 3 && (
+          {/* Reportes de Gerencia (Solo Gerente) actualmente desabilitado = 0 */}
+          {idRol === 0 && (
             <Link 
               to="/dashboard/gerencia" 
               className={`dash-link menu-btn-gerencia ${location.pathname.includes('gerencia') ? 'active' : ''}`}

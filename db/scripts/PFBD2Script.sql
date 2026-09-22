@@ -1,0 +1,328 @@
+-- CREACIÓN DE TABLAS PARA EL PROYECTO DB
+USE [OMNISAZO];
+GO
+CREATE TABLE [ROLES] (
+    [IdRol] INT NOT NULL IDENTITY(1,1),
+    [NombreRol] VARCHAR(50) NOT NULL,
+    PRIMARY KEY([IdRol])
+);
+GO
+
+CREATE TABLE [USUARIOS] (
+    [IdUsuario] INT NOT NULL IDENTITY(1,1),
+    [IdRol] INT NOT NULL,
+    [NombreUsuario] VARCHAR(50) NOT NULL UNIQUE,
+    [PasswordHash] VARBINARY(64) NOT NULL,
+    [Salt] VARBINARY(32) NOT NULL,
+    [Estado] BIT NOT NULL DEFAULT 1,
+    PRIMARY KEY([IdUsuario])
+);
+GO
+
+CREATE TABLE [CATEGORIAS] (
+    [IdCategoria] INT NOT NULL IDENTITY(1,1),
+    [NombreCategoria] VARCHAR(50) NOT NULL,
+    PRIMARY KEY([IdCategoria])
+);
+GO
+
+CREATE TABLE [PRESENTACIONES] (
+    [IdPresentacion] INT NOT NULL IDENTITY(1,1),
+    [NombrePresentacion] VARCHAR(50) NOT NULL,
+    PRIMARY KEY([IdPresentacion])
+);
+GO
+
+CREATE TABLE [MARCAS] (
+    [IdMarca] INT NOT NULL IDENTITY(1,1),
+    [NombreMarca] VARCHAR(50) NOT NULL,
+    PRIMARY KEY([IdMarca])
+);
+GO
+
+CREATE TABLE [COLORES] (
+    [IdColor] INT NOT NULL IDENTITY(1,1),
+    [NombreColor] VARCHAR(50) NOT NULL,
+    [CodigoHex] VARCHAR(10) NULL,
+    PRIMARY KEY([IdColor])
+);
+GO
+
+CREATE TABLE [PRODUCTOS] (
+    [IdProducto] INT NOT NULL IDENTITY(1,1),
+    [IdMarca] INT NOT NULL,
+    [IdPresentacion] INT NOT NULL,
+    [IdCategoria] INT NOT NULL,
+    [IdColor] INT NULL, 
+    [NombreProducto] VARCHAR(150) NOT NULL,
+    [ManejaLote] BIT NOT NULL,
+    [PrecioVentaBase] DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY([IdProducto])
+);
+GO
+
+CREATE TABLE [BODEGAS] (
+    [IdBodega] INT NOT NULL IDENTITY(1,1),
+    [NombreBodega] VARCHAR(50) NOT NULL,
+    [Estado] BIT NOT NULL DEFAULT 1,
+    PRIMARY KEY([IdBodega])
+);
+GO
+
+CREATE TABLE [UBICACIONES_BODEGA] (
+    [IdUbicacion] INT NOT NULL IDENTITY(1,1),
+    [IdBodega] INT NOT NULL,
+    [Estante] VARCHAR(20) NOT NULL,
+    [Nivel] VARCHAR(20) NOT NULL,
+    PRIMARY KEY([IdUbicacion])
+);
+GO
+
+CREATE TABLE [INVENTARIO_LOTES] (
+    [IdLote] INT NOT NULL IDENTITY(1,1),
+    [IdProducto] INT NOT NULL,
+    [IdUbicacion] INT NOT NULL,
+    [NumeroLote] VARCHAR(50) NOT NULL,
+    [FechaIngreso] DATETIME NOT NULL,
+    [CantidadInicial] INT NOT NULL,
+    [CantidadDisponible] INT NOT NULL,
+    [CostoCompraUnitario] DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY([IdLote])
+);
+GO
+
+CREATE TABLE [PROVEEDORES] (
+    [IdProveedor] INT NOT NULL IDENTITY(1,1),
+    [NombreProveedor] VARCHAR(150) NOT NULL,
+    [NIT] VARCHAR(20) NOT NULL,
+    [Telefono] VARCHAR(20) NOT NULL,
+    PRIMARY KEY([IdProveedor])
+);
+GO
+
+CREATE TABLE [ORDENES_COMPRA_ENCABEZADO] (
+    [IdOrdenCompra] INT NOT NULL IDENTITY(1,1),
+    [IdProveedor] INT NOT NULL,
+    [FechaEmision] DATETIME NOT NULL,
+    [Estado] VARCHAR(20) NOT NULL,
+    PRIMARY KEY([IdOrdenCompra])
+);
+GO
+
+CREATE TABLE [ORDENES_COMPRA_DETALLE] (
+    [IdOrdenCompraDetalle] INT NOT NULL IDENTITY(1,1),
+    [IdOrdenCompra] INT NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [CantidadSolicitada] INT NOT NULL,
+    PRIMARY KEY([IdOrdenCompraDetalle])
+);
+GO
+
+CREATE TABLE [RECEPCIONES_COMPRA_ENCABEZADO] (
+    [IdRecepcion] INT NOT NULL IDENTITY(1,1),
+    [IdOrdenCompra] INT NOT NULL,
+    [IdUsuario] INT NOT NULL,
+    [FechaRecepcion] DATETIME NOT NULL,
+    PRIMARY KEY([IdRecepcion])
+);
+GO
+
+CREATE TABLE [RECEPCIONES_COMPRA_DETALLE] (
+    [IdRecepcionDetalle] INT NOT NULL IDENTITY(1,1),
+    [IdRecepcion] INT NOT NULL,
+    [IdOrdenCompraDetalle] INT NOT NULL,
+    [IdLote] INT NOT NULL,
+    [CantidadRecibida] INT NOT NULL,
+    PRIMARY KEY([IdRecepcionDetalle])
+);
+GO
+
+CREATE TABLE [CLIENTES] (
+    [IdCliente] INT NOT NULL IDENTITY(1,1),
+    [Nombre] VARCHAR(150) NOT NULL,
+    [NIT] VARCHAR(20) NOT NULL,
+    [EsEmpresa] BIT NOT NULL,
+    PRIMARY KEY([IdCliente])
+);
+GO
+
+CREATE TABLE [MEDIOS_PAGO] (
+    [IdMedioPago] INT NOT NULL IDENTITY(1,1),
+    [NombreMedioPago] VARCHAR(50) NOT NULL,
+    PRIMARY KEY([IdMedioPago])
+);
+GO
+
+CREATE TABLE [COTIZACIONES_ENCABEZADO] (
+    [IdCotizacion] INT NOT NULL IDENTITY(1,1),
+    [IdCliente] INT NOT NULL,
+    [Fecha] DATETIME NOT NULL,
+    [Estado] VARCHAR(20) NOT NULL,
+    PRIMARY KEY([IdCotizacion])
+);
+GO
+
+CREATE TABLE [COTIZACIONES_DETALLE] (
+    [IdCotizacionDetalle] INT NOT NULL IDENTITY(1,1),
+    [IdCotizacion] INT NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [Cantidad] INT NOT NULL,
+    [PrecioUnitario] DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY([IdCotizacionDetalle])
+);
+GO
+
+CREATE TABLE [FACTURAS_ENCABEZADO] (
+    [IdFactura] INT NOT NULL IDENTITY(1,1),
+    [IdCotizacion] INT NULL, 
+    [IdCliente] INT NOT NULL,
+    [IdUsuario] INT NOT NULL,
+    [FechaEmision] DATETIME NOT NULL,
+    [MontoTotal] DECIMAL(10,2) NOT NULL,
+    [Estado] VARCHAR(20) NOT NULL,
+    PRIMARY KEY([IdFactura])
+);
+GO
+
+CREATE TABLE [FACTURAS_DETALLE] (
+    [IdFacturaDetalle] INT NOT NULL IDENTITY(1,1),
+    [IdFactura] INT NOT NULL,
+    [IdProducto] INT NOT NULL,
+    [IdLote] INT NOT NULL,
+    [Cantidad] INT NOT NULL,
+    [PrecioUnitario] DECIMAL(10,2) NOT NULL,
+    [Subtotal] DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY([IdFacturaDetalle])
+);
+GO
+
+CREATE TABLE [FACTURAS_PAGOS] (
+    [IdFacturaPago] INT NOT NULL IDENTITY(1,1),
+    [IdFactura] INT NOT NULL,
+    [IdMedioPago] INT NOT NULL,
+    [Monto] DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY([IdFacturaPago])
+);
+GO
+
+CREATE TABLE [DEVOLUCIONES_ENCABEZADO] (
+    [IdDevolucion] INT NOT NULL IDENTITY(1,1),
+    [IdFactura] INT NOT NULL,
+    [IdUsuario] INT NOT NULL,
+    [Fecha] DATETIME NOT NULL,
+    [Motivo] VARCHAR(255) NOT NULL,
+    PRIMARY KEY([IdDevolucion])
+);
+GO
+
+CREATE TABLE [DEVOLUCIONES_DETALLE] (
+    [IdDevolucionDetalle] INT NOT NULL IDENTITY(1,1),
+    [IdDevolucion] INT NOT NULL,
+    [IdFacturaDetalle] INT NOT NULL,
+    [CantidadDevuelta] INT NOT NULL,
+    PRIMARY KEY([IdDevolucionDetalle])
+);
+GO
+
+-- CREACIÓN DE LLAVES FORÁNEAS 
+
+-- Módulo de Usuarios
+ALTER TABLE [USUARIOS] ADD CONSTRAINT FK_Usuarios_Roles 
+FOREIGN KEY([IdRol]) REFERENCES [ROLES]([IdRol]);
+
+-- Módulo de Productos
+ALTER TABLE [PRODUCTOS] ADD CONSTRAINT FK_Productos_Marcas 
+FOREIGN KEY([IdMarca]) REFERENCES [MARCAS]([IdMarca]);
+
+ALTER TABLE [PRODUCTOS] ADD CONSTRAINT FK_Productos_Presentaciones 
+FOREIGN KEY([IdPresentacion]) REFERENCES [PRESENTACIONES]([IdPresentacion]);
+
+ALTER TABLE [PRODUCTOS] ADD CONSTRAINT FK_Productos_Categorias 
+FOREIGN KEY([IdCategoria]) REFERENCES [CATEGORIAS]([IdCategoria]);
+
+ALTER TABLE [PRODUCTOS] ADD CONSTRAINT FK_Productos_Colores 
+FOREIGN KEY([IdColor]) REFERENCES [COLORES]([IdColor]);
+
+-- Módulo de Ubicaciones e Inventario
+ALTER TABLE [UBICACIONES_BODEGA] ADD CONSTRAINT FK_Ubicaciones_Bodegas 
+FOREIGN KEY([IdBodega]) REFERENCES [BODEGAS]([IdBodega]);
+
+ALTER TABLE [INVENTARIO_LOTES] ADD CONSTRAINT FK_Lotes_Productos 
+FOREIGN KEY([IdProducto]) REFERENCES [PRODUCTOS]([IdProducto]);
+
+ALTER TABLE [INVENTARIO_LOTES] ADD CONSTRAINT FK_Lotes_Ubicaciones 
+FOREIGN KEY([IdUbicacion]) REFERENCES [UBICACIONES_BODEGA]([IdUbicacion]);
+
+-- Módulo de Compras
+ALTER TABLE [ORDENES_COMPRA_ENCABEZADO] ADD CONSTRAINT FK_OrdenesCompra_Proveedores 
+FOREIGN KEY([IdProveedor]) REFERENCES [PROVEEDORES]([IdProveedor]);
+
+ALTER TABLE [ORDENES_COMPRA_DETALLE] ADD CONSTRAINT FK_OrdenesCompraDetalle_Encabezado 
+FOREIGN KEY([IdOrdenCompra]) REFERENCES [ORDENES_COMPRA_ENCABEZADO]([IdOrdenCompra]);
+
+ALTER TABLE [ORDENES_COMPRA_DETALLE] ADD CONSTRAINT FK_OrdenesCompraDetalle_Productos 
+FOREIGN KEY([IdProducto]) REFERENCES [PRODUCTOS]([IdProducto]);
+
+ALTER TABLE [RECEPCIONES_COMPRA_ENCABEZADO] ADD CONSTRAINT FK_Recepciones_OrdenesCompra 
+FOREIGN KEY([IdOrdenCompra]) REFERENCES [ORDENES_COMPRA_ENCABEZADO]([IdOrdenCompra]);
+
+ALTER TABLE [RECEPCIONES_COMPRA_ENCABEZADO] ADD CONSTRAINT FK_Recepciones_Usuarios 
+FOREIGN KEY([IdUsuario]) REFERENCES [USUARIOS]([IdUsuario]);
+
+ALTER TABLE [RECEPCIONES_COMPRA_DETALLE] ADD CONSTRAINT FK_RecepcionesDetalle_Encabezado 
+FOREIGN KEY([IdRecepcion]) REFERENCES [RECEPCIONES_COMPRA_ENCABEZADO]([IdRecepcion]);
+
+ALTER TABLE [RECEPCIONES_COMPRA_DETALLE] ADD CONSTRAINT FK_RecepcionesDetalle_OrdenDetalle 
+FOREIGN KEY([IdOrdenCompraDetalle]) REFERENCES [ORDENES_COMPRA_DETALLE]([IdOrdenCompraDetalle]);
+
+ALTER TABLE [RECEPCIONES_COMPRA_DETALLE] ADD CONSTRAINT FK_RecepcionesDetalle_Lotes 
+FOREIGN KEY([IdLote]) REFERENCES [INVENTARIO_LOTES]([IdLote]);
+
+-- Módulo de Cotizaciones
+ALTER TABLE [COTIZACIONES_ENCABEZADO] ADD CONSTRAINT FK_Cotizaciones_Clientes 
+FOREIGN KEY([IdCliente]) REFERENCES [CLIENTES]([IdCliente]);
+
+ALTER TABLE [COTIZACIONES_DETALLE] ADD CONSTRAINT FK_CotizacionesDetalle_Encabezado 
+FOREIGN KEY([IdCotizacion]) REFERENCES [COTIZACIONES_ENCABEZADO]([IdCotizacion]);
+
+ALTER TABLE [COTIZACIONES_DETALLE] ADD CONSTRAINT FK_CotizacionesDetalle_Productos 
+FOREIGN KEY([IdProducto]) REFERENCES [PRODUCTOS]([IdProducto]);
+
+-- Módulo de Facturación
+ALTER TABLE [FACTURAS_ENCABEZADO] ADD CONSTRAINT FK_Facturas_Cotizaciones 
+FOREIGN KEY([IdCotizacion]) REFERENCES [COTIZACIONES_ENCABEZADO]([IdCotizacion]);
+
+ALTER TABLE [FACTURAS_ENCABEZADO] ADD CONSTRAINT FK_Facturas_Clientes 
+FOREIGN KEY([IdCliente]) REFERENCES [CLIENTES]([IdCliente]);
+
+ALTER TABLE [FACTURAS_ENCABEZADO] ADD CONSTRAINT FK_Facturas_Usuarios 
+FOREIGN KEY([IdUsuario]) REFERENCES [USUARIOS]([IdUsuario]);
+
+ALTER TABLE [FACTURAS_DETALLE] ADD CONSTRAINT FK_FacturasDetalle_Encabezado 
+FOREIGN KEY([IdFactura]) REFERENCES [FACTURAS_ENCABEZADO]([IdFactura]);
+
+ALTER TABLE [FACTURAS_DETALLE] ADD CONSTRAINT FK_FacturasDetalle_Productos 
+FOREIGN KEY([IdProducto]) REFERENCES [PRODUCTOS]([IdProducto]);
+
+ALTER TABLE [FACTURAS_DETALLE] ADD CONSTRAINT FK_FacturasDetalle_Lotes 
+FOREIGN KEY([IdLote]) REFERENCES [INVENTARIO_LOTES]([IdLote]);
+
+ALTER TABLE [FACTURAS_PAGOS] ADD CONSTRAINT FK_FacturasPagos_Facturas 
+FOREIGN KEY([IdFactura]) REFERENCES [FACTURAS_ENCABEZADO]([IdFactura]);
+
+ALTER TABLE [FACTURAS_PAGOS] ADD CONSTRAINT FK_FacturasPagos_MediosPago 
+FOREIGN KEY([IdMedioPago]) REFERENCES [MEDIOS_PAGO]([IdMedioPago]);
+
+-- Módulo de Devoluciones
+ALTER TABLE [DEVOLUCIONES_ENCABEZADO] ADD CONSTRAINT FK_Devoluciones_Facturas 
+FOREIGN KEY([IdFactura]) REFERENCES [FACTURAS_ENCABEZADO]([IdFactura]);
+
+ALTER TABLE [DEVOLUCIONES_ENCABEZADO] ADD CONSTRAINT FK_Devoluciones_Usuarios 
+FOREIGN KEY([IdUsuario]) REFERENCES [USUARIOS]([IdUsuario]);
+
+ALTER TABLE [DEVOLUCIONES_DETALLE] ADD CONSTRAINT FK_DevolucionesDetalle_Encabezado 
+FOREIGN KEY([IdDevolucion]) REFERENCES [DEVOLUCIONES_ENCABEZADO]([IdDevolucion]);
+
+ALTER TABLE [DEVOLUCIONES_DETALLE] ADD CONSTRAINT FK_DevolucionesDetalle_FacturaDetalle 
+FOREIGN KEY([IdFacturaDetalle]) REFERENCES [FACTURAS_DETALLE]([IdFacturaDetalle]);
+GO
