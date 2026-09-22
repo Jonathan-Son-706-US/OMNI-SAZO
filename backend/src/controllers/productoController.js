@@ -59,7 +59,7 @@ const createProducto = async (req, res) => {
   }
 };
 
-// 3. Actualizar producto (EDITAR)
+// 3. Actualizar producto
 const updateProducto = async (req, res) => {
   const { id } = req.params;
   const { nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria } = req.body;

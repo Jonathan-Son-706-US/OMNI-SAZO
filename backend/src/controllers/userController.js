@@ -1,6 +1,7 @@
 const { sql, dbConfig } = require('../config/db');
+const { registrarUsuarioBD } = require('../services/userService');
 
-// 1. Obtener todos los usuarios con su rol correspondiente
+// 1. Obtener todos los usuarios
 const getUsuarios = async (req, res) => {
   try {
     const pool = await sql.connect(dbConfig);
@@ -22,44 +23,28 @@ const getUsuarios = async (req, res) => {
   }
 };
 
-// 2. Crear un nuevo usuario (Corregido desestructuración)
+// 2. Crear un nuevo usuario 
 const createUsuario = async (req, res) => {
-  console.log('---> BODY RECIBIDO:', req.body); // Check de depuración
-
-  // Se extraen las llaves exactas que manda UsuarioForm.jsx
   const { nombreUsuario, contrasena, idRol } = req.body;
 
-  // Validación con las variables correctas
   if (!nombreUsuario || !contrasena || !idRol) { 
     return res.status(400).json({ mensaje: 'Todos los campos son obligatorios' });
   }
 
   try {
-    const pool = await sql.connect(dbConfig);
-    
-    await pool.request()
-      .input('nombreUsuario', sql.VarChar(50), nombreUsuario)
-      .input('contrasena', sql.VarChar(100), contrasena)
-      .input('idRol', sql.Int, parseInt(idRol, 10))
-      .query(`
-        INSERT INTO dbo.USUARIOS (NombreUsuario, PasswordHash, Salt, IdRol, Estado)
-        VALUES (
-          @nombreUsuario, 
-          HASHBYTES('SHA2_256', @contrasena), 
-          CAST('' AS VARBINARY(32)), 
-          @idRol, 
-          1
-        )
-      `);
+    // Llamamos a la función del servicio
+    const data = await registrarUsuarioBD(nombreUsuario, contrasena, idRol);
 
-    res.status(201).json({ ok: true, mensaje: 'Usuario creado exitosamente' });
+    if (data.Creado === 1) {
+      res.status(201).json({ ok: true, mensaje: data.Mensaje });
+    } else {
+      res.status(400).json({ ok: false, mensaje: data.Mensaje });
+    }
   } catch (error) {
-    console.error('Error al crear usuario:', error);
-    res.status(500).json({ mensaje: 'Error al guardar el usuario', error: error.message });
+    res.status(500).json({ ok: false, error: error.message });
   }
 };
 
-// 3. Actualizar un usuario existente (Corregida la columna PasswordHash)
 const updateUsuario = async (req, res) => {
   const { id } = req.params;
   const { nombreUsuario, idRol, estado, contrasena } = req.body;
@@ -69,7 +54,7 @@ const updateUsuario = async (req, res) => {
 
   if (isNaN(parsedIdUsuario) || isNaN(parsedIdRol) || !nombreUsuario) {
     return res.status(400).json({ 
-      mensaje: 'El ID de usuario, Nombre y Rol son obligatorios y deben ser válidos.' 
+      mensaje: 'El ID de usuario, Nombre y Rol son obligatorios.' 
     });
   }
 
@@ -81,16 +66,17 @@ const updateUsuario = async (req, res) => {
       .input('idRol', sql.Int, parsedIdRol)
       .input('estado', sql.Bit, estado ? 1 : 0);
 
-    // Si se escribió una nueva contraseña, actualizamos el PasswordHash
     if (contrasena && contrasena.trim() !== '') {
       request.input('contrasena', sql.VarChar(100), contrasena);
       await request.query(`
+        DECLARE @NuevoSalt VARBINARY(32) = CRYPT_GEN_RANDOM(32);
         UPDATE dbo.USUARIOS 
         SET 
           NombreUsuario = @nombreUsuario,
           IdRol = @idRol,
           Estado = @estado,
-          PasswordHash = HASHBYTES('SHA2_256', @contrasena)
+          Salt = @NuevoSalt,
+          PasswordHash = HASHBYTES('SHA2_512', CAST(@contrasena AS VARBINARY(100)) + @NuevoSalt)
         WHERE IdUsuario = @idUsuario
       `);
     } else {
@@ -106,12 +92,12 @@ const updateUsuario = async (req, res) => {
 
     res.json({ ok: true, mensaje: 'Usuario actualizado correctamente' });
   } catch (error) {
-    console.error('---> ERROR EXACTO EN BACKEND AL ACTUALIZAR USUARIO:', error);
+    console.error('Error al actualizar usuario:', error);
     res.status(500).json({ mensaje: 'Error al actualizar usuario', error: error.message });
   }
 };
 
-// 4. Cambiar estado de usuario (Desactivar/Eliminado Lógico)
+// 4. Cambiar estado de usuario (logico 1 o 0)
 const deleteUsuario = async (req, res) => {
   const { id } = req.params;
 

@@ -1,6 +1,6 @@
 const { sql, dbConfig } = require('../config/db');
 
-// 1. Obtener proveedores (Consulta T-SQL explícita ajustada a tu esquema)
+// 1. Obtener proveedores 
 const getProveedores = async (req, res) => {
   try {
     const pool = await sql.connect(dbConfig);
@@ -47,7 +47,7 @@ const createProveedor = async (req, res) => {
   }
 };
 
-// 3. Actualizar proveedor (EDITAR)
+// 3. Actualizar proveedor 
 const updateProveedor = async (req, res) => {
   const { id } = req.params;
   const { nombreProveedor, nit, telefono } = req.body;

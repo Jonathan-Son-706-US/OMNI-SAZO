@@ -1,50 +1,66 @@
-en backend en el archivo app.js
-cuando creen sus modulos de rutas como por ejemplo:
-//const ambrocioRoutes = require('./src/routes/ambrocioRoutes');
-app.use('/api/ambrocio', ambrocioRoutes);//
-lo registran en app.js
-no quitar cors() ni express.json() //sino se muere la subida de datos para el body
+OMNI-SAZO - Sistema de Gestión e Inventario
 
-para levantar el lado del backend
-ir cd >carpeta del proyecto cd > backend eh instalar
-instalar: npm install
-para levantar (ya esta en el package.json) 
-usen: npm run dev
+Sistema integral de gestión de inventarios, catalogación, facturación y autenticación de usuarios. Desarrollado con **React** en el Frontend, **Node.js / Express** en el Backend y **SQL Server** como motor de base de datos.
 
-notas para el backend 
-si van usar estilos los separan en la carpeta estilos y en la carpeta publica para las imagenes tanto para logos como para referencias como por ejemplo que se hace en el sql management 
-(nota ser respetuosos no subir nada raro si son amongus esta bien)
-en la carpeta components donde se encuentra los estilos 
-procurar dejar el diseño estructurar de sus forms las peticiones se hacen en otro lado alli nomas recibe para no saturar al levantar el fronted 
-en la carpeta page renderizan sus formularios/tablas y las peticiones en caso mio es donde guarda la info del logueo que se detecta para usarl en el menulateral 
+Requisitos Previos
 
-en menu lateral en components agregan el boton para redirigir a su modulo en los estilos esta la function de ocultar igual pueden modificar las sentencias para que tipo de id es valido esto
+Antes de desplegar o ejecutar la aplicación, asegúrese de tener instalado:
 
-en el apartado services aqui conectan las pantallas con su backend usa libreria axios mediante http post formateando la api
-aqui crean sus peticiones en sus cruds/pantallas
+* **Node.js** (v16.0.0 o mayor)
+* **SQL Server Management Studio (SSMS)** o extensión de SQL Server para VS Code
+* **Git**
 
-en main no deben modificar nada ya que esta vinculado con el archivo html
-para el archivo app.jsx
-deben venir a este archivo para declarar la ruta de su nueva vista/página dentro del bloque de rutas hijas del Dashboard
-ejemplo todo rancio:
-primero importen sus componentes ya deje unos basico para mostrar la function del logueo segun el rol pero aca es algo mas especifico:
-<Route 
-  path="/dashboard" 
-  element={
-    <ProtectedRoute>
-      <DashboardPage />
-    </ProtectedRoute>
+---
+
+Paso 1: Configuración de la Base de Datos SQL Server
+
+1. Abra **SQL Server Management Studio (SSMS)** y cree una nueva base de datos llamada `OMNISAZO` (o ejecute los scripts seleccionando `USE OMNISAZO;`).
+2. Diríjase a la carpeta del proyecto en `db/scripts/` y ejecute los archivos `.sql` en el siguiente orden:
+
+   1. **`PFBD2Script.sql`**: script de nuestra DB 
+   2. **`PROCEDUREPFBD2Script.sql`**: Crea los procedimientos almacenados.
+   3. **`INSERTSPFBD2Script.sql`**: Inserts primordiales para los cruds y uso general del sistema
+
+3. **Credenciales predeterminadas para pruebas:** //esto se encuentra en los inserts para el usuario
+   * **Usuario:** `admin_prueba`
+   * **Contraseña:** `Admin123!`
+   * **Rol:** Gerente (IdRol: 3)
+
+Paso 2: Configuración del Archivo de Conexión 
+
+Abra el archivo `src/config/db.js` (o `backend/src/config/db.js`) y configure los datos de conexión correspondientes a su instancia local de SQL Server:
+nota igual si se trabajase con un usuario remoto en `frontend/public/ComoDebentenersuUsuario.png` esta una captura de que permisos debe tener ese usuario para no tener errores vitales con respecto a acceso/edición y ejecución 
+
+```javascript
+const sql = require('mssql');
+
+const dbConfig = {
+  user: 'TU_USUARIO_SQL',        // Ej: 'usuarioLejos' o 'sa'
+  password: 'TU_CONTRASEÑA',     // Ej: '123'
+  server: 'localhost',           // O la IP / Instancia de su SQL Server
+  database: 'OMNISAZO',          // Nombre de la base de datos
+  options: { 
+    encrypt: false, 
+    trustServerCertificate: true 
   }
->
-  {/* Registra aquí la vista de tu CRUD */}
-  <Route path="productos" element={<ProductosPage />} />
-</Route>
+};
 
-para el html
-no es necesario modificar nada amenos que quieran modificar algo en este caso
+module.exports = { sql, dbConfig };
 
-para levantarlo es similar ya deje el package.json
-usen otra terminal
-ir cd >carpeta del proyecto cd > frontend eh instalar
-instalar: npm install
-usen: npm run dev
+
+3. Iniciar el Backend (APIREST + NODEMON)
+Abra una terminal en la raíz de su proyecto y navegue al directorio del proyecto
+'cd backend'
+Instale todas las dependencias del proyecto:
+'npm install'
+ejecutar/levantar backend:
+'npm run dev'
+El servidor backend quedará escuchando en http://localhost:5000
+
+4. Iniciar el Frontend (React)
+Abra una nueva terminal y navegue a la carpeta del cliente web:
+'cd frontend'
+Instale las dependencias de React:
+'npm install'
+levantar/ejecutar frontend:
+'npm run dev'

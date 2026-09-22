@@ -47,7 +47,7 @@ const ProveedorForm = ({ onSubmit, proveedorAEditar = null, onCancelar }) => {
             telefono: datosLimpios.Telefono
         };
 
-        // Enviamos el payload y el ID (si estamos editando) a ProveedoresPage.jsx
+        // Enviamos el payload y el ID (para el modulo edición) a ProveedoresPage.jsx
         await onSubmit(payload, proveedorAEditar ? proveedorAEditar.IdProveedor : null);
 
         // Reset del formulario

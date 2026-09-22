@@ -1,6 +1,6 @@
 const { sql, dbConfig } = require('../config/db');
 
-// 1. Obtener todos los clientes (con SELECT * para evitar fallos de columnas)
+// 1. Obtener todos los clientes 
 const getClientes = async (req, res) => {
   try {
     const pool = await sql.connect(dbConfig);

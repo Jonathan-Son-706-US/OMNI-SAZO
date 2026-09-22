@@ -1,10 +1,11 @@
 const sql = require('mssql');
 
 const dbConfig = {
-  user: 'sa',
-  password: '1234', 
-  server: 'localhost\\SQLJAVIDB2026', 
-  database: 'OmniSazoBD',
+  user: 'usuarioLejos',
+  password: '123', 
+  server: 'localhost', 
+  database: 'OMNISAZO',
+
   options: { encrypt: false, trustServerCertificate: true }
 };
 
