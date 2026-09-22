@@ -62,4 +62,5 @@ Abra una nueva terminal y navegue a la carpeta del cliente web:
 'cd frontend'
 Instale las dependencias de React:
 'npm install'
+levantar/ejecutar frontend:
 'npm run dev'
