@@ -2,30 +2,34 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:5000/api/proveedores';
 
-const getProveedores = async () => {
-  const response = await axios.get(API_URL);
+export const getProveedores = async () => {
+  const token = localStorage.getItem('token');
+  const response = await axios.get(API_URL, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
   return response.data;
 };
 
-const createProveedor = async (proveedorData) => {
-  const response = await axios.post(API_URL, proveedorData);
+export const createProveedor = async (proveedorData) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.post(API_URL, proveedorData, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
   return response.data;
 };
 
-const updateProveedor = async (id, proveedorData) => {
-  const response = await axios.put(`${API_URL}/${id}`, proveedorData);
+export const updateProveedor = async (id, proveedorData) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.put(`${API_URL}/${id}`, proveedorData, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
   return response.data;
 };
 
-const deleteProveedor = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+export const deleteProveedor = async (id) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.delete(`${API_URL}/${id}`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
   return response.data;
-};
-
-// Exportación explícita al final para evitar fallos de caché en Vite
-export {
-  getProveedores,
-  createProveedor,
-  updateProveedor,
-  deleteProveedor
 };

@@ -1,35 +1,44 @@
 import axios from 'axios';
 
-// Jonas dejó el backend en el puerto 5000
 const API_URL = 'http://localhost:5000/api/usuarios';
 const ROLES_URL = 'http://localhost:5000/api/roles'; 
 
-// Obtener todos los usuarios
 export const getUsuarios = async () => {
-    const response = await axios.get(API_URL);
+    const token = localStorage.getItem('token');
+    const response = await axios.get(API_URL, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
     return response.data;
 };
 
-// Crear un nuevo usuario
 export const createUsuario = async (usuarioData) => {
-    const response = await axios.post(API_URL, usuarioData);
+    const token = localStorage.getItem('token');
+    const response = await axios.post(API_URL, usuarioData, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
     return response.data;
 };
 
-// Obtener roles para llenar el select
 export const getRoles = async () => {
-    const response = await axios.get(ROLES_URL);
+    const token = localStorage.getItem('token');
+    const response = await axios.get(ROLES_URL, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
     return response.data;
 };
 
-// Desactivar usuario (usando API_URL correctamente)
 export const deleteUsuario = async (id) => {
-    const response = await axios.delete(`${API_URL}/${id}`);
+    const token = localStorage.getItem('token');
+    const response = await axios.delete(`${API_URL}/${id}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
     return response.data;
 };
 
-// Actualizar usuarios
 export const updateUsuario = async (id, usuarioData) => {
-  const response = await axios.put(`${API_URL}/${id}`, usuarioData);
-  return response.data;
+    const token = localStorage.getItem('token');
+    const response = await axios.put(`${API_URL}/${id}`, usuarioData, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+    return response.data;
 };
