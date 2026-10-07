@@ -7,9 +7,11 @@ const {
   deleteProveedor 
 } = require('../controllers/proveedorController');
 
-router.get('/', getProveedores);
-router.post('/', createProveedor);
-router.put('/:id', updateProveedor);
-router.delete('/:id', deleteProveedor);
+const { verificarToken } = require('../middlewares/authMiddlewares');
+
+router.get('/', verificarToken, getProveedores);
+router.post('/', verificarToken, createProveedor);
+router.put('/:id', verificarToken, updateProveedor);
+router.delete('/:id', verificarToken, deleteProveedor);
 
 module.exports = router;

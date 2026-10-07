@@ -7,9 +7,11 @@ const {
   deleteUsuario 
 } = require('../controllers/userController');
 
-router.get('/', getUsuarios);
-router.post('/', createUsuario);
-router.put('/:id', updateUsuario);
-router.delete('/:id', deleteUsuario);
+const { verificarToken } = require('../middlewares/authMiddlewares');
+
+router.get('/', verificarToken, getUsuarios);
+router.post('/', verificarToken, createUsuario);
+router.put('/:id', verificarToken, updateUsuario);
+router.delete('/:id', verificarToken, deleteUsuario);
 
 module.exports = router;

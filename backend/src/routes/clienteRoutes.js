@@ -7,9 +7,11 @@ const {
   deleteCliente 
 } = require('../controllers/clienteController');
 
-router.get('/', getClientes);
-router.post('/', createCliente);
-router.put('/:id', updateCliente);
-router.delete('/:id', deleteCliente);
+const { verificarToken } = require('../middlewares/authMiddlewares');
+
+router.get('/', verificarToken, getClientes);
+router.post('/', verificarToken, createCliente);
+router.put('/:id', verificarToken, updateCliente);
+router.delete('/:id', verificarToken, deleteCliente);
 
 module.exports = router;

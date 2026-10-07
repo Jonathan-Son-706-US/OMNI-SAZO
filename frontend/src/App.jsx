@@ -38,7 +38,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          {/* ¡Acá está la magia! Esta ruta index carga tu Landing animada por defecto al entrar al dashboard */}
+          
           <Route index element={<LandingPage />} />
 
           {/* @Abner: el modulo ejemplo ya cumplio su chamba, lo quito porque

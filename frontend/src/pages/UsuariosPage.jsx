@@ -17,7 +17,7 @@ const UsuariosPage = () => {
             setCargando(true);
             const [usuariosData, rolesRes] = await Promise.all([
                 getUsuarios(),
-                axios.get('http://localhost:5000/api/roles')
+                axios.get('http://localhost:5000/api/catalogos/roles')
             ]);
             setUsuarios(usuariosData);
             setRoles(rolesRes.data);
