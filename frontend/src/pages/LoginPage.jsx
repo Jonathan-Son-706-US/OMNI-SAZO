@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoginForm } from '../components/LoginForm';
-import { loginAPI } from '../services/authService';
-
+import * as authService from '../services/authService';
 
 export const LoginPage = () => {
   const [usuario, setUsuario] = useState('');
@@ -15,9 +14,10 @@ export const LoginPage = () => {
     setErrorMsg('');
 
     try {
-      const data = await loginAPI(usuario, password);
+      const data = await authService.loginAPI(usuario, password);
 
       if (data.ok) {
+        localStorage.setItem('token', data.token);
         localStorage.setItem('userSession', JSON.stringify({
           usuario: data.usuario,
           rol: data.rol,

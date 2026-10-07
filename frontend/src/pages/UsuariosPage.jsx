@@ -11,13 +11,17 @@ const UsuariosPage = () => {
     const [usuarioAEditar, setUsuarioAEditar] = useState(null);
     const [cargando, setCargando] = useState(true);
 
-    // Cargar la lista de usuarios y roles
-    const cargarDatos = async () => {
+
+const cargarDatos = async () => {
         try {
             setCargando(true);
+            const token = localStorage.getItem('token');
+
             const [usuariosData, rolesRes] = await Promise.all([
                 getUsuarios(),
-                axios.get('http://localhost:5000/api/catalogos/roles')
+                axios.get('http://localhost:5000/api/catalogos/roles', {
+                    headers: { 'Authorization': `Bearer ${token}` } 
+                })
             ]);
             setUsuarios(usuariosData);
             setRoles(rolesRes.data);
