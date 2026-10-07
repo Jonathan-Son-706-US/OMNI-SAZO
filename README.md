@@ -48,7 +48,7 @@ const dbConfig = {
 module.exports = { sql, dbConfig };
 
 
-2. Iniciar el Backend (APIREST + NODEMON)
+3. Iniciar el Backend (APIREST + NODEMON)
 Abra una terminal en la raíz de su proyecto y navegue al directorio del proyecto
 'cd backend'
 Instale todas las dependencias del proyecto:
@@ -57,9 +57,10 @@ ejecutar/levantar backend:
 'npm run dev'
 El servidor backend quedará escuchando en http://localhost:5000
 
-2. Iniciar el Frontend (React)
+4. Iniciar el Frontend (React)
 Abra una nueva terminal y navegue a la carpeta del cliente web:
 'cd frontend'
 Instale las dependencias de React:
 'npm install'
+levantar/ejecutar frontend:
 'npm run dev'
