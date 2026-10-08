@@ -29,16 +29,13 @@ export const MenuLateral = () => {
         </div>
 
         <nav className="dash-nav">
-          {/* Boton para ir al inicio o la bienvenida que no estaba antes */}
+          {/* Boton para ir al inicio */}
           <Link 
             to="/dashboard" 
             className={`dash-link menu-btn-inicio ${rutaActual === '/dashboard' ? 'active' : ''}`}
           >
             Inicio
           </Link>
-
-          {/* @Abner: el modulo ejemplo ya no va, ya tenemos las 4 tablas
-              fuertes reales (Usuarios, Productos, Clientes, Proveedores) */}
 
           {/* Administrar Usuarios (Solo Gerente) */}
           {idRol === 3 && (
@@ -50,7 +47,7 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Clientes (Cajero y Gerente, porque en Caja se elige el cliente) */}
+          {/* Clientes */}
           {[2, 3].includes(idRol) && (
             <Link 
               to="/dashboard/clientes" 
@@ -60,7 +57,7 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Proveedores (Digitador y Gerente, porque ellos reciben mercaderia) */}
+          {/* Proveedores */}
           {[1, 3].includes(idRol) && (
             <Link 
               to="/dashboard/proveedores" 
@@ -70,7 +67,7 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Ingreso de Datos (Gerente y Digitador) */}
+          {/* Ingreso de Datos */}
           {[1, 3].includes(idRol) && (
             <Link 
               to="/dashboard/digitacion" 
@@ -80,7 +77,17 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Modulo de Caja (Gerente y Cajero) */}
+          {/* Módulo de Cotizaciones (Ajusta los roles según necesites, ej: [1, 2, 3]) */}
+          {[1, 2, 3].includes(idRol) && (
+            <Link 
+              to="/dashboard/cotizaciones" 
+              className={`dash-link menu-btn-cotizaciones ${location.pathname.includes('cotizaciones') ? 'active' : ''}`}
+            >
+              Cotizaciones
+            </Link>
+          )}
+
+          {/* Módulo de Caja */}
           {[0].includes(idRol) && (
             <Link 
               to="/dashboard/caja" 
@@ -90,7 +97,7 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Reportes de Gerencia (Solo Gerente) actualmente desabilitado = 0 */}
+          {/* Reportes de Gerencia */}
           {idRol === 0 && (
             <Link 
               to="/dashboard/gerencia" 

@@ -13,7 +13,7 @@ import ProveedoresPage from './pages/ProveedoresPage';
 // @Abner dejando listos los mockups/cascarones de los otros modulos pesados para Javi
 import InventarioPage from './pages/InventarioPage';
 import CajaPage from './pages/CajaPage';
-
+import { CotizacionPage } from './pages/CotizacionPage';
 const ProtectedRoute = ({ children }) => {
   const session = JSON.parse(localStorage.getItem('userSession'));
   
@@ -53,11 +53,12 @@ function App() {
 
           {/* @Abner registrando el CRUD de Proveedores (tabla fuerte 4) */}
           <Route path="proveedores" element={<ProveedoresPage />} />
-
+            
           {/* modulos fuertes ya renderizados @Abner */}
           <Route path="digitacion" element={<InventarioPage />} />
           <Route path="caja" element={<CajaPage />} />
-          
+
+          <Route path="cotizaciones" element={<CotizacionPage />} />          
           {/* Aca lo dejo asi @Abner porque la vd no sabemos que vamos a poner en la grafica o reporte creo */}
           <Route
             path="gerencia"
