@@ -40,10 +40,21 @@ VALUES
     ('Bolsa 1 kg');
 GO
 
--- 5. Insertar Usuario Administrador de Prueba usando tu Procedure
+-- 5. Insertar Usuario Administrador de Prueba 
 -- (El IdRol 3 corresponde a 'Gerente' según la secuencia del INSERT)
 EXEC dbo.sp_RegistrarUsuario 
     @IdRol = 3, 
     @NombreUsuario = 'admin_prueba', 
     @PasswordOriginal = 'Admin123!';
+GO
+
+-- 6. Insertar Medios de Pago
+IF NOT EXISTS (SELECT 1 FROM dbo.MEDIOS_PAGO)
+BEGIN
+    INSERT INTO dbo.MEDIOS_PAGO (NombreMedioPago)
+    VALUES 
+        ('Efectivo'),
+        ('Tarjeta'),
+        ('Cheque');
+END
 GO

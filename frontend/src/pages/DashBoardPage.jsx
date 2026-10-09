@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { useOutlet, useLocation } from 'react-router-dom';
 import { MenuLateral } from '../components/MenuLateral';
 import '../components/estilos/DashBoardPage.css';
 
@@ -7,8 +7,10 @@ const MODULOS = [
     { key: 'usuarios',   match: 'usuarios',    titulo: 'Usuarios' },
     { key: 'clientes',   match: 'clientes',    titulo: 'Clientes' },
     { key: 'proveedores',match: 'proveedores', titulo: 'Proveedores' },
-    { key: 'inventario', match: 'digitacion',  titulo: 'Ingreso de datos' },
-    { key: 'caja',       match: 'caja',        titulo: 'Caja' },
+    { key: 'inventario', match: 'facturacion-inventario', titulo: 'Facturacion e Inventario' },
+    { key: 'compras', match: 'compras', titulo: 'Compras y Bodega' },
+    { key: 'cotizaciones', match: 'cotizaciones', titulo: 'Cotizaciones' },
+    { key: 'caja',       match: 'caja', titulo: 'Caja e Impresion' }, // @abner: restaurado a caja
     { key: 'gerencia',   match: 'gerencia',    titulo: 'Gerencia' },
 ];
 
@@ -26,11 +28,35 @@ const NOTICIAS = {
 export const DashboardPage = () => {
     const location = useLocation();
     const ruta = location.pathname.toLowerCase();
+    const currentOutlet = useOutlet(); // Obtenemos el arbol de componentes real actual
 
     const moduloActivo = MODULOS.find((m) => ruta.includes(m.match));
     const temaActual = moduloActivo ? moduloActivo.key : 'inicio';
     const tituloActual = moduloActivo ? moduloActivo.titulo : 'Inicio';
     const noticias = NOTICIAS[temaActual] || NOTICIAS.inicio;
+
+    const [animKey, setAnimKey] = React.useState(0);
+    // Guardamos la pantalla (outlet) en estado para retrasar su actualizacion
+    const [displayOutlet, setDisplayOutlet] = React.useState(currentOutlet);
+
+    React.useEffect(() => {
+        // En el primer render no animamos ni retrasamos
+        if (animKey === 0) {
+            setAnimKey(1);
+            return;
+        }
+        
+        // 1. Inicia la animacion (la cortina sube)
+        setAnimKey(prev => prev + 1);
+
+        // 2. Esperamos a que la cortina tape la pantalla y ENTONCES damos el cambiazo
+        const timer = setTimeout(() => {
+            setDisplayOutlet(currentOutlet);
+        }, 500); // a los 500ms
+
+        return () => clearTimeout(timer);
+        // eslint-disable-next-line
+    }, [ruta]);
 
     // El body toma el mismo color, asi la pagina completa cambia a ese color
     useEffect(() => {
@@ -42,6 +68,12 @@ export const DashboardPage = () => {
 
     return (
         <div className={`dash-container theme-${temaActual}`}>
+            
+            {/* Cortina de transicion tipo Splatoon */}
+            {animKey > 1 && (
+                <div key={animKey} className={`cortina-transicion bg-${temaActual}`}></div>
+            )}
+
             {/* Capas de color*/}
             <div className="dash-bg" aria-hidden="true">
                 <div className={`dash-bg-capa bg-inicio ${temaActual === 'inicio' ? 'is-active' : ''}`} />
@@ -68,7 +100,7 @@ export const DashboardPage = () => {
 
                 <main className="dash-main">
                     <div className="dash-card-outlet">
-                        <Outlet />
+                        {displayOutlet}
                     </div>
                 </main>
 
@@ -91,3 +123,8 @@ export const DashboardPage = () => {
 };
 
 export default DashboardPage;
+
+
+
+
+

@@ -62,6 +62,8 @@
 .bg-gerencia   { background: #7b3fe4; }
 .bg-proveedores { background: #e63946; }
 .bg-clientes    { background: #0e8f8f; }
+.bg-cotizaciones { background: #4b5563; }
+.bg-compras { background: #eab308; }
 
 .dash-bg-capa::before {
   content: "";
@@ -82,6 +84,8 @@
 .theme-gerencia   { --tinta-mod: #7b3fe4; --tinta-mod-clara: #b18cff; }
 .theme-proveedores { --tinta-mod: #d62839; --tinta-mod-clara: #ff7a85; }
 .theme-clientes    { --tinta-mod: #0c7a7a; --tinta-mod-clara: #5fd9d9; }
+.theme-cotizaciones { --tinta-mod: #4b5563; --tinta-mod-clara: #9ca3af; }
+.theme-compras { --tinta-mod: #eab308; --tinta-mod-clara: #fde047; }
 
 /* ---------- Manchas de tinta del fondo ---------- */
 .dash-mancha {
@@ -241,6 +245,8 @@
 
 /* Etiqueta fija a la izquierda, como la cabecera de un periódico */
 .dash-ticker-etiqueta {
+  position: relative;
+  z-index: 10;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -324,3 +330,4 @@
     display: none;
   }
 }
+

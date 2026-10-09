@@ -67,13 +67,23 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Ingreso de Datos */}
+          {/* Facturacion e Inventario */}
+          {[1, 2, 3].includes(idRol) && (
+            <Link 
+              to="/dashboard/facturacion-inventario" 
+              className={`dash-link menu-btn-inventario ${location.pathname.includes('facturacion-inventario') ? 'active' : ''}`}
+            >
+              Facturación e Inventario
+            </Link>
+          )}
+
+          {/* Compras e Ingreso a Bodega */}
           {[1, 3].includes(idRol) && (
             <Link 
-              to="/dashboard/digitacion" 
-              className={`dash-link menu-btn-inventario ${location.pathname.includes('digitacion') ? 'active' : ''}`}
+              to="/dashboard/compras" 
+              className={`dash-link menu-btn-compras ${location.pathname.includes('compras') ? 'active' : ''}`}
             >
-              Ingreso de Datos
+              Compras y Bodega
             </Link>
           )}
 
@@ -87,13 +97,13 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Módulo de Caja */}
-          {[0].includes(idRol) && (
+          {/* Módulo de Caja e Impresión (@abner) */}
+          {[0, 2, 3].includes(idRol) && (
             <Link 
               to="/dashboard/caja" 
               className={`dash-link menu-btn-caja ${location.pathname.includes('caja') ? 'active' : ''}`}
             >
-              Módulo de Caja
+              Caja e Impresión
             </Link>
           )}
 
