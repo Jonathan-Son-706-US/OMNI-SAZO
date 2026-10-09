@@ -7,7 +7,7 @@ exports.crearCotizacionBD = async (idCliente, detalle) => {
   const result = await pool.request()
     .input('IdCliente', sql.Int, idCliente)
     .input('JsonDetalle', sql.NVarChar(sql.MAX), jsonDetalle)
-    .execute('sp_CrearCotizacion');
+    .execute('PROCEDURECREARCOTIZACION');
 
   return result.recordset[0];
 };
@@ -15,7 +15,7 @@ exports.crearCotizacionBD = async (idCliente, detalle) => {
 // @abner: obtener listado de cotizaciones
 exports.obtenerCotizacionesBD = async () => {
   const pool = await sql.connect();
-  const result = await pool.request().execute('sp_ObtenerCotizaciones');
+  const result = await pool.request().execute('PROCEDUREOBTENERCOTIZACIONES');
   return result.recordset;
 };
 
@@ -24,7 +24,7 @@ exports.obtenerCotizacionDetalleBD = async (idCotizacion) => {
   const pool = await sql.connect();
   const result = await pool.request()
     .input('IdCotizacion', sql.Int, parseInt(idCotizacion, 10))
-    .execute('sp_ObtenerCotizacionDetalle');
+    .execute('PROCEDUREOBTENERCOTIZACIONDETALLE');
   
   return {
     encabezado: result.recordsets[0][0] || null,
@@ -37,7 +37,7 @@ exports.confirmarCotizacionBD = async (idCotizacion) => {
   const pool = await sql.connect();
   const result = await pool.request()
     .input('IdCotizacion', sql.Int, parseInt(idCotizacion, 10))
-    .execute('sp_ConfirmarCotizacion');
+    .execute('PROCEDURECONFIRMARCOTIZACION');
   
   return result.recordset[0];
 };

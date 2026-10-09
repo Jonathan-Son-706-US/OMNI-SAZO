@@ -2,8 +2,8 @@ const cotizacionesService = require('../services/cotizacionesService');
 
 exports.crearCotizacion = async (req, res) => {
   try {
-    const { idCliente, detalle } = req.body;
-    const resultado = await cotizacionesService.crearCotizacionBD(idCliente, detalle);
+    const { idCliente, detalles } = req.body;
+    const resultado = await cotizacionesService.crearCotizacionBD(idCliente, detalles);
 
     res.status(201).json({
       message: 'Cotización creada exitosamente',
