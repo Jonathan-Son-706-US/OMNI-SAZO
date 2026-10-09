@@ -192,7 +192,7 @@ export const CotizacionPage = () => {
         </tbody>
       </table>
 
-      {/* 4. Resumen y Guardar */}
+      {/*Resumen y Guardar*/}
       <div style={{ marginTop: '20px', textAlign: 'right' }}>
         <h3>Total Cotizado: Q{montoTotal.toFixed(2)}</h3>
         <button 

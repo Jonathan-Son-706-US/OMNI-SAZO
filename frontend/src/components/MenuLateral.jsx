@@ -77,7 +77,7 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Módulo de Cotizaciones (Ajusta los roles según necesites, ej: [1, 2, 3]) */}
+          {/* Módulo de Cotizaciones */}
           {[1, 2, 3].includes(idRol) && (
             <Link 
               to="/dashboard/cotizaciones" 
