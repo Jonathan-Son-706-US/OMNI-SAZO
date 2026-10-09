@@ -122,3 +122,64 @@ img {
     transition-duration: 0.01ms !important;
   }
 }
+/* ---------- Transicion Splatoon Mejorada ---------- */
+.cortina-transicion {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 120vh;
+  z-index: 9999;
+  pointer-events: none;
+  /* Animacion fluida con transform en lugar de bottom */
+  transform: translateY(150%);
+  animation: splashTransition 1.2s cubic-bezier(0.85, 0, 0.15, 1) forwards;
+}
+
+/* Efecto de puntos tipo comic/Splatoon (halftone) sobre la cortina */
+.cortina-transicion::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.16) 1.4px, transparent 1.5px);
+  background-size: 14px 14px;
+}
+
+/* Efecto liquido/ondas animadas en la parte superior */
+.cortina-transicion::before {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: 0;
+  width: 120%; /* Extra ancho para que el patron se mueva */
+  height: 80px;
+  background-size: 60px 80px;
+  background-repeat: repeat-x;
+  background-color: transparent;
+  /* Animacion de olas liquidas horizontales */
+  animation: waveLiquid 0.6s infinite linear;
+}
+
+/* Pseudo-elemento hereda color */
+.bg-inicio::before { background-image: radial-gradient(circle at 30px 40px, #1f4fd8 30px, transparent 31px); }
+.bg-usuarios::before { background-image: radial-gradient(circle at 30px 40px, #e0218a 30px, transparent 31px); }
+.bg-inventario::before { background-image: radial-gradient(circle at 30px 40px, #17b26a 30px, transparent 31px); }
+.bg-caja::before { background-image: radial-gradient(circle at 30px 40px, #f4740b 30px, transparent 31px); }
+.bg-gerencia::before { background-image: radial-gradient(circle at 30px 40px, #7b3fe4 30px, transparent 31px); }
+.bg-proveedores::before { background-image: radial-gradient(circle at 30px 40px, #e63946 30px, transparent 31px); }
+.bg-clientes::before { background-image: radial-gradient(circle at 30px 40px, #0e8f8f 30px, transparent 31px); }
+.bg-cotizaciones::before { background-image: radial-gradient(circle at 30px 40px, #4b5563 30px, transparent 31px); }
+.bg-compras::before { background-image: radial-gradient(circle at 30px 40px, #eab308 30px, transparent 31px); }
+
+@keyframes splashTransition {
+  0%   { transform: translateY(120%); }
+  45%  { transform: translateY(0); }
+  55%  { transform: translateY(0); }
+  100% { transform: translateY(-120%); }
+}
+
+@keyframes waveLiquid {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-60px); } /* el ancho del background-size */
+}
+

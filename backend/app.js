@@ -21,6 +21,9 @@ app.use('/api/productos', productoRoutes);
 app.use('/api/proveedores', proveedorRoutes);
 app.use('/api/catalogos', catalogoRoutes);
 app.use('/api/cotizaciones', cotizacionesRoutes);
+const mediosPagoRoutes = require('./src/routes/mediosPagoRoutes');
+app.use('/api/medios-pago', mediosPagoRoutes); // @abner: nueva ruta para medios de pago e impresion
+
 // @Javi: Cuando vayas a hacer la lógica real y tus controllers, borra todo este 
 // bloque y reemplazalo por tus importaciones (ej. app.use('/api/usuarios', usuariosRoutes))
 // @jonas: nuestra Configuración del puerto si es necesario cambiarlo para no interferir con arquiI

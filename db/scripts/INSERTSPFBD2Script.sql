@@ -47,3 +47,14 @@ EXEC dbo.sp_RegistrarUsuario
     @NombreUsuario = 'admin_prueba', 
     @PasswordOriginal = 'Admin123!';
 GO
+
+-- 6. Insertar Medios de Pago
+IF NOT EXISTS (SELECT 1 FROM dbo.MEDIOS_PAGO)
+BEGIN
+    INSERT INTO dbo.MEDIOS_PAGO (NombreMedioPago)
+    VALUES 
+        ('Efectivo'),
+        ('Tarjeta'),
+        ('Cheque');
+END
+GO

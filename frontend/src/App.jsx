@@ -12,8 +12,9 @@ import ClientesPage from './pages/ClientesPage';
 import ProveedoresPage from './pages/ProveedoresPage';
 // @Abner dejando listos los mockups/cascarones de los otros modulos pesados para Javi
 import InventarioPage from './pages/InventarioPage';
-import CajaPage from './pages/CajaPage';
-import { CotizacionPage } from './pages/CotizacionPage';
+import ComprasPage from './pages/ComprasPage';
+import CajaPage from './pages/CajaPage'; // @abner: devuelto a CajaPage
+import CotizacionPage from './pages/CotizacionPage';
 const ProtectedRoute = ({ children }) => {
   const session = JSON.parse(localStorage.getItem('userSession'));
   
@@ -55,7 +56,8 @@ function App() {
           <Route path="proveedores" element={<ProveedoresPage />} />
             
           {/* modulos fuertes ya renderizados @Abner */}
-          <Route path="digitacion" element={<InventarioPage />} />
+          <Route path="facturacion-inventario" element={<InventarioPage />} />
+          <Route path="compras" element={<ComprasPage />} />
           <Route path="caja" element={<CajaPage />} />
 
           <Route path="cotizaciones" element={<CotizacionPage />} />          

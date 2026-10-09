@@ -1,0 +1,341 @@
+/* ============================================================
+   OMNI-SAZO · Modulo de Medios de Pago, Impresion y pestañas
+   estilos especificos para este modulo y el de cotizaciones
+   @abner
+   ============================================================ */
+
+/* ---------- Pestañas / sub-ventanas ---------- */
+.tabs-container {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  border-bottom: 4px solid var(--tinta);
+}
+
+.tab-btn {
+  position: relative;
+  padding: 0.75rem 1.4rem;
+  background-color: var(--papel-2);
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 3px solid var(--tinta);
+  border-bottom: none;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.tab-btn:not(:first-child) {
+  margin-left: -3px;
+}
+
+.tab-btn:hover {
+  background-color: var(--tinta-mod-clara, #ddd);
+  transform: none;
+  box-shadow: none;
+}
+
+.tab-btn.tab-activa {
+  background-color: var(--tinta-mod, #1f4fd8);
+  color: #fff;
+  z-index: 1;
+}
+
+.tab-btn.tab-activa:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- Contenido de pestaña ---------- */
+.tab-contenido {
+  animation: fadeTab 0.25s ease;
+}
+
+@keyframes fadeTab {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Secciones dentro de la pagina ---------- */
+.seccion-modulo {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 3px dashed rgba(27, 24, 32, 0.25);
+}
+
+/* ---------- Buscador de factura ---------- */
+.buscador-factura {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.buscador-factura input {
+  padding: 0.55rem 0.7rem;
+  border: 3px solid var(--tinta);
+  border-radius: 0;
+  background-color: var(--papel);
+  color: var(--tinta);
+  font-family: var(--fuente-texto);
+  font-size: 0.95rem;
+  font-weight: 600;
+  width: 180px;
+}
+
+.buscador-factura input:focus {
+  outline: none;
+  background-color: #fff;
+  box-shadow: var(--sombra-dura-chica);
+}
+
+/* ---------- Vista previa de factura para imprimir ---------- */
+.factura-preview {
+  background-color: #fff;
+  border: 3px solid var(--tinta);
+  box-shadow: var(--sombra-dura);
+  padding: 2rem;
+  margin-top: 1rem;
+  max-width: 700px;
+}
+
+.factura-preview .factura-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--tinta);
+}
+
+.factura-preview .factura-header h3 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.factura-preview .factura-header p {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  color: var(--tinta-suave);
+}
+
+.factura-preview .factura-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.factura-preview .factura-info p {
+  margin: 0;
+}
+
+.factura-preview .factura-info span {
+  font-weight: 700;
+}
+
+.factura-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.factura-preview th,
+.factura-preview td {
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 0.88rem;
+}
+
+.factura-preview thead th {
+  background-color: var(--tinta);
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.factura-preview .factura-total {
+  text-align: right;
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: var(--fuente-titulo);
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 3px solid var(--tinta);
+}
+
+.factura-preview .factura-pagos {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: var(--papel-2);
+  border: 2px solid var(--tinta);
+}
+
+.factura-preview .factura-pagos h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.factura-preview .factura-pagos p {
+  margin: 0.3rem 0;
+  font-size: 0.88rem;
+}
+
+.factura-preview .factura-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--tinta-suave);
+  border-top: 1px dashed var(--tinta);
+  padding-top: 1rem;
+}
+
+/* ---------- Boton de imprimir (verde para que se vea) ---------- */
+.btn-imprimir {
+  background-color: #0e9f5e !important;
+}
+
+.btn-imprimir:hover {
+  background-color: #0c8a50 !important;
+}
+
+/* ---------- Badges de estado ---------- */
+.badge-estado {
+  display: inline-block;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 2px solid var(--tinta);
+}
+
+.badge-pendiente {
+  background-color: #fbbf24;
+  color: var(--tinta);
+}
+
+.badge-confirmada {
+  background-color: #34d399;
+  color: var(--tinta);
+}
+
+.badge-facturada {
+  background-color: #60a5fa;
+  color: #fff;
+}
+
+.badge-anulada {
+  background-color: #f87171;
+  color: #fff;
+}
+
+/* ---------- Registro de pagos ---------- */
+.pagos-form {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.pagos-lista {
+  margin: 1rem 0;
+}
+
+.pago-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  background-color: var(--papel-2);
+  border: 2px solid var(--tinta);
+  margin-bottom: 0.5rem;
+}
+
+.pago-item span {
+  flex: 1;
+  font-weight: 600;
+}
+
+/* ---------- Info vacia / no encontrado ---------- */
+.info-vacia {
+  text-align: center;
+  padding: 2rem;
+  color: var(--tinta-suave);
+  font-style: italic;
+}
+
+/* ---------- Estilos para impresion ---------- */
+@media print {
+  /* 1. Ocultar absolutamente toda la interfaz grafica del dashboard */
+  .dash-sidebar,
+  .dash-header,
+  .dash-ticker,
+  .dash-bg,
+  .dash-mancha,
+  .tabs-container,
+  .no-print {
+    display: none !important;
+  }
+
+  /* 2. Resetear el cascaron estructural para que la impresora agarre toda la hoja */
+  body, html, #root, .dash-container, .dash-content-wrapper, .dash-main, .dash-card-outlet, .page-container, .tab-contenido {
+    display: block !important;
+    position: static !important;
+    overflow: visible !important;
+    height: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+  }
+
+  /* 3. Factura limpia, sin bordes feos y centrada en la hoja */
+  .factura-print-area {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .factura-preview {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 auto !important;
+    padding: 1cm 2cm !important; /* Margenes limpios como un documento Word */
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Correccion de tipografia caracteristica para encabezados y tablas */
+.seccion-modulo h3, 
+.seccion-modulo h4, 
+.page-container h2 {
+  font-family: var(--fuente-titulo);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.seccion-modulo table th {
+  font-family: var(--fuente-titulo);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.95rem;
+}
+
+/* Fuente caracteristica para los botones de las nuevas vistas */
+.seccion-modulo button {
+  font-family: var(--fuente-titulo);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}

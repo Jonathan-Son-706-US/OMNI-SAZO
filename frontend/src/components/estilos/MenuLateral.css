@@ -104,6 +104,8 @@
 .menu-btn-clientes    { --btn: #0e8f8f; }
 .menu-btn-usuarios   { --btn: #e0218a; }
 .menu-btn-inventario { --btn: #0e9f5e; }
+.menu-btn-compras { --btn: #eab308; }
+.menu-btn-cotizaciones { --btn: #4b5563; }
 .menu-btn-caja       { --btn: #e06400; }
 .menu-btn-gerencia   { --btn: #7b3fe4; }
 
@@ -157,3 +159,5 @@
     padding: 0.6rem 1.2rem;
   }
 }
+
+
