@@ -69,7 +69,7 @@ const InventarioPage = () => {
         <div className="page-container">
             <h2 className="no-print">Modulo de Facturacion e Inventario</h2>
             <p style={{ color: 'var(--tinta-suave)', marginBottom: '1.5rem' }}>
-              // @abner (nota para el dev): Acá se maneja PRODUCTOS, INVENTARIO_LOTES, y la emisión de FACTURAS.
+              // @abner (nota para el dev): Acï¿½ se maneja PRODUCTOS, INVENTARIO_LOTES, y la emisiï¿½n de FACTURAS.
             </p>
 
             {/* Navegacion por pestanas */}
@@ -161,7 +161,7 @@ const InventarioPage = () => {
             {activeTab === 'facturacion' && (
               <div className="tab-contenido seccion-modulo">
                 <h3>Crear Factura Directa (Sin Cotizacion)</h3>
-                <p style={{color: 'var(--tinta-suave)'}}>// @abner: Acá los de backend deben insertar en FACTURAS_ENCABEZADO y FACTURAS_DETALLE y reducir el stock.</p>
+                <p style={{color: 'var(--tinta-suave)'}}>// @abner: Acï¿½ los de backend deben insertar en FACTURAS_ENCABEZADO y FACTURAS_DETALLE y reducir el stock.</p>
                 
                 <div className="info-vacia" style={{ border: '2px dashed var(--tinta-mod)', padding: '2rem', textAlign: 'left', fontStyle: 'normal' }}>
                   <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
