@@ -136,7 +136,7 @@ const CotizacionPage = () => {
   };
 
   const handleFacturar = (idCotizacion) => {
-    navigate('/dashboard/caja', { state: { idCotizacion } });
+    navigate('/dashboard/facturacion-inventario', { state: { idCotizacion } });
   };
 
   // @abner: lógica para filtrar cotizaciones por la fecha
@@ -345,7 +345,7 @@ const CotizacionPage = () => {
                       className="btn-imprimir"
                       onClick={() => handleFacturar(cotizacionDetalle.encabezado.IdCotizacion)}
                     >
-                      Facturar y Cobrar
+                      Facturar
                     </button>
                   )}
                 </div>

@@ -228,6 +228,11 @@
   color: var(--tinta);
 }
 
+.badge-pagada {
+  background-color: #22c55e;
+  color: #fff;
+}
+
 .badge-facturada {
   background-color: #60a5fa;
   color: #fff;

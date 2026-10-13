@@ -42,7 +42,7 @@ async function registrarPagosFacturaBD(idFactura, pagos) {
   const result = await pool.request()
     .input('IdFactura', sql.Int, parseInt(idFactura, 10))
     .input('JsonPagos', sql.NVarChar(sql.MAX), jsonPagos)
-    .execute('PROCEDUREMEDIOSDEPAGOS');
+    .execute('sp_MediosDePago');
   return result.recordset[0];
 }
 
@@ -51,7 +51,12 @@ async function obtenerPagosFacturaBD(idFactura) {
   const pool = await sql.connect(dbConfig);
   const result = await pool.request()
     .input('IdFactura', sql.Int, parseInt(idFactura, 10))
-    .execute('sp_ObtenerPagosFactura');
+    .query(`
+      SELECT mp.NombreMedioPago, fp.Monto 
+      FROM FACTURAS_PAGOS fp 
+      INNER JOIN MEDIOS_PAGO mp ON fp.IdMedioPago = mp.IdMedioPago 
+      WHERE fp.IdFactura = @IdFactura
+    `);
   return result.recordset;
 }
 
@@ -61,7 +66,7 @@ async function obtenerFacturaImpresionBD(idFactura) {
   const pool = await sql.connect(dbConfig);
   const result = await pool.request()
     .input('IdFactura', sql.Int, parseInt(idFactura, 10))
-    .execute('PROCEDUREIMPRESIONDEFACTURAS');
+    .execute('sp_ImpresionDeFacturas');
   return {
     encabezado: result.recordsets[0][0] || null,
     detalle: result.recordsets[1] || [],
