@@ -25,3 +25,20 @@ export const getPresentaciones = async () => {
   });
   return res.data;
 };
+
+export const getBodegas = async () => {
+  const token = localStorage.getItem('token');
+  const res = await axios.get(`${API_URL}/bodegas`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  return res.data;
+};
+
+export const getUbicaciones = async (idBodega = null) => {
+  const token = localStorage.getItem('token');
+  const res = await axios.get(`${API_URL}/ubicaciones`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+    params: idBodega ? { idBodega } : {}
+  });
+  return res.data;
+};

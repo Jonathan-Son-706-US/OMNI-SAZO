@@ -24,9 +24,26 @@ async function obtenerPresentacionesBD() {
   return result.recordset;
 }
 
+// @Javier: bodegas y ubicaciones para el modulo de compras/ingreso a bodega
+async function obtenerBodegasBD() {
+  const pool = await sql.connect(dbConfig);
+  const result = await pool.request().execute('sp_ObtenerBodegas');
+  return result.recordset;
+}
+
+async function obtenerUbicacionesBD(idBodega = null) {
+  const pool = await sql.connect(dbConfig);
+  const result = await pool.request()
+    .input('IdBodega', sql.Int, idBodega ? parseInt(idBodega, 10) : null)
+    .execute('sp_ObtenerUbicacionesBodega');
+  return result.recordset;
+}
+
 module.exports = {
   obtenerRolesBD,
   obtenerMarcasBD,
   obtenerCategoriasBD,
-  obtenerPresentacionesBD
+  obtenerPresentacionesBD,
+  obtenerBodegasBD,
+  obtenerUbicacionesBD
 };
