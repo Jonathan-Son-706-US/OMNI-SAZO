@@ -4,14 +4,15 @@ import { MenuLateral } from '../components/MenuLateral';
 import '../components/estilos/DashBoardPage.css';
 
 const MODULOS = [
-    { key: 'usuarios',   match: 'usuarios',    titulo: 'Usuarios' },
-    { key: 'clientes',   match: 'clientes',    titulo: 'Clientes' },
-    { key: 'proveedores',match: 'proveedores', titulo: 'Proveedores' },
-    { key: 'inventario', match: 'facturacion-inventario', titulo: 'Facturacion e Inventario' },
-    { key: 'compras', match: 'compras', titulo: 'Compras y Bodega' },
-    { key: 'cotizaciones', match: 'cotizaciones', titulo: 'Cotizaciones' },
-    { key: 'caja',       match: 'caja', titulo: 'Caja e Impresion' }, // @abner: restaurado a caja
-    { key: 'gerencia',   match: 'gerencia',    titulo: 'Gerencia' },
+    { key: 'usuarios',   match: ['usuarios'],                 titulo: 'Usuarios' },
+    { key: 'clientes',   match: ['clientes'],                 titulo: 'Clientes' },
+    { key: 'proveedores',match: ['proveedores'],              titulo: 'Proveedores' },
+    { key: 'inventario', match: ['productos', 'facturacion-inventario'], titulo: 'Productos' },
+    { key: 'compras',    match: ['compras'],                  titulo: 'Compras y Bodega' },
+    { key: 'cotizaciones', match: ['cotizaciones'],           titulo: 'Cotizaciones' },
+    { key: 'facturacion', match: ['facturacion'],             titulo: 'Facturación' },
+    { key: 'caja',       match: ['caja'],                     titulo: 'Caja e Impresión' },
+    { key: 'gerencia',   match: ['gerencia'],                 titulo: 'Gerencia' },
 ];
 
 // Texto que corre en la cinta de abajo, cambia segun el modulo en el que estemos, la vd me quedo tremendo XD
@@ -20,7 +21,10 @@ const NOTICIAS = {
     usuarios:    ['Altas y bajas de personal', 'Revisá los roles antes de guardar', 'Cada quien con su llave'],
     clientes:    ['CF también es un cliente', 'Revisá bien el NIT antes de guardar', 'Empresa o persona, aquí quedan'],
     proveedores: ['Quién nos surte la bodega', 'Guardá bien el teléfono de contacto', 'Sin proveedor no hay inventario'],
-    inventario:  ['Producto nuevo, foto nueva', 'Ojo con los lotes vencidos', 'Contá lo que hay en bodega'],
+    inventario:  ['Catálogo de productos y pinturas', 'Precios vigentes y presentaciones', 'Altas y ediciones del catálogo'],
+    compras:     ['Recepción en bodega y lotes', 'Abastecimiento de mercadería', 'Ingreso ordenado por estante y nivel'],
+    cotizaciones:['Cotizaciones formales para clientes', 'Precios vigentes y cálculo de total', 'Pasa directo a facturación'],
+    facturacion: ['Ventas al por mayor y menor', 'Descuento de inventario método PEPS', 'Generación de factura con lotes'],
     caja:        ['Cobrá y entregá factura', 'Consumidor final también cuenta', 'Cuadre de caja al cerrar'],
     gerencia:    ['Números de la semana', 'Qué se vendió y qué no', 'Decisiones con datos'],
 };
@@ -30,7 +34,9 @@ export const DashboardPage = () => {
     const ruta = location.pathname.toLowerCase();
     const currentOutlet = useOutlet(); // Obtenemos el arbol de componentes real actual
 
-    const moduloActivo = MODULOS.find((m) => ruta.includes(m.match));
+    const moduloActivo = MODULOS.find((m) => 
+        Array.isArray(m.match) ? m.match.some((item) => ruta.includes(item)) : ruta.includes(m.match)
+    );
     const temaActual = moduloActivo ? moduloActivo.key : 'inicio';
     const tituloActual = moduloActivo ? moduloActivo.titulo : 'Inicio';
     const noticias = NOTICIAS[temaActual] || NOTICIAS.inicio;

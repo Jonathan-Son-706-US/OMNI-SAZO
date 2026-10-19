@@ -43,7 +43,7 @@
 /* La segunda línea del título, en el color del módulo */
 .landing-titulo .linea-color {
   display: block;
-  color: var(--tinta-mod, #1f4fd8);
+  color: var(--tinta-mod, #f472b6);
   transform: skewX(-8deg);
   transition: color 0.8s ease-in-out;
 }

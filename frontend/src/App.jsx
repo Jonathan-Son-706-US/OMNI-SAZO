@@ -10,11 +10,11 @@ import UsuariosPage from './pages/UsuariosPage';
 // Clientes y Proveedores. Con esto completamos el requisito del proyecto
 import ClientesPage from './pages/ClientesPage';
 import ProveedoresPage from './pages/ProveedoresPage';
-// @Abner dejando listos los mockups/cascarones de los otros modulos pesados para Javi
-import InventarioPage from './pages/InventarioPage';
+import ProductosPage from './pages/ProductosPage';
 import ComprasPage from './pages/ComprasPage';
 import CajaPage from './pages/CajaPage'; // @abner: devuelto a CajaPage
 import CotizacionPage from './pages/CotizacionPage';
+import FacturacionPage from './pages/FacturacionPage';
 const ProtectedRoute = ({ children }) => {
   const session = JSON.parse(localStorage.getItem('userSession'));
   
@@ -55,12 +55,14 @@ function App() {
           {/* @Abner registrando el CRUD de Proveedores (tabla fuerte 4) */}
           <Route path="proveedores" element={<ProveedoresPage />} />
             
-          {/* modulos fuertes ya renderizados @Abner */}
-          <Route path="facturacion-inventario" element={<InventarioPage />} />
+          {/* CRUD de Productos (tabla fuerte 2) */}
+          <Route path="productos" element={<ProductosPage />} />
+          <Route path="facturacion-inventario" element={<Navigate to="/dashboard/productos" replace />} />
           <Route path="compras" element={<ComprasPage />} />
           <Route path="caja" element={<CajaPage />} />
 
           <Route path="cotizaciones" element={<CotizacionPage />} />          
+          <Route path="facturacion" element={<FacturacionPage />} />
           {/* Aca lo dejo asi @Abner porque la vd no sabemos que vamos a poner en la grafica o reporte creo */}
           <Route
             path="gerencia"

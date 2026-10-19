@@ -23,7 +23,7 @@ export const LandingPage = () => {
                     <li>Usuarios</li>
                     <li>Clientes</li>
                     <li>Proveedores</li>
-                    <li>Inventario</li>
+                    <li>Productos</li>
                     <li>Caja</li>
                     <li>Gerencia</li>
                 </ul>

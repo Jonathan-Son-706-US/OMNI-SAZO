@@ -26,4 +26,12 @@ function esGerente(req, res, next) {
     }
 }
 
-module.exports = { verificarToken, esGerente };
+function esCajeroODigitador(req, res, next) {
+    if (req.usuario && (req.usuario.idRol === 1 || req.usuario.idRol === 2)) { // 1 = Digitador, 2 = Cajero
+        next();
+    } else {
+        return res.status(403).json({ ok: false, mensaje: 'Acceso restringido. Requiere perfil de Cajero o Digitador.' });
+    }
+}
+
+module.exports = { verificarToken, esGerente, esCajeroODigitador };

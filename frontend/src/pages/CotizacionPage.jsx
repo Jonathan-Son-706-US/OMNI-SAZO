@@ -136,7 +136,7 @@ const CotizacionPage = () => {
   };
 
   const handleFacturar = (idCotizacion) => {
-    navigate('/dashboard/facturacion-inventario', { state: { idCotizacion } });
+    navigate('/dashboard/facturacion', { state: { idCotizacion } });
   };
 
   // @abner: lógica para filtrar cotizaciones por la fecha

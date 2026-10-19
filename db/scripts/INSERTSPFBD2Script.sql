@@ -40,13 +40,16 @@ VALUES
     ('Bolsa 1 kg');
 GO
 
--- 5. Insertar Usuario Administrador de Prueba 
+-- 5. Insertar Usuario Administrador de Prueba, un cajero y un digitador
 -- (El IdRol 3 corresponde a 'Gerente' según la secuencia del INSERT)
 EXEC dbo.sp_RegistrarUsuario 
     @IdRol = 3, 
     @NombreUsuario = 'admin_prueba', 
     @PasswordOriginal = 'Admin123!';
 GO
+
+EXEC dbo.sp_RegistrarUsuario @IdRol = 2, @NombreUsuario = 'cajero_prueba',   @PasswordOriginal = 'Cajero123!';
+EXEC dbo.sp_RegistrarUsuario @IdRol = 1, @NombreUsuario = 'digitador_prueba', @PasswordOriginal = 'Digitador123!';
 
 -- 6. Insertar Medios de Pago
 IF NOT EXISTS (SELECT 1 FROM dbo.MEDIOS_PAGO)

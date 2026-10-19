@@ -12,7 +12,8 @@ async function login(req, res) {
         { 
           usuario: data.NombreUsuario, 
           rol: data.NombreRol, 
-          idRol: data.IdRol 
+          idRol: data.IdRol,
+          idUsuario: data.IdUsuario
         }, 
         SECRET_KEY, 
         { expiresIn: '8h' }
@@ -23,7 +24,8 @@ async function login(req, res) {
         token, 
         usuario: data.NombreUsuario, 
         rol: data.NombreRol, 
-        idRol: data.IdRol 
+        idRol: data.IdRol,
+        idUsuario: data.IdUsuario
       });
     } else {
       res.status(401).json({ ok: false, mensaje: data.Mensaje });
