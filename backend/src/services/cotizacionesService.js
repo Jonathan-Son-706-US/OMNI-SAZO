@@ -1,8 +1,8 @@
-const { sql, dbConfig } = require('../config/db.js');
+const sql = require('mssql');
 
 // @abner: crear una nueva cotización
 exports.crearCotizacionBD = async (idCliente, detalle) => {
-  const pool = await sql.connect(dbConfig);
+  const pool = await sql.connect();
   const jsonDetalle = typeof detalle === 'string' ? detalle : JSON.stringify(detalle);
 
   const result = await pool.request()
@@ -15,14 +15,14 @@ exports.crearCotizacionBD = async (idCliente, detalle) => {
 
 // @abner: obtener listado de cotizaciones
 exports.obtenerCotizacionesBD = async () => {
-  const pool = await sql.connect(dbConfig);
+  const pool = await sql.connect();
   const result = await pool.request().execute('sp_ObtenerCotizaciones');
   return result.recordset || [];
 };
 
 // @abner: obtener detalle de una cotizacion especifica
 exports.obtenerCotizacionDetalleBD = async (idCotizacion) => {
-  const pool = await sql.connect(dbConfig);
+  const pool = await sql.connect();
   const result = await pool.request()
     .input('IdCotizacion', sql.Int, parseInt(idCotizacion, 10))
     .execute('sp_ObtenerCotizacionDetalle');
@@ -35,7 +35,7 @@ exports.obtenerCotizacionDetalleBD = async (idCotizacion) => {
 
 // @abner: confirmar una cotizacion
 exports.confirmarCotizacionBD = async (idCotizacion) => {
-  const pool = await sql.connect(dbConfig);
+  const pool = await sql.connect();
   const result = await pool.request()
     .input('IdCotizacion', sql.Int, parseInt(idCotizacion, 10))
     .execute('sp_ConfirmarCotizacion');

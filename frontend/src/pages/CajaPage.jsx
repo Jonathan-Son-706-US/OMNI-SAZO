@@ -40,14 +40,10 @@ const CajaPage = () => {
     window.print();
   };
 
-  // Filtrado de facturas en el DataGrid por fecha y texto de busqueda
   const facturasFiltradas = facturas.filter(f => {
-    const coincideFecha = !fechaFiltro || new Date(f.FechaEmision).toISOString().split('T')[0] === fechaFiltro;
-    const busqMin = busqueda.toLowerCase().trim();
-    const coincideTexto = !busqMin ||
-      (f.NombreCliente && f.NombreCliente.toLowerCase().includes(busqMin)) ||
-      (f.IdFactura && f.IdFactura.toString().includes(busqMin));
-    return coincideFecha && coincideTexto;
+    if (!fechaFiltro) return true;
+    const fDate = new Date(f.FechaEmision).toISOString().split('T')[0];
+    return fDate === fechaFiltro;
   });
 
   return (
@@ -163,7 +159,6 @@ const CajaPage = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

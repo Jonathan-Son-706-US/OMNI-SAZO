@@ -345,7 +345,7 @@ const CotizacionPage = () => {
                       className="btn-imprimir"
                       onClick={() => handleFacturar(cotizacionDetalle.encabezado.IdCotizacion)}
                     >
-                      Facturar
+                      Facturar y Cobrar
                     </button>
                   )}
                 </div>
