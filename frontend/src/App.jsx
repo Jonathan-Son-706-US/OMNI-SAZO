@@ -15,6 +15,7 @@ import InventarioPage from './pages/InventarioPage';
 import ComprasPage from './pages/ComprasPage';
 import CajaPage from './pages/CajaPage'; // @abner: devuelto a CajaPage
 import CotizacionPage from './pages/CotizacionPage';
+import FacturacionPage from './pages/FacturacionPage';
 const ProtectedRoute = ({ children }) => {
   const session = JSON.parse(localStorage.getItem('userSession'));
   
@@ -61,6 +62,7 @@ function App() {
           <Route path="caja" element={<CajaPage />} />
 
           <Route path="cotizaciones" element={<CotizacionPage />} />          
+          <Route path="facturacion" element={<FacturacionPage />} />
           {/* Aca lo dejo asi @Abner porque la vd no sabemos que vamos a poner en la grafica o reporte creo */}
           <Route
             path="gerencia"

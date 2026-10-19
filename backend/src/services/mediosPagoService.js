@@ -61,7 +61,7 @@ async function obtenerFacturaImpresionBD(idFactura) {
   const pool = await sql.connect(dbConfig);
   const result = await pool.request()
     .input('IdFactura', sql.Int, parseInt(idFactura, 10))
-    .execute('PROCEDUREIMPRESIONDEFACTURAS');
+    .execute('sp_ImpresionDeFacturas');
   return {
     encabezado: result.recordsets[0][0] || null,
     detalle: result.recordsets[1] || [],

@@ -97,6 +97,16 @@ export const MenuLateral = () => {
             </Link>
           )}
 
+          {/* Módulo de Facturación (Punto de Venta PEPS) @Javi */}
+          {[1, 2].includes(idRol) && (
+            <Link 
+              to="/dashboard/facturacion" 
+              className={`dash-link menu-btn-facturacion ${location.pathname === '/dashboard/facturacion' ? 'active' : ''}`}
+            >
+              Facturación (Ventas)
+            </Link>
+          )}
+
           {/* Módulo de Caja e Impresión (@abner) */}
           {[0, 2, 3].includes(idRol) && (
             <Link 

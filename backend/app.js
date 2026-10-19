@@ -8,6 +8,7 @@ const proveedorRoutes = require('./src/routes/proveedorRoutes');
 const catalogoRoutes = require('./src/routes/catalogoRoutes');
 const cotizacionesRoutes = require('./src/routes/cotizacionesRoutes');
 const comprasRoutes = require('./src/routes/comprasRoutes');
+const facturasRoutes = require('./src/routes/facturasRoutes');
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use('/api/proveedores', proveedorRoutes);
 app.use('/api/catalogos', catalogoRoutes);
 app.use('/api/cotizaciones', cotizacionesRoutes);
 app.use('/api/compras', comprasRoutes); // @Javier: modulo de compras e ingreso a bodega
+app.use('/api/facturas', facturasRoutes); // @Javi: modulo de facturacion transaccional PEPS
 const mediosPagoRoutes = require('./src/routes/mediosPagoRoutes');
 app.use('/api/medios-pago', mediosPagoRoutes); // @abner: nueva ruta para medios de pago e impresion
 
