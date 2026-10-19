@@ -153,17 +153,26 @@ const ComprasPage = () => {
     setCargandoRecepcion(true);
     try {
       const detalle = await getRecepcionOrden(idOrdenCompraRecepcion);
-      const items = (Array.isArray(detalle) ? detalle : []).map(linea => ({
-        idOrdenCompraDetalle: linea.IdOrdenCompraDetalle,
-        idProducto: linea.IdProducto,
-        nombreProducto: linea.NombreProducto,
-        cantidadSolicitada: linea.CantidadSolicitada,
-        cantidadRecibida: linea.CantidadSolicitada, // recepcion total por defecto
-        idUbicacion: '',
-        numeroLote: '',
-        costoUnitario: '',
-        manejaLote: linea.ManejaLote
-      }));
+      const items = (Array.isArray(detalle) ? detalle : []).map(linea => {
+        const solicitada = Number(linea.CantidadSolicitada || 0);
+        const yaRecibido = Number(linea.CantidadRecibida || 0);
+        const pendiente = linea.CantidadPendiente !== undefined 
+          ? Number(linea.CantidadPendiente) 
+          : Math.max(0, solicitada - yaRecibido);
+        return {
+          idOrdenCompraDetalle: linea.IdOrdenCompraDetalle,
+          idProducto: linea.IdProducto,
+          nombreProducto: linea.NombreProducto,
+          cantidadSolicitada: solicitada,
+          yaRecibido: yaRecibido,
+          cantidadPendiente: pendiente,
+          cantidadRecibida: pendiente, // por defecto sugerir lo que falta recibir
+          idUbicacion: '',
+          numeroLote: '',
+          costoUnitario: '',
+          manejaLote: linea.ManejaLote
+        };
+      });
       setDetalleRecepcion(items);
     } catch (err) {
       console.error(err);
@@ -195,6 +204,10 @@ const ComprasPage = () => {
       }
       if (!item.cantidadRecibida || Number(item.cantidadRecibida) <= 0) {
         setError('Las cantidades recibidas deben ser mayores a cero.');
+        return;
+      }
+      if (Number(item.cantidadRecibida) > item.cantidadPendiente) {
+        setError(`La cantidad a recibir de "${item.nombreProducto}" no puede superar el saldo pendiente (${item.cantidadPendiente}).`);
         return;
       }
       if (item.costoUnitario === '' || Number(item.costoUnitario) < 0) {
@@ -384,16 +397,16 @@ const ComprasPage = () => {
               <h3>Recepción de Mercadería (Ingreso a Lotes)</h3>
 
               <div className="buscador-factura">
-                <label style={{ fontWeight: 'bold' }}>Buscar Compra PENDIENTE:</label>
+                <label style={{ fontWeight: 'bold' }}>Buscar Compra PENDIENTE / PARCIAL:</label>
                 <select
-                  style={{ padding: '0.55rem 0.7rem', width: '280px' }}
+                  style={{ padding: '0.55rem 0.7rem', width: '320px' }}
                   value={idOrdenCompraRecepcion}
                   onChange={(e) => { setIdOrdenCompraRecepcion(e.target.value); setDetalleRecepcion([]); }}
                 >
                   <option value="">Seleccione la orden</option>
                   {ordenesPendientes.map(o => (
                     <option key={o.IdOrdenCompra} value={o.IdOrdenCompra}>
-                      Orden #{o.IdOrdenCompra} - {o.NombreProveedor}
+                      Orden #{o.IdOrdenCompra} - {o.NombreProveedor} ({o.Estado})
                     </option>
                   ))}
                 </select>
@@ -409,32 +422,38 @@ const ComprasPage = () => {
               {detalleRecepcion.length > 0 && (
                 <div style={{ border: '2px solid var(--tinta)', padding: '1rem', background: 'var(--papel-2)', marginTop: '1rem' }}>
                   <p>
-                    <strong>Instrucción:</strong> asigne la ubicación (bodega), el número de lote (opcional, se genera
-                    automáticamente si queda vacío) y el costo unitario de compra. La recepción es <strong>total</strong>.
+                    <strong>Instrucción:</strong> asigne la cantidad a recibir (completa o parcial), la ubicación (bodega), el número de lote (opcional, se genera automáticamente si queda vacío) y el costo unitario de compra.
                   </p>
 
                   <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1rem', background: '#fff' }}>
                     <thead>
                       <tr style={{ background: 'var(--tinta)', color: '#fff' }}>
                         <th style={{ padding: '0.5rem' }}>Producto</th>
-                        <th style={{ padding: '0.5rem' }}>Cant. Pedida</th>
-                        <th style={{ padding: '0.5rem' }}>Cant. Recibida</th>
+                        <th style={{ padding: '0.5rem', textAlign: 'center' }}>Cant. Pedida</th>
+                        <th style={{ padding: '0.5rem', textAlign: 'center' }}>Ya Recibido</th>
+                        <th style={{ padding: '0.5rem', textAlign: 'center' }}>Saldo Pendiente</th>
+                        <th style={{ padding: '0.5rem', textAlign: 'center' }}>A Recibir Hoy</th>
                         <th style={{ padding: '0.5rem' }}>Ubicación (Bodega)</th>
                         <th style={{ padding: '0.5rem' }}>Número de Lote</th>
                         <th style={{ padding: '0.5rem' }}>Costo Unit.</th>
-                        <th style={{ padding: '0.5rem' }}>Estado</th>
+                        <th style={{ padding: '0.5rem', textAlign: 'center' }}>Tipo Ingreso</th>
                       </tr>
                     </thead>
                     <tbody>
                       {detalleRecepcion.map((item, index) => (
                         <tr key={item.idOrdenCompraDetalle}>
                           <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd' }}>{item.nombreProducto}</td>
-                          <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd' }}>{item.cantidadSolicitada}</td>
-                          <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd' }}>
+                          <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd', textAlign: 'center' }}>{item.cantidadSolicitada}</td>
+                          <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd', textAlign: 'center', color: '#666' }}>{item.yaRecibido}</td>
+                          <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd', textAlign: 'center', fontWeight: 'bold', color: item.cantidadPendiente > 0 ? '#b54708' : '#027a48' }}>
+                            {item.cantidadPendiente}
+                          </td>
+                          <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd', textAlign: 'center' }}>
                             <input
                               type="number"
                               min="1"
-                              style={{ width: '80px' }}
+                              max={item.cantidadPendiente}
+                              style={{ width: '80px', textAlign: 'center', fontWeight: 'bold' }}
                               value={item.cantidadRecibida}
                               onChange={(e) => actualizarItemRecepcion(index, 'cantidadRecibida', e.target.value)}
                             />
@@ -476,8 +495,10 @@ const ComprasPage = () => {
                               onChange={(e) => actualizarItemRecepcion(index, 'costoUnitario', e.target.value)}
                             />
                           </td>
-                          <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd' }}>
-                            <span className="badge-estado badge-pendiente">En Proceso</span>
+                          <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd', textAlign: 'center' }}>
+                            <span className={`badge-estado ${Number(item.cantidadRecibida) === item.cantidadPendiente ? 'badge-activo' : 'badge-pendiente'}`}>
+                              {Number(item.cantidadRecibida) === item.cantidadPendiente ? 'Completo' : 'Parcial'}
+                            </span>
                           </td>
                         </tr>
                       ))}

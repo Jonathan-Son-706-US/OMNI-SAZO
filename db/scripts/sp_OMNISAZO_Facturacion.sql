@@ -1,19 +1,7 @@
--- ============================================================================
--- OMNI-SAZO · Módulo de Facturación e Inventario (Método PEPS)
--- Script: sp_OMNISAZO_Facturacion.sql
--- @Jair: facturación transaccional + descuento de inventario FIFO/PEPS.
---
--- Reglas de integración:
---   1) Cotizaciones: solo se CONSUMEN en modo lectura (GET) para poblar la
---      factura. Se marca Estado = 'FACTURADA' al facturar (coordinado).
---   2) Compras/Bodega: el ingreso de stock lo manejan las recepciones. Aquí
---      SOLO se descuenta de INVENTARIO_LOTES ordenando por FechaIngreso ASC.
---   3) Auditoría: se registra el IdUsuario autenticado que emite la venta.
--- ============================================================================
 USE [OMNISAZO];
 GO
 
--- 1. Índice de soporte para la búsqueda PEPS (producto + fecha de ingreso)
+-- Indice para optimizar busqueda de lotes por fecha (PEPS)
 IF NOT EXISTS (SELECT 1 FROM sys.indexes
                WHERE name = 'IX_INVENTARIO_LOTES_PEPS'
                  AND object_id = OBJECT_ID('INVENTARIO_LOTES'))
@@ -24,7 +12,7 @@ BEGIN
 END;
 GO
 
--- 2. Stock disponible por producto (para el carrito del frontend)
+-- @Jair: Obtener stock disponible de cada producto
 CREATE OR ALTER PROCEDURE dbo.sp_ObtenerStockDisponible
 AS
 BEGIN
@@ -38,7 +26,7 @@ BEGIN
 END;
 GO
 
--- 3. Creación transaccional de factura con descuento PEPS
+-- @Jair: Facturacion transaccional con descuento de inventario PEPS
 CREATE OR ALTER PROCEDURE dbo.sp_CrearFacturaPEPS
     @IdCliente            INT,
     @IdCotizacion         INT = NULL,
@@ -64,9 +52,7 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        -- ---------------------------------------------------------------
-        -- Validaciones de encabezado
-        -- ---------------------------------------------------------------
+        -- Validaciones
         IF NOT EXISTS (SELECT 1 FROM [CLIENTES] WHERE [IdCliente] = @IdCliente)
             RAISERROR('El cliente seleccionado no existe.', 16, 1);
 
@@ -88,9 +74,7 @@ BEGIN
         IF ISJSON(@MediosPagoJson) = 0
             RAISERROR('El desglose de medios de pago no es un JSON válido.', 16, 1);
 
-        -- ---------------------------------------------------------------
-        -- Recalcular el MontoTotal desde el detalle (no se confía del cliente)
-        -- ---------------------------------------------------------------
+        -- Calcular total de la venta
         SELECT @MontoTotal = SUM([cantidad] * [precioUnitario])
         FROM OPENJSON(@DetalleProductosJson)
         WITH (
@@ -101,9 +85,7 @@ BEGIN
         IF @MontoTotal IS NULL OR @MontoTotal <= 0
             RAISERROR('El detalle está vacío o el total calculado es inválido.', 16, 1);
 
-        -- ---------------------------------------------------------------
-        -- Validar medios de pago (existentes y con monto positivo)
-        -- ---------------------------------------------------------------
+        -- Validar medios de pago
         IF EXISTS (
             SELECT 1
             FROM OPENJSON(@MediosPagoJson)
@@ -114,9 +96,7 @@ BEGIN
         )
             RAISERROR('Uno o más medios de pago son inválidos.', 16, 1);
 
-        -- ---------------------------------------------------------------
-        -- Insertar encabezado de la factura
-        -- ---------------------------------------------------------------
+        -- Encabezado de factura
         INSERT INTO [FACTURAS_ENCABEZADO]
             ([IdCotizacion], [IdCliente], [IdUsuario], [FechaEmision], [MontoTotal], [Estado])
         VALUES
@@ -124,9 +104,7 @@ BEGIN
 
         SET @IdFactura = SCOPE_IDENTITY();
 
-        -- ---------------------------------------------------------------
-        -- Procesar detalle aplicando PEPS (una fila por lote afectado)
-        -- ---------------------------------------------------------------
+        -- Descuento de stock lote por lote segun fecha de ingreso (PEPS)
         DECLARE detalle_cursor CURSOR LOCAL FAST_FORWARD FOR
             SELECT [idProducto], [cantidad], [precioUnitario]
             FROM OPENJSON(@DetalleProductosJson)
@@ -149,8 +127,6 @@ BEGIN
 
             SET @CantidadRestante = @CantidadPedida;
 
-            -- Lotes con stock disponible, ordenados por FechaIngreso ASC (PEPS).
-            -- UPDLOCK/ROWLOCK serializa el descuento y evita sobreventa concurrente.
             DECLARE lote_cursor CURSOR LOCAL FAST_FORWARD FOR
                 SELECT [IdLote], [CantidadDisponible]
                 FROM [INVENTARIO_LOTES] WITH (UPDLOCK, ROWLOCK)
@@ -193,25 +169,18 @@ BEGIN
         CLOSE detalle_cursor;
         DEALLOCATE detalle_cursor;
 
-        -- ---------------------------------------------------------------
-        -- Insertar medios de pago
-        -- ---------------------------------------------------------------
+        -- Registrar pagos recibidos
         INSERT INTO [FACTURAS_PAGOS] ([IdFactura], [IdMedioPago], [Monto])
         SELECT @IdFactura, [IdMedioPago], [Monto]
         FROM OPENJSON(@MediosPagoJson)
         WITH ([IdMedioPago] INT '$.idMedioPago', [Monto] DECIMAL(10,2) '$.monto');
 
-        -- ---------------------------------------------------------------
-        -- Validar que la suma de pagos coincida con el total
-        -- ---------------------------------------------------------------
         SELECT @TotalPagado = SUM([Monto]) FROM [FACTURAS_PAGOS] WHERE [IdFactura] = @IdFactura;
 
         IF @TotalPagado <> @MontoTotal
             RAISERROR('La suma de los pagos no coincide con el total de la factura.', 16, 1);
 
-        -- ---------------------------------------------------------------
-        -- Cerrar el ciclo de la cotización (decisión de coordinación aprobada)
-        -- ---------------------------------------------------------------
+        -- Actualizar estado de cotizacion si aplica
         IF @IdCotizacion IS NOT NULL
             UPDATE [COTIZACIONES_ENCABEZADO]
             SET [Estado] = 'FACTURADA'

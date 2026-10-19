@@ -47,7 +47,7 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Clientes */}
+          {/* Clientes (Cajero y Gerente) */}
           {[2, 3].includes(idRol) && (
             <Link 
               to="/dashboard/clientes" 
@@ -57,7 +57,7 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Proveedores */}
+          {/* Proveedores (Digitador y Gerente) */}
           {[1, 3].includes(idRol) && (
             <Link 
               to="/dashboard/proveedores" 
@@ -67,17 +67,17 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Facturacion e Inventario */}
-          {[1, 2, 3].includes(idRol) && (
+          {/* Productos (Digitador y Gerente) */}
+          {[1, 3].includes(idRol) && (
             <Link 
-              to="/dashboard/facturacion-inventario" 
-              className={`dash-link menu-btn-inventario ${location.pathname.includes('facturacion-inventario') ? 'active' : ''}`}
+              to="/dashboard/productos" 
+              className={`dash-link menu-btn-inventario ${location.pathname.includes('productos') ? 'active' : ''}`}
             >
-              Facturación e Inventario
+              Productos
             </Link>
           )}
 
-          {/* Compras e Ingreso a Bodega */}
+          {/* Compras e Ingreso a Bodega (Digitador y Gerente) */}
           {[1, 3].includes(idRol) && (
             <Link 
               to="/dashboard/compras" 
@@ -87,8 +87,8 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Módulo de Cotizaciones */}
-          {[1, 2, 3].includes(idRol) && (
+          {/* Módulo de Cotizaciones (Solo Cajero) */}
+          {idRol === 2 && (
             <Link 
               to="/dashboard/cotizaciones" 
               className={`dash-link menu-btn-cotizaciones ${location.pathname.includes('cotizaciones') ? 'active' : ''}`}
@@ -97,8 +97,8 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Módulo de Facturación (Punto de Venta PEPS) @Javi */}
-          {[1, 2].includes(idRol) && (
+          {/* Módulo de Facturación (Solo Cajero) */}
+          {idRol === 2 && (
             <Link 
               to="/dashboard/facturacion" 
               className={`dash-link menu-btn-facturacion ${location.pathname === '/dashboard/facturacion' ? 'active' : ''}`}
@@ -107,8 +107,8 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Módulo de Caja e Impresión (@abner) */}
-          {[0, 2, 3].includes(idRol) && (
+          {/* Módulo de Caja e Impresión (Solo Cajero) */}
+          {idRol === 2 && (
             <Link 
               to="/dashboard/caja" 
               className={`dash-link menu-btn-caja ${location.pathname.includes('caja') ? 'active' : ''}`}
@@ -117,8 +117,8 @@ export const MenuLateral = () => {
             </Link>
           )}
 
-          {/* Reportes de Gerencia */}
-          {idRol === 0 && (
+          {/* Reportes de Gerencia (Solo Gerente) */}
+          {idRol === 3 && (
             <Link 
               to="/dashboard/gerencia" 
               className={`dash-link menu-btn-gerencia ${location.pathname.includes('gerencia') ? 'active' : ''}`}

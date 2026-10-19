@@ -48,13 +48,16 @@ body {
 }
 
 /* El body acompaña el color del módulo activo */
-body[data-tema="inicio"]     { background-color: #1f4fd8; }
+body[data-tema="inicio"]     { background-color: #f472b6; }
 body[data-tema="usuarios"]   { background-color: #e0218a; }
 body[data-tema="inventario"] { background-color: #17b26a; }
 body[data-tema="caja"]       { background-color: #f4740b; }
 body[data-tema="gerencia"]   { background-color: #7b3fe4; }
 body[data-tema="proveedores"] { background-color: #e63946; }
 body[data-tema="clientes"]    { background-color: #0e8f8f; }
+body[data-tema="cotizaciones"] { background-color: #4b5563; }
+body[data-tema="compras"]     { background-color: #eab308; }
+body[data-tema="facturacion"] { background-color: #0284c7; }
 
 h1, h2, h3, h4 {
   font-family: var(--fuente-titulo);
@@ -161,7 +164,7 @@ img {
 }
 
 /* Pseudo-elemento hereda color */
-.bg-inicio::before { background-image: radial-gradient(circle at 30px 40px, #1f4fd8 30px, transparent 31px); }
+.bg-inicio::before { background-image: radial-gradient(circle at 30px 40px, #f472b6 30px, transparent 31px); }
 .bg-usuarios::before { background-image: radial-gradient(circle at 30px 40px, #e0218a 30px, transparent 31px); }
 .bg-inventario::before { background-image: radial-gradient(circle at 30px 40px, #17b26a 30px, transparent 31px); }
 .bg-caja::before { background-image: radial-gradient(circle at 30px 40px, #f4740b 30px, transparent 31px); }
@@ -170,6 +173,7 @@ img {
 .bg-clientes::before { background-image: radial-gradient(circle at 30px 40px, #0e8f8f 30px, transparent 31px); }
 .bg-cotizaciones::before { background-image: radial-gradient(circle at 30px 40px, #4b5563 30px, transparent 31px); }
 .bg-compras::before { background-image: radial-gradient(circle at 30px 40px, #eab308 30px, transparent 31px); }
+.bg-facturacion::before { background-image: radial-gradient(circle at 30px 40px, #0284c7 30px, transparent 31px); }
 
 @keyframes splashTransition {
   0%   { transform: translateY(120%); }

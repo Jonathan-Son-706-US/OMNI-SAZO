@@ -126,8 +126,8 @@ const CajaPage = () => {
                 <tr><th>Cant.</th><th>Producto</th><th>P.U.</th><th>Subtotal</th></tr>
               </thead>
               <tbody>
-                {facturaImprimir.detalle.map(d => (
-                  <tr key={d.IdFacturaDetalle}>
+                {facturaImprimir.detalle.map((d, index) => (
+                  <tr key={d.IdFacturaDetalle || index}>
                     <td>{d.Cantidad}</td>
                     <td>{d.NombreProducto}</td>
                     <td>Q{Number(d.PrecioUnitario).toFixed(2)}</td>
@@ -143,8 +143,8 @@ const CajaPage = () => {
 
             <div className="factura-pagos">
               <h4>Forma de pago</h4>
-              {facturaImprimir.pagos.map(p => (
-                <p key={p.IdFacturaPago}>{p.NombreMedioPago}: Q{Number(p.Monto).toFixed(2)}</p>
+              {facturaImprimir.pagos.map((p, index) => (
+                <p key={p.IdFacturaPago || index}>{p.NombreMedioPago}: Q{Number(p.Monto).toFixed(2)}</p>
               ))}
             </div>
 

@@ -99,7 +99,7 @@
 }
 
 /* --- El color propio de cada módulo --- */
-.menu-btn-inicio     { --btn: #1f4fd8; }
+.menu-btn-inicio     { --btn: #f472b6; }
 .menu-btn-proveedores { --btn: #d62839; }
 .menu-btn-clientes    { --btn: #0e8f8f; }
 .menu-btn-usuarios   { --btn: #e0218a; }
