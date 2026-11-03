@@ -65,6 +65,7 @@
 .bg-cotizaciones { background: #4b5563; }
 .bg-compras { background: #eab308; }
 .bg-facturacion { background: #0284c7; }
+.bg-anulaciones { background: #dc2626; }
 
 .dash-bg-capa::before {
   content: "";
@@ -88,6 +89,7 @@
 .theme-cotizaciones { --tinta-mod: #4b5563; --tinta-mod-clara: #9ca3af; }
 .theme-compras { --tinta-mod: #eab308; --tinta-mod-clara: #fde047; }
 .theme-facturacion { --tinta-mod: #0284c7; --tinta-mod-clara: #38bdf8; }
+.theme-anulaciones { --tinta-mod: #dc2626; --tinta-mod-clara: #fca5a5; }
 
 /* ---------- Manchas de tinta del fondo ---------- */
 .dash-mancha {
@@ -267,7 +269,8 @@
   display: flex;
   width: max-content;
   align-items: center;
-  animation: correrCinta 30s linear infinite;
+  will-change: transform;
+  animation: correrCinta 45s linear infinite;
 }
 
 .dash-ticker:hover .dash-ticker-pista {

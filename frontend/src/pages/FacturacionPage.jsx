@@ -5,22 +5,24 @@ import { getProductos } from '../services/productosService';
 import { getMediosPago } from '../services/mediosPagoService';
 import { getCotizaciones, getCotizacionDetalle } from '../services/cotizacionesService';
 import { crearFactura, getStockDisponible } from '../services/facturasService';
+import { useModal } from '../context/ModalContext';
 import '../components/estilos/TablasCrud.css';
 import '../components/estilos/MediosPago.css';
 
-// @Javi: Módulo de Facturación (Punto de Venta) con descuento PEPS
+// @Javi: Modulo de Facturacion (Punto de Venta)
 const FacturacionPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { mostrarExito, mostrarError } = useModal();
   const idCotizacionInit = location.state?.idCotizacion || null;
 
-  // Catálogos
+  // Catalogos
   const [clientes, setClientes] = useState([]);
   const [productos, setProductos] = useState([]);
   const [mediosPago, setMediosPago] = useState([]);
   const [cotizaciones, setCotizaciones] = useState([]);
 
-  // Cotización previa (opcional)
+  // Cotizacion previa
   const [idCotizacion, setIdCotizacion] = useState(null);
   const [cotizacionSeleccionada, setCotizacionSeleccionada] = useState('');
   const [cotizacionInfo, setCotizacionInfo] = useState(null);
@@ -38,12 +40,11 @@ const FacturacionPage = () => {
   const [montoPago, setMontoPago] = useState('');
   const [pagosSeleccionados, setPagosSeleccionados] = useState([]);
 
-  // Estado global
+  // Estados de carga y validaciones
   const [cargando, setCargando] = useState(true);
   const [procesando, setProcesando] = useState(false);
-  const [mensaje, setMensaje] = useState('');
-  const [error, setError] = useState('');
-  const [facturaCreada, setFacturaCreada] = useState(null);
+  const [errorInline, setErrorInline] = useState('');
+  const [errorPago, setErrorPago] = useState('');
 
   useEffect(() => {
     cargarDatos();
@@ -78,8 +79,8 @@ const FacturacionPage = () => {
         stockDisponible: stockMap[p.IdProducto] || 0
       })));
     } catch (err) {
-      console.error('Error al cargar catálogos de facturación:', err);
-      setError('No se pudieron cargar los datos. Verifica que el backend esté corriendo.');
+      console.error('Error al cargar catalogos de facturacion:', err);
+      setErrorInline('No se pudieron cargar los catalogos. Revisa la conexion.');
     } finally {
       setCargando(false);
     }
@@ -89,7 +90,7 @@ const FacturacionPage = () => {
     try {
       const coti = await getCotizacionDetalle(idCot);
       if (!coti || !coti.encabezado) {
-        setError('No se encontró la cotización seleccionada.');
+        setErrorInline('No se encontro la cotizacion seleccionada.');
         return;
       }
       setIdCotizacion(coti.encabezado.IdCotizacion);
@@ -103,17 +104,16 @@ const FacturacionPage = () => {
         subtotal: Number(d.Subtotal)
       })));
       setPagosSeleccionados([]);
-      setMensaje('');
-      setError('');
+      setErrorInline('');
     } catch (err) {
-      console.error('Error al cargar la cotización:', err);
-      setError('Error al cargar la cotización.');
+      console.error('Error al cargar la cotizacion:', err);
+      setErrorInline('Error al cargar la cotizacion.');
     }
   };
 
   const handleCargarCotizacion = () => {
     if (!cotizacionSeleccionada) {
-      setError('Seleccione una cotización para cargar.');
+      setErrorInline('Seleccione una cotizacion para cargar.');
       return;
     }
     cargarCotizacion(cotizacionSeleccionada);
@@ -125,27 +125,25 @@ const FacturacionPage = () => {
     setCotizacionInfo(null);
     setCarrito([]);
     setPagosSeleccionados([]);
-    setMensaje('');
-    setError('');
+    setErrorInline('');
   };
 
   const agregarDetalle = () => {
-    setMensaje('');
-    setError('');
+    setErrorInline('');
     if (!productoSeleccionado) {
-      setError('Seleccione un producto.');
+      setErrorInline('Seleccione un producto para agregar.');
       return;
     }
     const cant = parseInt(cantidad, 10);
     if (!cant || cant <= 0) {
-      setError('La cantidad debe ser mayor a cero.');
+      setErrorInline('La cantidad debe ser mayor a cero.');
       return;
     }
     const producto = productos.find(p => String(p.IdProducto) === String(productoSeleccionado));
     if (!producto) return;
 
     if (producto.stockDisponible < cant) {
-      setError(`Stock insuficiente para "${producto.NombreProducto}". Disponible: ${producto.stockDisponible}.`);
+      setErrorInline(`Stock insuficiente para "${producto.NombreProducto}". Disponible: ${producto.stockDisponible}.`);
       return;
     }
 
@@ -153,7 +151,7 @@ const FacturacionPage = () => {
     if (existente) {
       const nuevaCant = existente.cantidad + cant;
       if (producto.stockDisponible < nuevaCant) {
-        setError(`Stock insuficiente para "${producto.NombreProducto}". Disponible: ${producto.stockDisponible}.`);
+        setErrorInline(`Stock insuficiente para "${producto.NombreProducto}". Disponible: ${producto.stockDisponible}.`);
         return;
       }
       setCarrito(carrito.map(d => d.idProducto === producto.IdProducto
@@ -180,15 +178,14 @@ const FacturacionPage = () => {
   };
 
   const agregarPago = () => {
-    setMensaje('');
-    setError('');
+    setErrorPago('');
     if (!medioSeleccionado) {
-      setError('Seleccione un medio de pago.');
+      setErrorPago('Seleccione un medio de pago.');
       return;
     }
     const monto = parseFloat(montoPago);
     if (!monto || monto <= 0) {
-      setError('El monto debe ser mayor a cero.');
+      setErrorPago('El monto debe ser mayor a cero.');
       return;
     }
     const medio = mediosPago.find(m => String(m.IdMedioPago) === String(medioSeleccionado));
@@ -219,25 +216,30 @@ const FacturacionPage = () => {
     setCantidad(1);
     setMedioSeleccionado('');
     setMontoPago('');
+    setErrorInline('');
+    setErrorPago('');
   };
 
+  const totalFactura = carrito.reduce((a, b) => a + b.subtotal, 0);
+  const totalPagado = pagosSeleccionados.reduce((a, b) => a + b.monto, 0);
+  const faltante = totalPagado >= totalFactura ? 0 : totalFactura - totalPagado;
+
   const procesarVenta = async () => {
-    setMensaje('');
-    setError('');
+    setErrorInline('');
     if (!clienteSeleccionado) {
-      setError('Seleccione un cliente.');
+      setErrorInline('Seleccione un cliente.');
       return;
     }
     if (carrito.length === 0) {
-      setError('Agregue al menos un producto.');
+      setErrorInline('Agregue al menos un producto al carrito.');
       return;
     }
     if (pagosSeleccionados.length === 0) {
-      setError('Agregue al menos un medio de pago.');
+      setErrorPago('Agregue al menos un medio de pago.');
       return;
     }
     if (totalPagado < totalFactura) {
-      setError('El monto pagado no cubre el total de la factura.');
+      setErrorPago('El monto pagado no cubre el total de la factura.');
       return;
     }
 
@@ -259,81 +261,66 @@ const FacturacionPage = () => {
 
       const res = await crearFactura(data);
       if (res.ok) {
-        setFacturaCreada(res.idFactura);
-        setMensaje(`Factura #${res.idFactura} generada correctamente.`);
+        const idGenerado = res.idFactura;
+        const totalVenta = totalFactura.toFixed(2);
         resetForm();
+        // Pop-up con ilustracion de exito (cuadro 2)
+        mostrarExito({
+          titulo: `Factura #${idGenerado} Generada`,
+          mensaje: `La venta se registro exitosamente por un total de Q${totalVenta}. El stock de inventario fue actualizado.`,
+          botonTexto: 'Aceptar',
+          botonSecundarioTexto: 'Ver en Caja',
+          onAccionSecundaria: () => navigate('/dashboard/caja')
+        });
       } else {
-        setError(res.mensaje || 'No se pudo procesar la factura.');
+        mostrarError({
+          titulo: 'Error al Facturar',
+          mensaje: res.mensaje || 'No se pudo procesar la factura.'
+        });
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.mensaje || err.response?.data?.error || 'Error al procesar la factura.');
+      mostrarError({
+        titulo: 'Fallo de Transaccion',
+        mensaje: err.response?.data?.mensaje || err.response?.data?.error || 'Error al procesar la factura.'
+      });
     } finally {
       setProcesando(false);
     }
   };
 
-  const totalFactura = carrito.reduce((a, b) => a + b.subtotal, 0);
-  const totalPagado = pagosSeleccionados.reduce((a, b) => a + b.monto, 0);
-  const faltante = totalPagado >= totalFactura ? 0 : totalFactura - totalPagado;
-
   const cotizacionesDisponibles = cotizaciones.filter(c => c.Estado === 'CONFIRMADA');
 
   return (
     <div className="page-container">
-      <h2 className="no-print">Facturación (Punto de Venta)</h2>
+      <h2 className="no-print">Facturacion (Punto de Venta)</h2>
       <p className="no-print" style={{ color: 'var(--tinta-suave)', marginBottom: '1.5rem' }}>
-        Emisión de facturas con descuento de inventario por método PEPS y múltiples medios de pago.
+        Emision de facturas y registro de pagos con multiples medios de pago.
       </p>
 
-      {(mensaje || error) && (
-        <div className="no-print" style={{
-          padding: '0.75rem 1rem',
-          marginBottom: '1rem',
-          border: `1px solid ${error ? '#c0392b' : '#0e9f5e'}`,
-          color: error ? '#c0392b' : '#0e9f5e',
-          background: error ? '#fdecea' : '#eafaf1',
-          borderRadius: '4px'
-        }}>
-          {error || mensaje}
-        </div>
-      )}
-
-      {facturaCreada && (
-        <div className="no-print" style={{
-          padding: '1rem', marginBottom: '1rem', border: '2px solid #0e9f5e',
-          background: '#eafaf1', borderRadius: '4px', textAlign: 'center'
-        }}>
-          <p style={{ fontWeight: 'bold', margin: '0 0 0.5rem' }}>Factura #{facturaCreada} generada correctamente.</p>
-          <button className="btn-imprimir" onClick={() => navigate('/dashboard/caja')}>
-            Ver / Imprimir en Caja
-          </button>
-        </div>
-      )}
-
       {cargando ? (
-        <p style={{ padding: '2rem', textAlign: 'center' }}>Cargando datos del módulo de facturación...</p>
+        <p style={{ padding: '2rem', textAlign: 'center' }}>Cargando datos de facturacion...</p>
       ) : (
         <div className="form-container no-print">
-          {/* 1. Búsqueda / selección de cotización (opcional) */}
+          {/* 1. Cotizacion previa */}
           <div style={{ marginBottom: '1.5rem', padding: '1rem', border: '2px dashed var(--tinta-mod)', background: 'var(--papel-2)' }}>
-            <h4 style={{ marginTop: 0 }}>Cotización previa (opcional)</h4>
+            <h4 style={{ marginTop: 0 }}>Cotizacion previa (opcional)</h4>
             {cotizacionInfo ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <span>
-                  Cotización <strong>#{cotizacionInfo.IdCotizacion}</strong> — Cliente: <strong>{cotizacionInfo.NombreCliente}</strong>
+                  Cotizacion <strong>#{cotizacionInfo.IdCotizacion}</strong> — Cliente: <strong>{cotizacionInfo.NombreCliente}</strong>
                 </span>
-                <button onClick={quitarCotizacion} style={{ background: '#555', padding: '0.4rem 1rem' }}>Quitar cotización</button>
+                <button onClick={quitarCotizacion} style={{ background: '#555', padding: '0.4rem 1rem' }}>Quitar cotizacion</button>
               </div>
             ) : (
               <div className="buscador-factura">
-                <label style={{ fontWeight: 'bold' }}>Seleccione cotización:</label>
+                <label style={{ fontWeight: 'bold' }}>Seleccione cotizacion:</label>
                 <select
                   style={{ padding: '0.55rem 0.7rem', minWidth: '280px' }}
                   value={cotizacionSeleccionada}
                   onChange={(e) => setCotizacionSeleccionada(e.target.value)}
                 >
-                  <option value="">Sin cotización (venta directa)</option>
+                  <option value="">Sin cotizacion (venta directa)</option>
                   {cotizacionesDisponibles.map(c => (
                     <option key={c.IdCotizacion} value={c.IdCotizacion}>
                       #{c.IdCotizacion} - {c.NombreCliente} (Q{Number(c.MontoTotal || 0).toFixed(2)})
@@ -347,7 +334,7 @@ const FacturacionPage = () => {
             )}
           </div>
 
-          {/* 2. Selección de cliente */}
+          {/* 2. Cliente */}
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ fontWeight: 'bold' }}>Cliente:</label>
             <select
@@ -365,7 +352,7 @@ const FacturacionPage = () => {
 
           <hr />
 
-          {/* 3. Carrito de facturación */}
+          {/* 3. Carrito */}
           <h4>Productos a facturar</h4>
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
             <select
@@ -387,6 +374,12 @@ const FacturacionPage = () => {
             />
             <button onClick={agregarDetalle}>+ Agregar</button>
           </div>
+
+          {errorInline && (
+            <p style={{ color: '#c0392b', fontWeight: 'bold', margin: '0.5rem 0 0 0', fontSize: '0.9rem' }}>
+              {errorInline}
+            </p>
+          )}
 
           {carrito.length > 0 && (
             <table style={{ width: '100%', marginTop: '1rem', borderCollapse: 'collapse' }}>
@@ -424,7 +417,7 @@ const FacturacionPage = () => {
 
           <hr style={{ margin: '1.5rem 0' }} />
 
-          {/* 4. Cierre de pago */}
+          {/* 4. Medios de pago */}
           <h4>Medios de pago</h4>
           <div className="pagos-form">
             <div>
@@ -440,8 +433,14 @@ const FacturacionPage = () => {
               <label>Monto (Q):</label>
               <input type="number" value={montoPago} onChange={(e) => setMontoPago(e.target.value)} style={{ width: '120px' }} />
             </div>
-            <button onClick={agregarPago}>+ Añadir Pago</button>
+            <button onClick={agregarPago}>+ Anadir Pago</button>
           </div>
+
+          {errorPago && (
+            <p style={{ color: '#c0392b', fontWeight: 'bold', margin: '0.4rem 0 0 0', fontSize: '0.9rem' }}>
+              {errorPago}
+            </p>
+          )}
 
           {pagosSeleccionados.length > 0 && (
             <div className="pagos-lista">
@@ -463,11 +462,11 @@ const FacturacionPage = () => {
 
           <div style={{ marginTop: '1.5rem' }}>
             <button
-              className="btn-submit"
+              className="btn-submit btn-facturar-prominente"
               onClick={procesarVenta}
               disabled={procesando || carrito.length === 0 || totalPagado < totalFactura}
             >
-              {procesando ? 'Procesando...' : 'Procesar Venta (PEPS)'}
+              {procesando ? 'PROCESANDO FACTURA...' : 'EMITIR FACTURA (REGISTRAR VENTA)'}
             </button>
           </div>
         </div>

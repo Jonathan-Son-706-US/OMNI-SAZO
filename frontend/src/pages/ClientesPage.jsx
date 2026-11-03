@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
-// Jalamos las funciones del service que se comunican con la API (agregamos updateCliente)
 import { getClientes, createCliente, updateCliente, deleteCliente } from '../services/clientesService';
-// Importamos la estructura visual del form que dejamos en components
 import ClienteForm from '../components/ClienteForm';
+import { useModal } from '../context/ModalContext';
 import '../components/estilos/TablasCrud.css';
 
-// @Abner haciendo lo de clientes, mismo patron que usuarios
-// Aca si se hacen peticiones y soportamos edicion
+// @Abner: modulo de clientes
 const ClientesPage = () => {
-    // Estados para guardar lo que viene del backend
+    const { mostrarExito, mostrarError, mostrarConfirmacion } = useModal();
     const [clientes, setClientes] = useState([]);
     const [mostrarForm, setMostrarForm] = useState(false);
     const [clienteAEditar, setClienteAEditar] = useState(null);
 
-    // Traer los datos al puerto 5000
     useEffect(() => {
         cargarDatos();
     }, []);
@@ -27,52 +24,74 @@ const ClientesPage = () => {
         }
     };
 
-    // Esta funcion maneja tanto CREAR como ACTUALIZAR
+    // maneja tanto crear como actualizar
     const handleGuardarCliente = async (datosCliente, idCliente) => {
         try {
             if (idCliente) {
                 await updateCliente(idCliente, datosCliente);
-                alert("¡Cliente actualizado!");
+                mostrarExito({
+                    titulo: 'Cliente Actualizado',
+                    mensaje: 'Los datos del cliente se actualizaron correctamente.',
+                    botonTexto: 'Aceptar'
+                });
             } else {
                 await createCliente(datosCliente);
-                alert("¡Cliente guardado!");
+                mostrarExito({
+                    titulo: 'Cliente Registrado',
+                    mensaje: 'El cliente fue guardado exitosamente en el sistema.',
+                    botonTexto: 'Aceptar'
+                });
             }
             setClienteAEditar(null);
             setMostrarForm(false);
-            cargarDatos(); // Refrescamos la tabla
+            cargarDatos();
         } catch (error) {
             console.error("Error al guardar/actualizar", error);
-            alert("Hubo un problemilla al guardar la información");
+            mostrarError({
+                titulo: 'Error al Guardar',
+                mensaje: 'Hubo un problema al guardar la informacion del cliente.'
+            });
         }
     };
 
-    // Función para activar el modo edición
     const handleEditarCliente = (cliente) => {
         setClienteAEditar(cliente);
         setMostrarForm(true);
     };
 
-    // Función para eliminar cliente
-    const handleEliminarCliente = async (idCliente) => {
-        if (window.confirm('¿Seguro que deseas eliminar este cliente?')) {
-            try {
-                await deleteCliente(idCliente);
-                cargarDatos();
-            } catch (error) {
-                console.error("Error al eliminar cliente:", error);
-                alert("No se pudo eliminar el cliente");
+    const handleEliminarCliente = (cliente) => {
+        mostrarConfirmacion({
+            titulo: 'Eliminar Cliente',
+            mensaje: `¿Seguro que deseas eliminar al cliente "${cliente.Nombre}"?`,
+            botonTexto: 'Si, Eliminar',
+            botonSecundarioTexto: 'Cancelar',
+            onConfirmar: async () => {
+                try {
+                    await deleteCliente(cliente.IdCliente);
+                    cargarDatos();
+                    mostrarExito({
+                        titulo: 'Cliente Eliminado',
+                        mensaje: 'El cliente fue eliminado correctamente.',
+                        botonTexto: 'Entendido'
+                    });
+                } catch (error) {
+                    console.error("Error al eliminar cliente:", error);
+                    mostrarError({
+                        titulo: 'Error al Eliminar',
+                        mensaje: 'No se pudo eliminar el cliente.'
+                    });
+                }
             }
-        }
+        });
     };
 
     return (
         <div className="dashboard-content">
-            <h2>Administración de Clientes</h2>
+            <h2>Administracion de Clientes</h2>
             <button onClick={() => { setClienteAEditar(null); setMostrarForm(!mostrarForm); }}>
                 {mostrarForm && !clienteAEditar ? 'Ocultar Formulario' : 'Agregar Nuevo Cliente'}
             </button>
 
-            {/* Renderizamos el form, le pasamos la funcion y el objeto a editar si aplica */}
             {mostrarForm && (
                 <ClienteForm 
                     onSubmit={handleGuardarCliente} 
@@ -118,7 +137,7 @@ const ClientesPage = () => {
                                         Editar
                                     </button>
                                     <button 
-                                        onClick={() => handleEliminarCliente(c.IdCliente)}
+                                        onClick={() => handleEliminarCliente(c)}
                                         style={{ 
                                             backgroundColor: '#dc3545', 
                                             color: '#fff', 

@@ -80,7 +80,7 @@
 .landing-tags li:nth-child(odd)  { transform: rotate(-1.4deg); }
 .landing-tags li:nth-child(even) { transform: rotate(1.6deg); }
 
-/* El logo, pegado como una foto instantánea */
+/* El logo / gif, pegado como una foto instantánea Polaroid */
 .landing-foto {
   position: relative;
   justify-self: center;

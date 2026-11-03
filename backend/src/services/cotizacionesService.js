@@ -13,14 +13,14 @@ exports.crearCotizacionBD = async (idCliente, detalle) => {
   return result.recordset ? result.recordset[0] : null;
 };
 
-// @abner: obtener listado de cotizaciones
+// @abner: listar cotizaciones
 exports.obtenerCotizacionesBD = async () => {
   const pool = await sql.connect();
   const result = await pool.request().execute('sp_ObtenerCotizaciones');
   return result.recordset || [];
 };
 
-// @abner: obtener detalle de una cotizacion especifica
+// @abner: detalle de cotizacion
 exports.obtenerCotizacionDetalleBD = async (idCotizacion) => {
   const pool = await sql.connect();
   const result = await pool.request()
@@ -33,7 +33,7 @@ exports.obtenerCotizacionDetalleBD = async (idCotizacion) => {
   };
 };
 
-// @abner: confirmar una cotizacion
+// @abner: confirmar cotizacion
 exports.confirmarCotizacionBD = async (idCotizacion) => {
   const pool = await sql.connect();
   const result = await pool.request()

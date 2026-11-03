@@ -48,16 +48,17 @@ body {
 }
 
 /* El body acompaña el color del módulo activo */
-body[data-tema="inicio"]     { background-color: #f472b6; }
-body[data-tema="usuarios"]   { background-color: #e0218a; }
-body[data-tema="inventario"] { background-color: #17b26a; }
-body[data-tema="caja"]       { background-color: #f4740b; }
-body[data-tema="gerencia"]   { background-color: #7b3fe4; }
-body[data-tema="proveedores"] { background-color: #e63946; }
-body[data-tema="clientes"]    { background-color: #0e8f8f; }
-body[data-tema="cotizaciones"] { background-color: #4b5563; }
-body[data-tema="compras"]     { background-color: #eab308; }
-body[data-tema="facturacion"] { background-color: #0284c7; }
+body[data-tema="inicio"]     { background-color: #f472b6; --tinta-mod: #f472b6; --tinta-mod-clara: #fbcfe8; }
+body[data-tema="usuarios"]   { background-color: #e0218a; --tinta-mod: #e0218a; --tinta-mod-clara: #ff6fb5; }
+body[data-tema="inventario"] { background-color: #17b26a; --tinta-mod: #0e9f5e; --tinta-mod-clara: #4ede9b; }
+body[data-tema="caja"]       { background-color: #f4740b; --tinta-mod: #e06400; --tinta-mod-clara: #ffa94d; }
+body[data-tema="gerencia"]   { background-color: #7b3fe4; --tinta-mod: #7b3fe4; --tinta-mod-clara: #b18cff; }
+body[data-tema="proveedores"] { background-color: #e63946; --tinta-mod: #d62839; --tinta-mod-clara: #ff7a85; }
+body[data-tema="clientes"]    { background-color: #0e8f8f; --tinta-mod: #0c7a7a; --tinta-mod-clara: #5fd9d9; }
+body[data-tema="cotizaciones"] { background-color: #4b5563; --tinta-mod: #4b5563; --tinta-mod-clara: #9ca3af; }
+body[data-tema="compras"]     { background-color: #eab308; --tinta-mod: #eab308; --tinta-mod-clara: #fde047; }
+body[data-tema="facturacion"] { background-color: #0284c7; --tinta-mod: #0284c7; --tinta-mod-clara: #38bdf8; }
+body[data-tema="anulaciones"] { background-color: #dc2626; --tinta-mod: #dc2626; --tinta-mod-clara: #fca5a5; }
 
 h1, h2, h3, h4 {
   font-family: var(--fuente-titulo);

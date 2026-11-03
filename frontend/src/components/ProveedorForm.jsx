@@ -1,6 +1,8 @@
+import { useModal } from '../context/ModalContext';
 import React, { useState, useEffect } from 'react';
 
 const ProveedorForm = ({ onSubmit, proveedorAEditar = null, onCancelar }) => {
+    const { mostrarError } = useModal();
     const [formData, setFormData] = useState({
         NombreProveedor: '',
         NIT: '',
@@ -36,7 +38,7 @@ const ProveedorForm = ({ onSubmit, proveedorAEditar = null, onCancelar }) => {
         };
 
         if (!datosLimpios.NombreProveedor || !datosLimpios.NIT || !datosLimpios.Telefono) {
-            alert('Por favor completa todos los campos requeridos.');
+            mostrarError({ titulo: 'Campos Requeridos', mensaje: 'Por favor completa el Nombre, NIT y Telefono del proveedor.' });
             return;
         }
 

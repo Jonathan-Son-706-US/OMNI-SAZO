@@ -1,6 +1,6 @@
 const { sql, dbConfig } = require('../config/db.js');
 
-// @Javi: crear una factura transaccional con descuento PEPS de inventario
+// @Javi: crear factura transaccional
 async function crearFacturaPEPSBD({ idCliente, idCotizacion, idUsuario, detalle, mediosPago }) {
   const pool = await sql.connect(dbConfig);
   const result = await pool.request()
@@ -14,7 +14,7 @@ async function crearFacturaPEPSBD({ idCliente, idCotizacion, idUsuario, detalle,
   return (result.recordset && result.recordset[0]) ? result.recordset[0] : null;
 }
 
-// @Javi: stock disponible por producto (para habilitar/deshabilitar en el carrito)
+// @Javi: stock disponible por producto
 async function obtenerStockDisponibleBD() {
   const pool = await sql.connect(dbConfig);
   const result = await pool.request().execute('sp_ObtenerStockDisponible');
