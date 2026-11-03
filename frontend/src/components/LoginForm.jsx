@@ -1,87 +1,167 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { SquidMascot } from './SquidMascot';
 import './estilos/LoginForm.css';
 
-// Solo diseño: las props y el handleSubmit los sigue manejando LoginPage,
-// acá no se hace ninguna peticion ni nada
-export const LoginForm = ({ usuario, password, setUsuario, setPassword, handleSubmit, errorMsg }) => {
+export const LoginForm = ({
+  usuario,
+  password,
+  setUsuario,
+  setPassword,
+  handleSubmit,
+  errorMsg,
+  cargando,
+  paintSplash
+}) => {
+  // Estado para controlar qué mira el calamar interactivo: 'none' | 'usuario' | 'password'
+  const [focusField, setFocusField] = useState('none');
+
+  // Partículas ambientales de tinta flotando sobre la ciudad
+  const particles = [
+    { id: 1, left: '10%', size: 8, dur: 14, delay: -2, color: '#ec4899' },
+    { id: 2, left: '25%', size: 12, dur: 18, delay: -8, color: '#10b981' },
+    { id: 3, left: '42%', size: 6, dur: 16, delay: -5, color: '#facc15' },
+    { id: 4, left: '60%', size: 10, dur: 22, delay: -12, color: '#06b6d4' },
+    { id: 5, left: '78%', size: 14, dur: 19, delay: -7, color: '#ec4899' },
+    { id: 6, left: '90%', size: 8, dur: 15, delay: -15, color: '#10b981' },
+  ];
+
+  // Texto largo repetido para garantizar un bucle continuo sin huecos vacios en cualquier resolucion
+  const fragmentoCinta = 'PINTURAS Y FERRETERIA · OMNI-SAZO · CONTROL DE BODEGAS · VENTAS Y COTIZACIONES · OMNI-SAZO · ';
+  const textoCintaCompleto = fragmentoCinta.repeat(4);
+
   return (
-    <div className="login-container">
-      {/* Cinta superior con texto corriendo, como el encabezado de un diario  como la pagina de splatoon q me guie de Nintendo */}
+    <div className="splatoon-login-viewport">
+      {/* 1. Fondo de la Ciudad de Inkopolis con respiración / movimiento */}
+      <div className="login-city-backdrop" />
+      <div className="login-city-vignette" />
+      <div className="login-halftone-overlay" />
+
+      {/* Partículas de tinta flotantes */}
+      <div className="login-particles-container" aria-hidden="true">
+        {particles.map((p) => (
+          <div
+            key={p.id}
+            className="ink-particle"
+            style={{
+              left: p.left,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              backgroundColor: p.color,
+              animationDuration: `${p.dur}s`,
+              animationDelay: `${p.delay}s`,
+              boxShadow: `0 0 8px ${p.color}`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Cinta superior de noticias estilo periodico callejero */}
       <div className="login-cinta" aria-hidden="true">
         <div className="login-cinta-pista">
           {[0, 1].map((i) => (
             <span className="login-cinta-texto" key={i}>
-              PINTURAS Y FERRETERÍA · OMNI-SAZO · PINTURAS Y FERRETERÍA · OMNI-SAZO ·
-              PINTURAS Y FERRETERÍA · OMNI-SAZO ·
+              {textoCintaCompleto}
             </span>
           ))}
         </div>
       </div>
 
-      <div className="login-panel">
-        {/* Lado izquierdo: el logo */}
-        <section className="login-marca">
-          <span className="login-sello">Acceso al sistema</span>
+      {/* Panel principal: Izquierda Marca Graffiti, Derecha Formulario */}
+      <div className="splatoon-login-panel">
+        
+        {/* Lado izquierdo: Identidad Splatoon 2 */}
+        <section className="login-brand-section">
+          <div className="brand-badge-pill">
+            <span>Acceso de Personal</span>
+          </div>
 
-          <h1 className="login-titulo">
-            OMNI
-            <span className="login-titulo-2">SAZO</span>
-          </h1>
+          <div className="splatoon-logo-group">
+            <h1 className="logo-main-omni">
+              OMNI
+              <span className="logo-main-sazo">SAZO</span>
+            </h1>
+            <div className="logo-ink-splat" aria-hidden="true" />
+          </div>
 
-          <p className="login-lema">
-            Inventario, caja y usuarios en un solo lugar.
+          <div className="brand-tape-subtitle">
+            <span>DISTRIBUIDORA DE PINTURAS Y FERRETERIA</span>
+          </div>
+
+          <p className="brand-description-text">
+            Gestion comercial, inventario de bodega y punto de venta centralizado.
           </p>
-
-          <figure className="login-foto">
-            <img src="/SAZOIDE.jpg" alt="OMNI-SAZO" />
-          </figure>
         </section>
 
-        {/* Lado derecho: el formulario */}
-        <section className="login-card">
-          <h2 className="login-card-titulo">Entrá a tu cuenta</h2>
+        {/* Lado derecho: Tarjeta estilo papel adhesivo con cinta y doodle */}
+        <section className="login-card-paper">
+          {/* Cinta adhesiva tipo Scotch en la parte superior (Referencia imagen 2) */}
+          <div className="tape-strip" aria-hidden="true" />
 
-          {errorMsg && <div className="error-banner">{errorMsg}</div>}
+          {/* Calamar interactivo que reacciona a los campos */}
+          <SquidMascot focusField={focusField} />
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label className="form-label" htmlFor="login-usuario">Usuario</label>
+          <h2 className="login-card-title">
+            ENTRA A TU CUENTA
+          </h2>
+
+          {errorMsg && (
+            <div className="login-error-banner">
+              {errorMsg}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} autoComplete="off">
+            <div className="form-group-splatoon">
+              <label className="form-label-splatoon" htmlFor="input-usuario">
+                USUARIO
+              </label>
               <input
-                id="login-usuario"
+                id="input-usuario"
                 type="text"
                 value={usuario}
                 onChange={(e) => setUsuario(e.target.value)}
-                className="form-input"
+                onFocus={() => setFocusField('usuario')}
+                onBlur={() => setFocusField('none')}
+                className="form-input-splatoon"
                 placeholder="Tu nombre de usuario"
                 autoComplete="username"
                 required
+                disabled={cargando || paintSplash}
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label" htmlFor="login-password">Contraseña</label>
+            <div className="form-group-splatoon">
+              <label className="form-label-splatoon" htmlFor="input-password">
+                CONTRASENA
+              </label>
               <input
-                id="login-password"
+                id="input-password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="form-input"
-                placeholder="Tu contraseña"
+                onFocus={() => setFocusField('password')}
+                onBlur={() => setFocusField('none')}
+                className="form-input-splatoon"
+                placeholder="Tu contrasena"
                 autoComplete="current-password"
                 required
+                disabled={cargando || paintSplash}
               />
             </div>
 
-            <button type="submit" className="btn-submit">
-              Ingresar
+            {/* Boton llamativo estilo Splatoon */}
+            <button
+              type="submit"
+              className="login-btn-splatoon"
+              disabled={cargando || paintSplash}
+            >
+              {cargando ? 'CONECTANDO...' : 'INICIAR SESION'}
             </button>
           </form>
-
-          <p className="login-nota">
-            ¿No tenés acceso? Pedile una cuenta al encargado.
-          </p>
         </section>
       </div>
     </div>
   );
 };
+
+export default LoginForm;

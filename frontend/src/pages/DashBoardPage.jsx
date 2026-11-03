@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useOutlet, useLocation } from 'react-router-dom';
 import { MenuLateral } from '../components/MenuLateral';
+import { SquidBackground } from '../components/SquidBackground';
 import '../components/estilos/DashBoardPage.css';
 
 const MODULOS = [
@@ -10,29 +11,31 @@ const MODULOS = [
     { key: 'inventario', match: ['productos', 'facturacion-inventario'], titulo: 'Productos' },
     { key: 'compras',    match: ['compras'],                  titulo: 'Compras y Bodega' },
     { key: 'cotizaciones', match: ['cotizaciones'],           titulo: 'Cotizaciones' },
-    { key: 'facturacion', match: ['facturacion'],             titulo: 'Facturación' },
-    { key: 'caja',       match: ['caja'],                     titulo: 'Caja e Impresión' },
+    { key: 'facturacion', match: ['facturacion'],             titulo: 'Facturacion' },
+    { key: 'caja',       match: ['caja'],                     titulo: 'Caja e Impresion' },
+    { key: 'anulaciones', match: ['anulaciones'],             titulo: 'Anulacion de Facturas' },
     { key: 'gerencia',   match: ['gerencia'],                 titulo: 'Gerencia' },
 ];
 
-// Texto que corre en la cinta de abajo, cambia segun el modulo en el que estemos, la vd me quedo tremendo XD
+// Texto que corre en la cinta de abajo, cambia segun el modulo en el que estemos
 const NOTICIAS = {
-    inicio:      ['Sistema en línea', 'Elegí un módulo en el menú', 'Ferretería OMNI-SAZO'],
-    usuarios:    ['Altas y bajas de personal', 'Revisá los roles antes de guardar', 'Cada quien con su llave'],
-    clientes:    ['CF también es un cliente', 'Revisá bien el NIT antes de guardar', 'Empresa o persona, aquí quedan'],
-    proveedores: ['Quién nos surte la bodega', 'Guardá bien el teléfono de contacto', 'Sin proveedor no hay inventario'],
-    inventario:  ['Catálogo de productos y pinturas', 'Precios vigentes y presentaciones', 'Altas y ediciones del catálogo'],
-    compras:     ['Recepción en bodega y lotes', 'Abastecimiento de mercadería', 'Ingreso ordenado por estante y nivel'],
-    cotizaciones:['Cotizaciones formales para clientes', 'Precios vigentes y cálculo de total', 'Pasa directo a facturación'],
-    facturacion: ['Ventas al por mayor y menor', 'Descuento de inventario método PEPS', 'Generación de factura con lotes'],
-    caja:        ['Cobrá y entregá factura', 'Consumidor final también cuenta', 'Cuadre de caja al cerrar'],
-    gerencia:    ['Números de la semana', 'Qué se vendió y qué no', 'Decisiones con datos'],
+    inicio:      ['Sistema en linea', 'Elegi un modulo en el menu', 'Ferreteria OMNI-SAZO'],
+    usuarios:    ['Altas y bajas de personal', 'Revisa los roles antes de guardar', 'Cada quien con su llave'],
+    clientes:    ['CF tambien es un cliente', 'Revisa bien el NIT antes de guardar', 'Empresa o persona, aqui quedan'],
+    proveedores: ['Quien nos surte la bodega', 'Guarda bien el telefono de contacto', 'Sin proveedor no hay inventario'],
+    inventario:  ['Catalogo de productos y pinturas', 'Precios vigentes y presentaciones', 'Altas y ediciones del catalogo'],
+    compras:     ['Recepcion en bodega y lotes', 'Abastecimiento de mercaderia', 'Ingreso ordenado por estante y nivel'],
+    cotizaciones:['Cotizaciones formales para clientes', 'Precios vigentes y calculo de total', 'Pasa directo a facturacion'],
+    facturacion: ['Ventas al por mayor y menor', 'Facturacion rapida', 'Generacion de factura'],
+    caja:        ['Cobra y entrega factura', 'Consumidor final tambien cuenta', 'Cuadre de caja al cerrar'],
+    anulaciones: ['Anulacion de facturas', 'El monto pasa a cero', 'Los productos regresan a bodega'],
+    gerencia:    ['Numeros de la semana', 'Que se vendio y que no', 'Decisiones con datos'],
 };
 
 export const DashboardPage = () => {
     const location = useLocation();
     const ruta = location.pathname.toLowerCase();
-    const currentOutlet = useOutlet(); // Obtenemos el arbol de componentes real actual
+    const currentOutlet = useOutlet();
 
     const moduloActivo = MODULOS.find((m) => 
         Array.isArray(m.match) ? m.match.some((item) => ruta.includes(item)) : ruta.includes(m.match)
@@ -42,29 +45,24 @@ export const DashboardPage = () => {
     const noticias = NOTICIAS[temaActual] || NOTICIAS.inicio;
 
     const [animKey, setAnimKey] = React.useState(0);
-    // Guardamos la pantalla (outlet) en estado para retrasar su actualizacion
     const [displayOutlet, setDisplayOutlet] = React.useState(currentOutlet);
 
     React.useEffect(() => {
-        // En el primer render no animamos ni retrasamos
         if (animKey === 0) {
             setAnimKey(1);
             return;
         }
         
-        // 1. Inicia la animacion (la cortina sube)
         setAnimKey(prev => prev + 1);
 
-        // 2. Esperamos a que la cortina tape la pantalla y ENTONCES damos el cambiazo
         const timer = setTimeout(() => {
             setDisplayOutlet(currentOutlet);
-        }, 500); // a los 500ms
+        }, 500);
 
         return () => clearTimeout(timer);
         // eslint-disable-next-line
     }, [ruta]);
 
-    // El body toma el mismo color, asi la pagina completa cambia a ese color
     useEffect(() => {
         document.body.dataset.tema = temaActual;
         return () => {
@@ -75,7 +73,6 @@ export const DashboardPage = () => {
     return (
         <div className={`dash-container theme-${temaActual}`}>
             
-            {/* Cortina de transicion tipo Splatoon */}
             {animKey > 1 && (
                 <div key={animKey} className={`cortina-transicion bg-${temaActual}`}></div>
             )}
@@ -90,11 +87,13 @@ export const DashboardPage = () => {
                     />
                 ))}
             </div>
-            
 
-            {/* @Abner: Aca son cosas extra que fui poniendo */}
+            {/* Manchas decorativas */}
             <div className="dash-mancha dash-mancha-1" aria-hidden="true" />
             <div className="dash-mancha dash-mancha-2" aria-hidden="true" />
+
+            {/* Animación de calamares nadando en el fondo */}
+            <SquidBackground />
 
             <MenuLateral />
 
@@ -110,13 +109,13 @@ export const DashboardPage = () => {
                     </div>
                 </main>
 
-                {/* @Abner: Cinta de noticias que corre abajo*/}
+                {/* Cinta de noticias en bucle continuo */}
                 <div className="dash-ticker">
                     <div className="dash-ticker-etiqueta">Al día</div>
                     <div className="dash-ticker-pista">
                         {[0, 1].map((i) => (
                             <div className="dash-ticker-texto" key={i}>
-                                {noticias.map((n, j) => (
+                                {[...noticias, ...noticias, ...noticias, ...noticias].map((n, j) => (
                                     <span key={j}>{n}</span>
                                 ))}
                             </div>
@@ -129,8 +128,3 @@ export const DashboardPage = () => {
 };
 
 export default DashboardPage;
-
-
-
-
-

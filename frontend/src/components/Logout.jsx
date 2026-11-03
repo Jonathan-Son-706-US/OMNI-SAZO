@@ -1,20 +1,27 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { usePaintTransition } from '../context/PaintSplashContext';
 
 export const Logout = () => {
-  const navigate = useNavigate();
+  const { triggerTransition, isTransitioning } = usePaintTransition();
 
   const handleLogout = () => {
-    localStorage.removeItem('userSession');
-    navigate('/login');
+    if (isTransitioning) return;
+
+    triggerTransition('/login', () => {
+      localStorage.removeItem('userSession');
+      localStorage.removeItem('token');
+    });
   };
 
   return (
     <button 
       onClick={handleLogout}
       className="btn-logout"
+      disabled={isTransitioning}
     >
-      Cerrar Sesión
+      {isTransitioning ? 'Cerrando...' : 'Cerrar Sesion'}
     </button>
   );
 };
+
+export default Logout;

@@ -9,7 +9,7 @@ export const MenuLateral = () => {
   const rutaActual = location.pathname.replace(/\/+$/, '') || '/';
   const session = JSON.parse(localStorage.getItem('userSession'));
   const idRol = session?.idRol; 
-  const rolNombre = session?.rol || 'Usuario';  //@jonas: esto almacena el idrol del logueo
+  const rolNombre = session?.rol || 'Usuario';
 
   return (
     <aside className="dash-sidebar">
@@ -103,17 +103,27 @@ export const MenuLateral = () => {
               to="/dashboard/facturacion" 
               className={`dash-link menu-btn-facturacion ${location.pathname === '/dashboard/facturacion' ? 'active' : ''}`}
             >
-              Facturación (Ventas)
+              Facturacion (Ventas)
             </Link>
           )}
 
-          {/* Módulo de Caja e Impresión (Solo Cajero) */}
+          {/* Módulo de Caja e Impresion (Solo Cajero) */}
           {idRol === 2 && (
             <Link 
               to="/dashboard/caja" 
               className={`dash-link menu-btn-caja ${location.pathname.includes('caja') ? 'active' : ''}`}
             >
-              Caja e Impresión
+              Caja e Impresion
+            </Link>
+          )}
+
+          {/* Modulo de Anulacion de Facturas (Digitador, Cajero y Gerente) */}
+          {[1, 2, 3].includes(idRol) && (
+            <Link 
+              to="/dashboard/anulaciones" 
+              className={`dash-link menu-btn-anulaciones ${location.pathname.includes('anulaciones') ? 'active' : ''}`}
+            >
+              Anulacion de Facturas
             </Link>
           )}
 

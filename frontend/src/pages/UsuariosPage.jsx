@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import UsuarioForm from '../components/UsuarioForm';
 import { getUsuarios, createUsuario, updateUsuario, deleteUsuario } from '../services/usuariosService';
+import { useModal } from '../context/ModalContext';
 import '../components/estilos/TablasCrud.css';
 
+// Modulo de administracion de usuarios
 const UsuariosPage = () => {
+    const { mostrarExito, mostrarError, mostrarConfirmacion } = useModal();
     const [mostrarForm, setMostrarForm] = useState(false);
     const [usuarios, setUsuarios] = useState([]);
     const [roles, setRoles] = useState([]);
     const [usuarioAEditar, setUsuarioAEditar] = useState(null);
     const [cargando, setCargando] = useState(true);
 
-
-const cargarDatos = async () => {
+    const cargarDatos = async () => {
         try {
             setCargando(true);
             const token = localStorage.getItem('token');
@@ -23,10 +25,10 @@ const cargarDatos = async () => {
                     headers: { 'Authorization': `Bearer ${token}` } 
                 })
             ]);
-            setUsuarios(usuariosData);
-            setRoles(rolesRes.data);
+            setUsuarios(usuariosData || []);
+            setRoles(rolesRes.data || []);
         } catch (error) {
-            console.error('Error al cargar datos:', error);
+            console.error('Error al cargar datos de usuarios:', error);
         } finally {
             setCargando(false);
         }
@@ -36,22 +38,32 @@ const cargarDatos = async () => {
         cargarDatos();
     }, []);
 
-    // Manejar Guardar (POST) o Actualizar (PUT)
     const handleGuardarOActualizar = async (payload, idUsuario) => {
         try {
             if (idUsuario) {
                 await updateUsuario(idUsuario, payload);
-                alert('¡Usuario actualizado exitosamente!');
+                mostrarExito({
+                    titulo: 'Usuario Actualizado',
+                    mensaje: 'Los datos del usuario se actualizaron exitosamente.',
+                    botonTexto: 'Aceptar'
+                });
             } else {
                 await createUsuario(payload);
-                alert('¡Usuario registrado exitosamente!');
+                mostrarExito({
+                    titulo: 'Usuario Registrado',
+                    mensaje: 'El usuario fue registrado exitosamente en el sistema.',
+                    botonTexto: 'Aceptar'
+                });
             }
             setUsuarioAEditar(null);
             setMostrarForm(false);
             cargarDatos();
         } catch (error) {
             console.error('Error al procesar el usuario:', error);
-            alert('Error en la operación.');
+            mostrarError({
+                titulo: 'Error al Guardar',
+                mensaje: 'Ocurrio un problema al guardar la informacion del usuario.'
+            });
         }
     };
 
@@ -60,22 +72,35 @@ const cargarDatos = async () => {
         setMostrarForm(true);
     };
 
-    const handleEliminar = async (id) => {
-        if (window.confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-            try {
-                await deleteUsuario(id);
-                alert('Usuario eliminado correctamente.');
-                cargarDatos();
-            } catch (error) {
-                console.error('Error al eliminar usuario:', error);
-                alert('No se pudo eliminar el usuario.');
+    const handleEliminar = (usr) => {
+        mostrarConfirmacion({
+            titulo: 'Eliminar Usuario',
+            mensaje: `¿Estas seguro de eliminar al usuario "${usr.NombreUsuario}"?`,
+            botonTexto: 'Si, Eliminar',
+            botonSecundarioTexto: 'Cancelar',
+            onConfirmar: async () => {
+                try {
+                    await deleteUsuario(usr.IdUsuario);
+                    cargarDatos();
+                    mostrarExito({
+                        titulo: 'Usuario Eliminado',
+                        mensaje: 'El usuario fue eliminado correctamente.',
+                        botonTexto: 'Entendido'
+                    });
+                } catch (error) {
+                    console.error('Error al eliminar usuario:', error);
+                    mostrarError({
+                        titulo: 'Error al Eliminar',
+                        mensaje: 'No se pudo eliminar el usuario.'
+                    });
+                }
             }
-        }
+        });
     };
 
     return (
         <div className="page-container">
-            <h2>Módulo de Administración de Usuarios</h2>
+            <h2>Modulo de Administracion de Usuarios</h2>
             <button onClick={() => { setUsuarioAEditar(null); setMostrarForm(!mostrarForm); }}>
                 {mostrarForm && !usuarioAEditar ? 'Ocultar Formulario' : 'Nuevo Usuario'}
             </button>
@@ -124,7 +149,7 @@ const cargarDatos = async () => {
                                             <button onClick={() => handleEditar(usr)} className="btn-edit">
                                                 Editar
                                             </button>
-                                            <button onClick={() => handleEliminar(usr.IdUsuario)} className="btn-delete">
+                                            <button onClick={() => handleEliminar(usr)} className="btn-delete">
                                                 Eliminar
                                             </button>
                                         </td>

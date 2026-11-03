@@ -1,20 +1,23 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { PaintSplashProvider } from './context/PaintSplashContext';
+import { ModalProvider } from './context/ModalContext';
 import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashBoardPage'; {/* @jonas: recuerden importar su componente */}
+import { DashboardPage } from './pages/DashBoardPage';
 import { LandingPage } from './pages/LandingPage';
 
-// @Abner importando la vista de usuarios
 import UsuariosPage from './pages/UsuariosPage';
-// @Abner ya van 4 mantenimientos de tablas fuertes: Usuarios, Productos,
-// Clientes y Proveedores. Con esto completamos el requisito del proyecto
 import ClientesPage from './pages/ClientesPage';
 import ProveedoresPage from './pages/ProveedoresPage';
 import ProductosPage from './pages/ProductosPage';
 import ComprasPage from './pages/ComprasPage';
-import CajaPage from './pages/CajaPage'; // @abner: devuelto a CajaPage
+import CajaPage from './pages/CajaPage';
 import CotizacionPage from './pages/CotizacionPage';
 import FacturacionPage from './pages/FacturacionPage';
+import AnulacionPage from './pages/AnulacionPage';
+import GerenciaPage from './pages/GerenciaPage';
+
+// Proteccion de rutas segun sesion
 const ProtectedRoute = ({ children }) => {
   const session = JSON.parse(localStorage.getItem('userSession'));
   
@@ -28,56 +31,45 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
+      <ModalProvider>
+        <PaintSplashProvider>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
 
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
-        >
-          
-          <Route index element={<LandingPage />} />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <DashboardPage />
+                </ProtectedRoute>
+              }
+            >
+              
+              <Route index element={<LandingPage />} />
 
-          {/* @Abner: el modulo ejemplo ya cumplio su chamba, lo quito porque
-              ya tenemos las 4 tablas fuertes que pide el proyecto (Usuarios,
-              Productos, Clientes y Proveedores) */}
+              {/* Mantenimientos */}
+              <Route path="usuarios" element={<UsuariosPage />} />
+              <Route path="clientes" element={<ClientesPage />} />
+              <Route path="proveedores" element={<ProveedoresPage />} />
+              <Route path="productos" element={<ProductosPage />} />
+              <Route path="facturacion-inventario" element={<Navigate to="/dashboard/productos" replace />} />
+              
+              {/* Operaciones */}
+              <Route path="compras" element={<ComprasPage />} />
+              <Route path="cotizaciones" element={<CotizacionPage />} />          
+              <Route path="facturacion" element={<FacturacionPage />} />
+              <Route path="caja" element={<CajaPage />} />
 
-          {/* @Abner registrando el CRUD de Usuarios */}
-          <Route path="usuarios" element={<UsuariosPage />} />
+              {/* Anulacion y Reportes */}
+              <Route path="anulaciones" element={<AnulacionPage />} />
+              <Route path="gerencia" element={<GerenciaPage />} />
 
-          {/* @Abner registrando el CRUD de Clientes (tabla fuerte 3) */}
-          <Route path="clientes" element={<ClientesPage />} />
+            </Route>
 
-          {/* @Abner registrando el CRUD de Proveedores (tabla fuerte 4) */}
-          <Route path="proveedores" element={<ProveedoresPage />} />
-            
-          {/* CRUD de Productos (tabla fuerte 2) */}
-          <Route path="productos" element={<ProductosPage />} />
-          <Route path="facturacion-inventario" element={<Navigate to="/dashboard/productos" replace />} />
-          <Route path="compras" element={<ComprasPage />} />
-          <Route path="caja" element={<CajaPage />} />
-
-          <Route path="cotizaciones" element={<CotizacionPage />} />          
-          <Route path="facturacion" element={<FacturacionPage />} />
-          {/* Aca lo dejo asi @Abner porque la vd no sabemos que vamos a poner en la grafica o reporte creo */}
-          <Route
-            path="gerencia"
-            element={
-              <div className="modulo-pendiente">
-                <h2>Reportes de gerencia</h2>
-                <p>Vista reservada para el rol 3. Falta definir qué gráficas y reportes se van a mostrar.</p>
-              </div>
-            }
-          />
-
-        </Route>
-
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </PaintSplashProvider>
+      </ModalProvider>
     </BrowserRouter>
   );
 }

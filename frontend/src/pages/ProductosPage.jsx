@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ProductoForm from '../components/ProductoForm';
 import { getProductos, createProducto, updateProducto } from '../services/productosService';
+import { useModal } from '../context/ModalContext';
 import '../components/estilos/TablasCrud.css';
 
+// Modulo de catalogo de productos
 const ProductosPage = () => {
+    const { mostrarExito, mostrarError } = useModal();
     const [mostrarForm, setMostrarForm] = useState(false);
     const [productos, setProductos] = useState([]);
     const [cargando, setCargando] = useState(true);
@@ -13,7 +16,7 @@ const ProductosPage = () => {
         try {
             setCargando(true);
             const data = await getProductos();
-            setProductos(data);
+            setProductos(data || []);
         } catch (error) {
             console.error('Error al cargar la lista de productos:', error);
         } finally {
@@ -29,17 +32,28 @@ const ProductosPage = () => {
         try {
             if (idProducto) {
                 await updateProducto(idProducto, payload);
-                alert('Producto actualizado exitosamente!');
+                mostrarExito({
+                    titulo: 'Producto Actualizado',
+                    mensaje: 'Los datos del producto se actualizaron exitosamente.',
+                    botonTexto: 'Aceptar'
+                });
             } else {
                 await createProducto(payload);
-                alert('Producto guardado exitosamente en la base de datos!');
+                mostrarExito({
+                    titulo: 'Producto Registrado',
+                    mensaje: 'El producto fue guardado exitosamente en el catalogo maestro.',
+                    botonTexto: 'Aceptar'
+                });
             }
             cargarProductos();
             setMostrarForm(false);
             setProductoAEditar(null);
         } catch (error) {
             console.error('Error al procesar el producto:', error);
-            alert('Ocurrió un error al guardar o actualizar el producto.');
+            mostrarError({
+                titulo: 'Error al Guardar',
+                mensaje: 'Ocurrio un problema al guardar o actualizar el producto.'
+            });
         }
     };
 
@@ -65,9 +79,9 @@ const ProductosPage = () => {
 
     return (
         <div className="page-container">
-            <h2 className="no-print">Catálogo de Productos</h2>
+            <h2 className="no-print">Catalogo de Productos</h2>
             <p style={{ color: 'var(--tinta-suave)', marginBottom: '1.5rem' }}>
-                Gestión y mantenimiento del catálogo maestro de productos, precios de venta y presentaciones.
+                Gestion y mantenimiento del catalogo maestro de productos, precios de venta y presentaciones.
             </p>
 
             <button onClick={handleToggleForm} style={{ marginBottom: '1rem' }}>
@@ -92,7 +106,7 @@ const ProductosPage = () => {
                                 <th>ID</th>
                                 <th>Producto</th>
                                 <th>Marca</th>
-                                <th>Categoría</th>
+                                <th>Categoria</th>
                                 <th>Precio Venta</th>
                                 <th>Acciones</th>
                             </tr>

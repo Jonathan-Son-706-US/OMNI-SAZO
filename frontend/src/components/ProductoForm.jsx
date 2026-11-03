@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { getMarcas, getCategorias, getPresentaciones } from '../services/catalogosService';
+import { useModal } from '../context/ModalContext';
 
 const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
+    const { mostrarError } = useModal();
     // Listas para los dropdowns
     const [marcas, setMarcas] = useState([]);
     const [categorias, setCategorias] = useState([]);
@@ -72,7 +74,7 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
         e.preventDefault();
 
         if (!formData.idMarca || !formData.idPresentacion || !formData.idCategoria) {
-            alert('Por favor selecciona una Marca, Presentación y Categoría.');
+            mostrarError({ titulo: 'Datos Incompletos', mensaje: 'Por favor selecciona una Marca, Presentacion y Categoria.' });
             return;
         }
 

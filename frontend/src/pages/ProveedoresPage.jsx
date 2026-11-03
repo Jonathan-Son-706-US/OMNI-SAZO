@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ProveedorForm from '../components/ProveedorForm';
 import { getProveedores, createProveedor, updateProveedor, deleteProveedor } from '../services/proveedoresService';
+import { useModal } from '../context/ModalContext';
 import '../components/estilos/TablasCrud.css';
 
+// Modulo de administracion de proveedores
 const ProveedoresPage = () => {
+    const { mostrarExito, mostrarError, mostrarConfirmacion } = useModal();
     const [mostrarForm, setMostrarForm] = useState(false);
     const [proveedores, setProveedores] = useState([]);
     const [proveedorAEditar, setProveedorAEditar] = useState(null);
@@ -29,17 +32,28 @@ const ProveedoresPage = () => {
         try {
             if (idProveedor) {
                 await updateProveedor(idProveedor, datosProveedor);
-                alert('¡Proveedor actualizado exitosamente!');
+                mostrarExito({
+                    titulo: 'Proveedor Actualizado',
+                    mensaje: 'La informacion del proveedor se actualizo correctamente.',
+                    botonTexto: 'Aceptar'
+                });
             } else {
                 await createProveedor(datosProveedor);
-                alert('¡Proveedor registrado exitosamente!');
+                mostrarExito({
+                    titulo: 'Proveedor Registrado',
+                    mensaje: 'El nuevo proveedor fue registrado exitosamente.',
+                    botonTexto: 'Aceptar'
+                });
             }
             setProveedorAEditar(null);
             setMostrarForm(false);
             cargarDatos();
         } catch (error) {
             console.error('Error al guardar/actualizar proveedor:', error);
-            alert('Error al procesar la información del proveedor.');
+            mostrarError({
+                titulo: 'Error al Guardar',
+                mensaje: 'Error al procesar la informacion del proveedor.'
+            });
         }
     };
 
@@ -48,21 +62,35 @@ const ProveedoresPage = () => {
         setMostrarForm(true);
     };
 
-    const handleEliminarProveedor = async (idProveedor) => {
-        if (window.confirm('¿Seguro que deseas eliminar este proveedor?')) {
-            try {
-                await deleteProveedor(idProveedor);
-                cargarDatos();
-            } catch (error) {
-                console.error('Error al eliminar proveedor:', error);
-                alert('No se pudo eliminar el proveedor.');
+    const handleEliminarProveedor = (prov) => {
+        mostrarConfirmacion({
+            titulo: 'Eliminar Proveedor',
+            mensaje: `¿Seguro que deseas eliminar al proveedor "${prov.NombreProveedor || prov.Nombre}"?`,
+            botonTexto: 'Si, Eliminar',
+            botonSecundarioTexto: 'Cancelar',
+            onConfirmar: async () => {
+                try {
+                    await deleteProveedor(prov.IdProveedor);
+                    cargarDatos();
+                    mostrarExito({
+                        titulo: 'Proveedor Eliminado',
+                        mensaje: 'El proveedor fue eliminado correctamente.',
+                        botonTexto: 'Entendido'
+                    });
+                } catch (error) {
+                    console.error('Error al eliminar proveedor:', error);
+                    mostrarError({
+                        titulo: 'Error al Eliminar',
+                        mensaje: 'No se pudo eliminar el proveedor.'
+                    });
+                }
             }
-        }
+        });
     };
 
     return (
         <div className="dashboard-content">
-            <h2>Administración de Proveedores</h2>
+            <h2>Administracion de Proveedores</h2>
             <button onClick={() => { setProveedorAEditar(null); setMostrarForm(!mostrarForm); }}>
                 {mostrarForm && !proveedorAEditar ? 'Ocultar Formulario' : 'Agregar Nuevo Proveedor'}
             </button>
@@ -84,8 +112,8 @@ const ProveedoresPage = () => {
                         <th>ID</th>
                         <th>Proveedor</th>
                         <th>NIT</th>
-                        <th>Teléfono</th>
-                        <th>Dirección</th>
+                        <th>Telefono</th>
+                        <th>Direccion</th>
                         <th>Correo</th>
                         <th>Acciones</th>
                     </tr>
@@ -118,7 +146,7 @@ const ProveedoresPage = () => {
                                         Editar
                                     </button>
                                     <button 
-                                        onClick={() => handleEliminarProveedor(prov.IdProveedor)}
+                                        onClick={() => handleEliminarProveedor(prov)}
                                         style={{ 
                                             backgroundColor: '#dc3545', 
                                             color: '#fff', 

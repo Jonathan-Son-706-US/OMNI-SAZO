@@ -1,0 +1,280 @@
+/* ============================================================
+   OMNI-SAZO · Pop-Up Modal Comic Style
+   Estilo Splatoon: papel texturizado, bordes gruesos de 3px,
+   sombra dura sin desenfoque, cinta adhesiva superior y
+   color dinamico del modulo activo.
+   ============================================================ */
+
+.popup-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(18, 16, 24, 0.72);
+  backdrop-filter: blur(2px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  animation: modalFadeIn 0.18s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.popup-modal-card {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  background-color: var(--papel, #faf8f5);
+  border: 3px solid var(--tinta, #1b1820);
+  border-radius: 8px;
+  box-shadow: 8px 8px 0px rgba(27, 24, 32, 0.95);
+  overflow: visible;
+  animation: modalPopIn 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPopIn {
+  from {
+    transform: scale(0.92) translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Cinta adhesiva decorativa estilo polaroid en el borde superior del pop-up */
+.popup-modal-tape {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 110px;
+  height: 26px;
+  background-color: rgba(235, 220, 180, 0.95);
+  border: 1px dashed rgba(160, 140, 100, 0.6);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Barra superior: siempre con el color del modulo activo */
+.popup-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.2rem;
+  border-bottom: 3px solid var(--tinta, #1b1820);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  background-color: var(--color-tema, var(--tinta-mod, #e0218a));
+  color: #ffffff;
+}
+
+.popup-modal-badge {
+  font-family: var(--fuente-titulo, Impact, sans-serif);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.35);
+}
+
+.popup-modal-close-btn {
+  background: transparent;
+  border: 2px solid transparent;
+  color: #ffffff;
+  font-size: 1.3rem;
+  line-height: 1;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 0.35rem;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+}
+
+.popup-modal-close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.25);
+  border-color: #ffffff;
+}
+
+/* Cuerpo del modal */
+.popup-modal-body {
+  padding: 1.3rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fila superior con texto e imagen a los lados */
+.popup-modal-top-section {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.popup-modal-top-section.pos-derecha {
+  flex-direction: row;
+}
+
+.popup-modal-top-section.pos-izquierda {
+  flex-direction: row-reverse;
+}
+
+@media (max-width: 480px) {
+  .popup-modal-top-section.pos-derecha,
+  .popup-modal-top-section.pos-izquierda {
+    flex-direction: column-reverse;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+/* Columna de texto */
+.popup-modal-text-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.popup-modal-title {
+  font-family: var(--fuente-titulo, Impact, sans-serif);
+  font-size: 1.45rem;
+  text-transform: uppercase;
+  color: var(--tinta, #1b1820);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.popup-modal-message {
+  font-family: var(--fuente-texto, system-ui, sans-serif);
+  font-size: 0.96rem;
+  color: #2b2830;
+  line-height: 1.45;
+  margin: 0 0 0.8rem 0;
+}
+
+.popup-modal-details {
+  background-color: var(--papel-2, #f2efe9);
+  border: 2px dashed rgba(27, 24, 32, 0.35);
+  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+  margin-top: 0.5rem;
+  font-size: 0.88rem;
+  color: #222222;
+}
+
+/* Recuadro de la ilustracion: ubicado en la parte superior derecha (o izquierda) */
+.popup-modal-illustration-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 112px;
+  height: 122px;
+  background-color: #ffffff;
+  border: 3px solid var(--tinta, #1b1820);
+  border-radius: 6px;
+  box-shadow: 4px 4px 0px rgba(27, 24, 32, 0.9);
+  padding: 4px;
+  transform: rotate(2deg);
+  transition: transform 0.2s ease;
+}
+
+.popup-modal-top-section.pos-izquierda .popup-modal-illustration-wrap {
+  transform: rotate(-2deg);
+}
+
+.popup-modal-illustration-wrap:hover {
+  transform: rotate(0deg) scale(1.03);
+}
+
+/* Trocito de cinta adhesiva sobre el recuadro de la foto */
+.popup-modal-photo-tape {
+  position: absolute;
+  top: -8px;
+  right: 18px;
+  width: 36px;
+  height: 14px;
+  background-color: rgba(235, 220, 180, 0.95);
+  border: 1px dashed rgba(160, 140, 100, 0.6);
+  transform: rotate(-5deg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.popup-modal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 2px solid var(--tinta, #1b1820);
+  background-color: #1a1622;
+  display: block;
+  border-radius: 2px;
+}
+
+/* Botones de accion ubicados en la parte inferior */
+.popup-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.popup-modal-btn-primary {
+  flex: 1;
+  min-width: 130px;
+  background-color: var(--color-tema, var(--tinta-mod, #e0218a));
+  color: #ffffff;
+  border: 3px solid var(--tinta, #1b1820);
+  box-shadow: 3px 3px 0px var(--tinta, #1b1820);
+  padding: 0.7rem 1.2rem;
+  font-family: var(--fuente-titulo, Impact, sans-serif);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.popup-modal-btn-primary:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px var(--tinta, #1b1820);
+}
+
+.popup-modal-btn-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--tinta, #1b1820);
+}
+
+.popup-modal-btn-secondary {
+  background-color: #ffffff;
+  color: var(--tinta, #1b1820);
+  border: 3px solid var(--tinta, #1b1820);
+  box-shadow: 3px 3px 0px var(--tinta, #1b1820);
+  padding: 0.7rem 1.1rem;
+  font-family: var(--fuente-titulo, Impact, sans-serif);
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.popup-modal-btn-secondary:hover {
+  background-color: #f0ede6;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px var(--tinta, #1b1820);
+}
+
+.popup-modal-btn-secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--tinta, #1b1820);
+}

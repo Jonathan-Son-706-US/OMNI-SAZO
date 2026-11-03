@@ -1,0 +1,146 @@
+/* ============================================================
+   OMNI-SAZO · Tiros de Pintura de Transición (Paleta Dashboard)
+   ============================================================ */
+
+.paint-splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: all;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+/* Transición cuando se desvanece la cortina de pintura para revelar la nueva pantalla */
+.paint-splash-screen.phase-revealing {
+  animation: revealLiquidCurtain 0.55s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.splat-item {
+  position: absolute;
+  will-change: transform;
+}
+
+.splat-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.4));
+}
+
+/* Mancha 1: Verde Inventario (abajo izquierda) */
+.splat-green {
+  bottom: -60px;
+  left: -80px;
+  width: 540px;
+  height: 540px;
+  transform: scale(0) rotate(-20deg);
+  animation: splatBurstDash 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards;
+}
+
+/* Mancha 2: Magenta Usuarios (arriba derecha) */
+.splat-pink {
+  top: -80px;
+  right: -90px;
+  width: 560px;
+  height: 560px;
+  transform: scale(0) rotate(25deg);
+  animation: splatBurstDash 0.4s 0.1s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards;
+}
+
+/* Mancha 3: Naranja Caja (centro-izquierda) */
+.splat-orange {
+  top: 18%;
+  left: 15%;
+  width: 500px;
+  height: 500px;
+  transform: scale(0) rotate(12deg);
+  animation: splatBurstDash 0.45s 0.18s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards;
+}
+
+/* Mancha 4: Azul Facturación (abajo-derecha) */
+.splat-blue {
+  bottom: 8%;
+  right: 12%;
+  width: 490px;
+  height: 490px;
+  transform: scale(0) rotate(-15deg);
+  animation: splatBurstDash 0.45s 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.25) forwards;
+}
+
+/* Marea total de tinta morada (Gerencia) */
+.splat-cover {
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.splat-giant-ink {
+  width: 150vmax;
+  height: 150vmax;
+  border-radius: 46% 54% 62% 38% / 48% 60% 40% 52%;
+  background: #7b3fe4;
+  transform: scale(0);
+  animation: giantInkFloodDash 0.55s 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  box-shadow: 0 0 60px rgba(123, 63, 228, 0.5);
+}
+
+/* Trama de puntos halftone idéntica al fondo del Dashboard */
+.splat-giant-ink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.16) 1.4px, transparent 1.5px);
+  background-size: 14px 14px;
+  opacity: 0.55;
+}
+
+/* En la fase de cubierta estática (mientras navega), se mantiene 100% cubierto */
+.paint-splash-screen.phase-covered .splat-giant-ink {
+  transform: scale(1.6) rotate(45deg);
+  animation: none;
+}
+
+/* Animaciones */
+@keyframes splatBurstDash {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.12) rotate(14deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes giantInkFloodDash {
+  0% {
+    transform: scale(0) rotate(0deg);
+  }
+  100% {
+    transform: scale(1.6) rotate(45deg);
+  }
+}
+
+/* Al revelar la página de destino: la cortina de pintura se desliza suavemente hacia abajo */
+@keyframes revealLiquidCurtain {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 0.95;
+    transform: translateY(60vh);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(105vh);
+  }
+}
