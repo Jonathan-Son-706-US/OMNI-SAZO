@@ -73,6 +73,20 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
     const handleGuardar = async (e) => {
         e.preventDefault();
 
+        if (!formData.nombreProducto || !formData.nombreProducto.trim()) {
+            mostrarError({ titulo: 'Datos Incompletos', mensaje: 'Por favor ingresa el nombre del producto.' });
+            return;
+        }
+
+        const precio = parseFloat(formData.precioVentaBase);
+        if (isNaN(precio) || precio <= 0) {
+            mostrarError({
+                titulo: 'Precio Invalido',
+                mensaje: 'El precio de venta debe ser un monto positivo mayor a cero (ej. Q0.01 en adelante).'
+            });
+            return;
+        }
+
         if (!formData.idMarca || !formData.idPresentacion || !formData.idCategoria) {
             mostrarError({ titulo: 'Datos Incompletos', mensaje: 'Por favor selecciona una Marca, Presentacion y Categoria.' });
             return;
@@ -80,7 +94,7 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
 
         const payload = {
             nombreProducto: formData.nombreProducto.trim(),
-            precioVentaBase: parseFloat(formData.precioVentaBase),
+            precioVentaBase: precio,
             manejaLote: formData.manejaLote,
             idMarca: parseInt(formData.idMarca),
             idPresentacion: parseInt(formData.idPresentacion),
@@ -122,6 +136,7 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
                     <input 
                         type="number" 
                         step="0.01" 
+                        min="0.01"
                         name="precioVentaBase"
                         value={formData.precioVentaBase}
                         onChange={handleChange}

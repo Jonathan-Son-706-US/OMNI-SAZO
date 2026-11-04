@@ -71,6 +71,36 @@ BEGIN
     SET NOCOUNT ON;
     BEGIN TRANSACTION;
     BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM PROVEEDORES WHERE IdProveedor = @IdProveedor)
+        BEGIN
+            ROLLBACK TRANSACTION;
+            SELECT 0 AS IdOrdenCompra, 'El proveedor seleccionado no existe.' AS Mensaje;
+            RETURN;
+        END
+
+        IF ISJSON(@JsonDetalle) = 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+            SELECT 0 AS IdOrdenCompra, 'El formato de detalle no es un JSON valido.' AS Mensaje;
+            RETURN;
+        END
+
+        IF EXISTS (
+            SELECT 1 FROM OPENJSON(@JsonDetalle)
+            WITH (
+                cantidad INT '$.cantidad',
+                Cantidad INT '$.Cantidad',
+                cantidadSolicitada INT '$.cantidadSolicitada',
+                CantidadSolicitada INT '$.CantidadSolicitada'
+            ) AS j
+            WHERE ISNULL(COALESCE(j.cantidad, j.Cantidad, j.cantidadSolicitada, j.CantidadSolicitada), 0) <= 0
+        )
+        BEGIN
+            ROLLBACK TRANSACTION;
+            SELECT 0 AS IdOrdenCompra, 'Las cantidades solicitadas deben ser mayores a cero.' AS Mensaje;
+            RETURN;
+        END
+
         INSERT INTO ORDENES_COMPRA_ENCABEZADO (IdProveedor, FechaEmision, Estado)
         VALUES (@IdProveedor, GETDATE(), 'PENDIENTE');
 
@@ -307,6 +337,14 @@ BEGIN
         BEGIN
             ROLLBACK TRANSACTION;
             SELECT 0 AS Exito, 'Las cantidades recibidas deben ser mayores a cero' AS Mensaje;
+            RETURN;
+        END
+
+        -- Validar costos unitarios
+        IF EXISTS (SELECT 1 FROM @Items WHERE ISNULL(CostoUnitario, 0) <= 0)
+        BEGIN
+            ROLLBACK TRANSACTION;
+            SELECT 0 AS Exito, 'El costo unitario de compra debe ser un monto mayor a cero' AS Mensaje;
             RETURN;
         END
 

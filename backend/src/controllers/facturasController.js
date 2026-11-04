@@ -21,6 +21,24 @@ const crearFactura = async (req, res) => {
     return res.status(400).json({ ok: false, mensaje: 'Debe agregar al menos un medio de pago.' });
   }
 
+  for (const item of detalle) {
+    const cant = Number(item.cantidad);
+    if (isNaN(cant) || cant <= 0) {
+      return res.status(400).json({ ok: false, mensaje: 'La cantidad de cada producto debe ser mayor a cero.' });
+    }
+    const precio = Number(item.precioUnitario);
+    if (isNaN(precio) || precio <= 0) {
+      return res.status(400).json({ ok: false, mensaje: 'El precio unitario de cada producto debe ser mayor a cero.' });
+    }
+  }
+
+  for (const pago of mediosPago) {
+    const monto = Number(pago.monto);
+    if (isNaN(monto) || monto <= 0) {
+      return res.status(400).json({ ok: false, mensaje: 'El monto de cada medio de pago debe ser mayor a cero.' });
+    }
+  }
+
   try {
     const data = await crearFacturaPEPSBD({ idCliente, idCotizacion, idUsuario, detalle, mediosPago });
 

@@ -7,7 +7,7 @@ const {
 async function getFacturaParaAnulacion(req, res) {
   try {
     const idFactura = parseInt(req.params.id, 10);
-    if (!idFactura || isNaN(idFactura)) {
+    if (!idFactura || isNaN(idFactura) || idFactura <= 0) {
       return res.status(400).json({ ok: false, mensaje: 'El número de factura debe ser un entero válido.' });
     }
 
@@ -29,7 +29,7 @@ async function anularFactura(req, res) {
     const { idFactura, motivo } = req.body;
     const idUsuario = req.usuario ? req.usuario.idUsuario : null;
 
-    if (!idFactura || isNaN(parseInt(idFactura, 10))) {
+    if (!idFactura || isNaN(parseInt(idFactura, 10)) || parseInt(idFactura, 10) <= 0) {
       return res.status(400).json({ ok: false, mensaje: 'Debe especificar el número de factura a anular.' });
     }
 

@@ -18,8 +18,8 @@ const AnulacionPage = () => {
   const handleBuscar = async (e) => {
     if (e) e.preventDefault();
     const id = parseInt(idFacturaBusqueda, 10);
-    if (!id || isNaN(id)) {
-      setErrorBusqueda('Ingresa un numero de factura valido.');
+    if (!id || isNaN(id) || id <= 0) {
+      setErrorBusqueda('Ingresa un numero de factura valido (mayor o igual a 1).');
       setFactura(null);
       return;
     }
@@ -116,6 +116,7 @@ const AnulacionPage = () => {
           </label>
           <input
             type="number"
+            min="1"
             placeholder="Ej. 1, 2, 3..."
             value={idFacturaBusqueda}
             onChange={(e) => setIdFacturaBusqueda(e.target.value)}

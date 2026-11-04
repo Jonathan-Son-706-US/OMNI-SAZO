@@ -66,6 +66,20 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
+        IF EXISTS (
+            SELECT 1 FROM OPENJSON(@JsonPagos)
+            WITH (
+                IdMedioPago INT '$.idMedioPago',
+                Monto DECIMAL(10,2) '$.monto'
+            )
+            WHERE ISNULL(Monto, 0) <= 0
+        )
+        BEGIN
+            ROLLBACK TRANSACTION;
+            SELECT 0 AS Exito, 'Los montos de los medios de pago deben ser mayores a cero' AS Mensaje;
+            RETURN;
+        END
+
         --Insercion de pagos mediante .json
         INSERT INTO FACTURAS_PAGOS (IdFactura, IdMedioPago, Monto)
         SELECT 
@@ -394,6 +408,12 @@ AS
 BEGIN
     SET NOCOUNT ON;
     BEGIN TRY
+        IF @PrecioVentaBase IS NULL OR @PrecioVentaBase <= 0
+        BEGIN
+            SELECT 0 AS Exito, 'El precio de venta debe ser un monto positivo mayor a cero.' AS Mensaje;
+            RETURN;
+        END
+
         INSERT INTO dbo.PRODUCTOS (NombreProducto, PrecioVentaBase, ManejaLote, IdMarca, IdPresentacion, IdCategoria)
         VALUES (@NombreProducto, @PrecioVentaBase, @ManejaLote, @IdMarca, @IdPresentacion, @IdCategoria);
 
@@ -417,6 +437,12 @@ AS
 BEGIN
     SET NOCOUNT ON;
     BEGIN TRY
+        IF @PrecioVentaBase IS NULL OR @PrecioVentaBase <= 0
+        BEGIN
+            SELECT 0 AS Exito, 'El precio de venta debe ser un monto positivo mayor a cero.' AS Mensaje;
+            RETURN;
+        END
+
         UPDATE dbo.PRODUCTOS
         SET NombreProducto = @NombreProducto,
             PrecioVentaBase = @PrecioVentaBase,
@@ -646,6 +672,41 @@ BEGIN
     BEGIN TRANSACTION;
 
     BEGIN TRY
+        IF NOT EXISTS (SELECT 1 FROM CLIENTES WHERE IdCliente = @IdCliente)
+        BEGIN
+            ROLLBACK TRANSACTION;
+            SELECT 0 AS IdCotizacion, 'El cliente seleccionado no existe.' AS Mensaje;
+            RETURN;
+        END
+
+        IF ISJSON(@JsonDetalle) = 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+            SELECT 0 AS IdCotizacion, 'El detalle de la cotizacion no es un JSON valido.' AS Mensaje;
+            RETURN;
+        END
+
+        IF EXISTS (
+            SELECT 1 FROM OPENJSON(@JsonDetalle)
+            WITH (
+                idProducto INT '$.idProducto',
+                IdProducto INT '$.IdProducto',
+                cantidad INT '$.cantidad',
+                Cantidad INT '$.Cantidad',
+                precioUnitario DECIMAL(10,2) '$.precioUnitario',
+                PrecioUnitario DECIMAL(10,2) '$.PrecioUnitario',
+                precio DECIMAL(10,2) '$.precio',
+                Precio DECIMAL(10,2) '$.Precio'
+            ) AS j
+            WHERE ISNULL(COALESCE(j.cantidad, j.Cantidad), 0) <= 0
+               OR ISNULL(COALESCE(j.precioUnitario, j.PrecioUnitario, j.precio, j.Precio), 0) <= 0
+        )
+        BEGIN
+            ROLLBACK TRANSACTION;
+            SELECT 0 AS IdCotizacion, 'Las cantidades y precios unitarios deben ser mayores a cero.' AS Mensaje;
+            RETURN;
+        END
+
         INSERT INTO COTIZACIONES_ENCABEZADO (IdCliente, Fecha, Estado)
         VALUES (@IdCliente, GETDATE(), 'PENDIENTE');
 

@@ -60,6 +60,13 @@ const crearOrden = async (req, res) => {
     return res.status(400).json({ mensaje: 'Se requiere proveedor y al menos un producto.' });
   }
 
+  for (const d of detalles) {
+    const cant = Number(d.cantidad);
+    if (isNaN(cant) || cant <= 0) {
+      return res.status(400).json({ ok: false, mensaje: 'La cantidad solicitada de cada producto debe ser mayor a cero.' });
+    }
+  }
+
   try {
     const data = await crearOrdenCompraBD(idProveedor, detalles);
     if (data && data.IdOrdenCompra) {
@@ -79,6 +86,13 @@ const actualizarOrden = async (req, res) => {
 
   if (!idProveedor || !detalles || !Array.isArray(detalles) || detalles.length === 0) {
     return res.status(400).json({ mensaje: 'Se requiere proveedor y al menos un producto.' });
+  }
+
+  for (const d of detalles) {
+    const cant = Number(d.cantidad);
+    if (isNaN(cant) || cant <= 0) {
+      return res.status(400).json({ ok: false, mensaje: 'La cantidad solicitada de cada producto debe ser mayor a cero.' });
+    }
   }
 
   try {
@@ -103,6 +117,17 @@ const registrarRecepcion = async (req, res) => {
   }
   if (!idUsuario) {
     return res.status(400).json({ mensaje: 'No se pudo identificar al usuario.' });
+  }
+
+  for (const item of items) {
+    const cant = Number(item.cantidadRecibida);
+    if (isNaN(cant) || cant <= 0) {
+      return res.status(400).json({ ok: false, mensaje: 'La cantidad a recibir debe ser un número mayor a cero.' });
+    }
+    const costo = Number(item.costoUnitario);
+    if (isNaN(costo) || costo <= 0) {
+      return res.status(400).json({ ok: false, mensaje: 'El costo unitario de compra debe ser un monto mayor a cero.' });
+    }
   }
 
   try {

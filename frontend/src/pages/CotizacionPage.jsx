@@ -48,19 +48,26 @@ const CotizacionPage = () => {
 
   // logica para nueva cotizacion
   const agregarDetalle = () => {
-    if (!productoSeleccionado || cantidad <= 0) {
-      setMensajeCotizacion('Selecciona un producto y cantidad valida.');
+    const cant = parseInt(cantidad, 10);
+    if (!productoSeleccionado || isNaN(cant) || cant <= 0) {
+      setMensajeCotizacion('Selecciona un producto y una cantidad valida mayor a cero.');
       return;
     }
     const productoObj = productos.find(p => p.IdProducto === parseInt(productoSeleccionado, 10));
     if (!productoObj) return;
 
-    const subtotal = productoObj.PrecioVentaBase * cantidad;
+    const precio = parseFloat(productoObj.PrecioVentaBase);
+    if (isNaN(precio) || precio <= 0) {
+      setMensajeCotizacion('El producto seleccionado no tiene un precio valido mayor a cero.');
+      return;
+    }
+
+    const subtotal = Number((precio * cant).toFixed(2));
     setDetallesCotizacion([...detallesCotizacion, {
       idProducto: productoObj.IdProducto,
       nombre: productoObj.NombreProducto,
-      cantidad: cantidad,
-      precioUnitario: productoObj.PrecioVentaBase,
+      cantidad: cant,
+      precioUnitario: precio,
       subtotal: subtotal
     }]);
     setMensajeCotizacion('');
