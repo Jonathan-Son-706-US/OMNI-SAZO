@@ -135,12 +135,18 @@ const FacturacionPage = () => {
       return;
     }
     const cant = parseInt(cantidad, 10);
-    if (!cant || cant <= 0) {
+    if (isNaN(cant) || cant <= 0) {
       setErrorInline('La cantidad debe ser mayor a cero.');
       return;
     }
     const producto = productos.find(p => String(p.IdProducto) === String(productoSeleccionado));
     if (!producto) return;
+
+    const precio = parseFloat(producto.PrecioVentaBase);
+    if (isNaN(precio) || precio <= 0) {
+      setErrorInline('El producto no tiene un precio valido mayor a cero.');
+      return;
+    }
 
     if (producto.stockDisponible < cant) {
       setErrorInline(`Stock insuficiente para "${producto.NombreProducto}". Disponible: ${producto.stockDisponible}.`);
@@ -184,8 +190,8 @@ const FacturacionPage = () => {
       return;
     }
     const monto = parseFloat(montoPago);
-    if (!monto || monto <= 0) {
-      setErrorPago('El monto debe ser mayor a cero.');
+    if (isNaN(monto) || monto <= 0) {
+      setErrorPago('El monto debe ser un numero mayor a cero.');
       return;
     }
     const medio = mediosPago.find(m => String(m.IdMedioPago) === String(medioSeleccionado));
@@ -431,7 +437,7 @@ const FacturacionPage = () => {
             </div>
             <div>
               <label>Monto (Q):</label>
-              <input type="number" value={montoPago} onChange={(e) => setMontoPago(e.target.value)} style={{ width: '120px' }} />
+              <input type="number" step="0.01" min="0.01" placeholder="0.01" value={montoPago} onChange={(e) => setMontoPago(e.target.value)} style={{ width: '120px' }} />
             </div>
             <button onClick={agregarPago}>+ Anadir Pago</button>
           </div>

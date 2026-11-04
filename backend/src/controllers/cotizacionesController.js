@@ -3,6 +3,25 @@ const cotizacionesService = require('../services/cotizacionesService');
 exports.crearCotizacion = async (req, res) => {
   try {
     const { idCliente, detalles } = req.body;
+
+    if (!idCliente) {
+      return res.status(400).json({ error: 'Debe seleccionar un cliente.' });
+    }
+    if (!detalles || !Array.isArray(detalles) || detalles.length === 0) {
+      return res.status(400).json({ error: 'La cotización debe incluir al menos un producto.' });
+    }
+
+    for (const d of detalles) {
+      const cant = Number(d.cantidad);
+      if (isNaN(cant) || cant <= 0) {
+        return res.status(400).json({ error: 'La cantidad de cada producto debe ser mayor a cero.' });
+      }
+      const precio = Number(d.precioUnitario);
+      if (isNaN(precio) || precio <= 0) {
+        return res.status(400).json({ error: 'El precio unitario de cada producto debe ser mayor a cero.' });
+      }
+    }
+
     const resultado = await cotizacionesService.crearCotizacionBD(idCliente, detalles);
 
     res.status(201).json({

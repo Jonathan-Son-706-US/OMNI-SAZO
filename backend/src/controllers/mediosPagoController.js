@@ -78,8 +78,15 @@ const deleteMedioPago = async (req, res) => {
 // @abner: registrar pagos en una factura, el body trae idFactura y un array de pagos
 const registrarPagos = async (req, res) => {
   const { idFactura, pagos } = req.body;
-  if (!idFactura || !pagos || !Array.isArray(pagos) || pagos.length === 0) {
-    return res.status(400).json({ mensaje: 'Se requiere idFactura y al menos un pago.' });
+  if (!idFactura || isNaN(parseInt(idFactura, 10)) || parseInt(idFactura, 10) <= 0 || !pagos || !Array.isArray(pagos) || pagos.length === 0) {
+    return res.status(400).json({ mensaje: 'Se requiere un idFactura valido mayor a cero y al menos un pago.' });
+  }
+
+  for (const p of pagos) {
+    const monto = parseFloat(p.monto);
+    if (isNaN(monto) || monto <= 0) {
+      return res.status(400).json({ mensaje: 'Todos los pagos deben tener un monto mayor a cero.' });
+    }
   }
 
   try {
@@ -133,6 +140,29 @@ const getFacturas = async (req, res) => {
 const createFacturaCompleta = async (req, res) => {
   try {
     const { idCliente, idCotizacion, montoTotal, detalles, pagos } = req.body;
+
+    if (!detalles || !Array.isArray(detalles) || detalles.length === 0) {
+      return res.status(400).json({ ok: false, mensaje: 'La factura debe tener al menos un producto en el detalle.' });
+    }
+
+    for (const d of detalles) {
+      const cant = parseInt(d.cantidad, 10);
+      const precio = parseFloat(d.precioUnitario);
+      if (isNaN(cant) || cant <= 0 || isNaN(precio) || precio <= 0) {
+        return res.status(400).json({ ok: false, mensaje: 'Las cantidades y precios de los productos deben ser mayores a cero.' });
+      }
+    }
+
+    if (!pagos || !Array.isArray(pagos) || pagos.length === 0) {
+      return res.status(400).json({ ok: false, mensaje: 'Debe especificar al menos un medio de pago.' });
+    }
+
+    for (const p of pagos) {
+      const monto = parseFloat(p.monto);
+      if (isNaN(monto) || monto <= 0) {
+        return res.status(400).json({ ok: false, mensaje: 'El monto de cada medio de pago debe ser mayor a cero.' });
+      }
+    }
     
     // Obtenemos el IdUsuario desde el token, pero req.usuario trae el "NombreUsuario", 
     // entonces necesitamos sacar el IdUsuario del payload o mandarlo desde el front. 

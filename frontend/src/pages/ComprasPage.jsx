@@ -221,8 +221,8 @@ const ComprasPage = () => {
         setErrorRecepcion(`La cantidad a recibir de "${item.nombreProducto}" no puede superar el saldo pendiente (${item.cantidadPendiente}).`);
         return;
       }
-      if (item.costoUnitario === '' || Number(item.costoUnitario) < 0) {
-        setErrorRecepcion('Ingrese un costo unitario valido (0 o mayor).');
+      if (item.costoUnitario === '' || isNaN(Number(item.costoUnitario)) || Number(item.costoUnitario) <= 0) {
+        setErrorRecepcion('Ingrese un costo unitario valido mayor a cero.');
         return;
       }
     }
@@ -472,7 +472,7 @@ const ComprasPage = () => {
                           <td style={{ padding: '0.5rem', borderBottom: '1px solid #ddd', textAlign: 'center' }}>
                             <input
                               type="number"
-                              min="0"
+                              min="1"
                               max={item.cantidadPendiente}
                               style={{ width: '70px', padding: '0.3rem', textAlign: 'center' }}
                               value={item.cantidadRecibida}
@@ -510,8 +510,8 @@ const ComprasPage = () => {
                             <input
                               type="number"
                               step="0.01"
-                              min="0"
-                              placeholder="0.00"
+                              min="0.01"
+                              placeholder="0.01"
                               style={{ width: '80px', padding: '0.3rem' }}
                               value={item.costoUnitario}
                               onChange={(e) => actualizarItemRecepcion(index, 'costoUnitario', e.target.value)}

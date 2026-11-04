@@ -74,6 +74,19 @@ BEGIN
         IF ISJSON(@MediosPagoJson) = 0
             RAISERROR('El desglose de medios de pago no es un JSON válido.', 16, 1);
 
+        -- Validar detalle productos
+        IF EXISTS (
+            SELECT 1
+            FROM OPENJSON(@DetalleProductosJson)
+            WITH (
+                [idProducto]     INT           '$.idProducto',
+                [cantidad]       INT           '$.cantidad',
+                [precioUnitario] DECIMAL(10,2) '$.precioUnitario'
+            )
+            WHERE ISNULL([cantidad], 0) <= 0 OR ISNULL([precioUnitario], 0) <= 0
+        )
+            RAISERROR('Las cantidades y precios unitarios deben ser mayores a cero.', 16, 1);
+
         -- Calcular total de la venta
         SELECT @MontoTotal = SUM([cantidad] * [precioUnitario])
         FROM OPENJSON(@DetalleProductosJson)
