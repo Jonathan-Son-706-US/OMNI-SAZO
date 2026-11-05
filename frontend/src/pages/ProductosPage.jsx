@@ -105,6 +105,7 @@ const ProductosPage = () => {
                             <tr>
                                 <th>ID</th>
                                 <th>Producto</th>
+                                <th>Color</th>
                                 <th>Marca</th>
                                 <th>Categoria</th>
                                 <th>Precio Venta</th>
@@ -114,7 +115,7 @@ const ProductosPage = () => {
                         <tbody>
                             {productos.length === 0 ? (
                                 <tr>
-                                    <td colSpan="6" style={{ textAlign: 'center' }}>
+                                    <td colSpan="7" style={{ textAlign: 'center' }}>
                                         No hay productos registrados.
                                     </td>
                                 </tr>
@@ -123,6 +124,27 @@ const ProductosPage = () => {
                                     <tr key={prod.IdProducto}>
                                         <td>{prod.IdProducto}</td>
                                         <td>{prod.NombreProducto}</td>
+                                        <td>
+                                            {prod.NombreColor ? (
+                                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                                                    {prod.CodigoHex && (
+                                                        <span 
+                                                            style={{ 
+                                                                display: 'inline-block', 
+                                                                width: '12px', 
+                                                                height: '12px', 
+                                                                borderRadius: '50%', 
+                                                                backgroundColor: prod.CodigoHex,
+                                                                border: '1px solid #000' 
+                                                            }} 
+                                                        />
+                                                    )}
+                                                    {prod.NombreColor}
+                                                </span>
+                                            ) : (
+                                                <span style={{ color: 'var(--tinta-suave, #888)' }}>N/A</span>
+                                            )}
+                                        </td>
                                         <td>{prod.Marca || prod.IdMarca}</td>
                                         <td>{prod.Categoria || prod.IdCategoria}</td>
                                         <td>Q{Number(prod.PrecioVentaBase || 0).toFixed(2)}</td>

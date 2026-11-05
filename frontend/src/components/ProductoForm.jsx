@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getMarcas, getCategorias, getPresentaciones } from '../services/catalogosService';
+import { getMarcas, getCategorias, getPresentaciones, getColores } from '../services/catalogosService';
 import { useModal } from '../context/ModalContext';
 
 const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
@@ -8,6 +8,7 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
     const [marcas, setMarcas] = useState([]);
     const [categorias, setCategorias] = useState([]);
     const [presentaciones, setPresentaciones] = useState([]);
+    const [colores, setColores] = useState([]);
 
     // Estado del formulario
     const [formData, setFormData] = useState({
@@ -23,14 +24,16 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
     useEffect(() => {
         const cargarCatalogos = async () => {
             try {
-                const [marcasData, categoriasData, presentacionesData] = await Promise.all([
+                const [marcasData, categoriasData, presentacionesData, coloresData] = await Promise.all([
                     getMarcas(),
                     getCategorias(),
-                    getPresentaciones()
+                    getPresentaciones(),
+                    getColores()
                 ]);
                 setMarcas(marcasData);
                 setCategorias(categoriasData);
                 setPresentaciones(presentacionesData);
+                setColores(coloresData || []);
             } catch (error) {
                 console.error("Error al cargar los catálogos:", error);
             }
@@ -48,7 +51,8 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
                 manejaLote: productoAEditar.ManejaLote !== undefined ? Boolean(productoAEditar.ManejaLote) : false,
                 idMarca: productoAEditar.IdMarca || '',
                 idPresentacion: productoAEditar.IdPresentacion || '',
-                idCategoria: productoAEditar.IdCategoria || ''
+                idCategoria: productoAEditar.IdCategoria || '',
+                idColor: productoAEditar.IdColor || ''
             });
         } else {
             setFormData({
@@ -57,7 +61,8 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
                 manejaLote: false,
                 idMarca: '',
                 idPresentacion: '',
-                idCategoria: ''
+                idCategoria: '',
+                idColor: ''
             });
         }
     }, [productoAEditar]);
@@ -98,7 +103,8 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
             manejaLote: formData.manejaLote,
             idMarca: parseInt(formData.idMarca),
             idPresentacion: parseInt(formData.idPresentacion),
-            idCategoria: parseInt(formData.idCategoria)
+            idCategoria: parseInt(formData.idCategoria),
+            idColor: formData.idColor ? parseInt(formData.idColor, 10) : null
         };
 
         // Llama a la función del padre pasando el payload y el ID si se está editando
@@ -111,7 +117,8 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
             manejaLote: false,
             idMarca: '',
             idPresentacion: '',
-            idCategoria: ''
+            idCategoria: '',
+            idColor: ''
         });
     };
 
@@ -203,6 +210,22 @@ const ProductoForm = ({ onSubmit, productoAEditar = null, onCancelar }) => {
                         {categorias.map(c => (
                             <option key={c.IdCategoria} value={c.IdCategoria}>
                                 {c.NombreCategoria}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="form-group">
+                    <label>COLOR / TONALIDAD:</label>
+                    <select 
+                        name="idColor" 
+                        value={formData.idColor} 
+                        onChange={handleChange}
+                    >
+                        <option value="">(Sin color / No aplica)</option>
+                        {colores.map(col => (
+                            <option key={col.IdColor} value={col.IdColor}>
+                                {col.NombreColor}
                             </option>
                         ))}
                     </select>

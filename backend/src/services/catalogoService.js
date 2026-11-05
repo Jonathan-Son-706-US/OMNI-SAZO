@@ -24,6 +24,12 @@ async function obtenerPresentacionesBD() {
   return result.recordset;
 }
 
+async function obtenerColoresBD() {
+  const pool = await sql.connect(dbConfig);
+  const result = await pool.request().execute('sp_ObtenerColores');
+  return result.recordset;
+}
+
 // @Javier: bodegas y ubicaciones para el modulo de compras/ingreso a bodega
 async function obtenerBodegasBD() {
   const pool = await sql.connect(dbConfig);
@@ -44,6 +50,7 @@ module.exports = {
   obtenerMarcasBD,
   obtenerCategoriasBD,
   obtenerPresentacionesBD,
+  obtenerColoresBD,
   obtenerBodegasBD,
   obtenerUbicacionesBD
 };

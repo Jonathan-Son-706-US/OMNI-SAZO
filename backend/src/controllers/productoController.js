@@ -15,7 +15,7 @@ const getProductos = async (req, res) => {
 };
 
 const createProducto = async (req, res) => {
-  const { nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria } = req.body;
+  const { nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria, idColor } = req.body;
 
   if (!nombreProducto || precioVentaBase === undefined) {
     return res.status(400).json({ ok: false, mensaje: 'El nombre y precio base son obligatorios.' });
@@ -27,7 +27,7 @@ const createProducto = async (req, res) => {
   }
 
   try {
-    const data = await crearProductoBD(nombreProducto, precio, manejaLote, idMarca, idPresentacion, idCategoria);
+    const data = await crearProductoBD(nombreProducto, precio, manejaLote, idMarca, idPresentacion, idCategoria, idColor);
     if (data.Exito === 1) {
       res.status(201).json({ ok: true, mensaje: data.Mensaje });
     } else {
@@ -40,7 +40,7 @@ const createProducto = async (req, res) => {
 
 const updateProducto = async (req, res) => {
   const { id } = req.params;
-  const { nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria } = req.body;
+  const { nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria, idColor } = req.body;
 
   if (!id || !nombreProducto || precioVentaBase === undefined) {
     return res.status(400).json({ ok: false, mensaje: 'ID, Nombre y Precio son obligatorios.' });
@@ -52,7 +52,7 @@ const updateProducto = async (req, res) => {
   }
 
   try {
-    const data = await actualizarProductoBD(id, nombreProducto, precio, manejaLote, idMarca, idPresentacion, idCategoria);
+    const data = await actualizarProductoBD(id, nombreProducto, precio, manejaLote, idMarca, idPresentacion, idCategoria, idColor);
     if (data.Exito === 1) {
       res.json({ ok: true, mensaje: data.Mensaje });
     } else {
