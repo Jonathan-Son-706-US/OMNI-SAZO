@@ -388,11 +388,15 @@ BEGIN
         p.IdPresentacion, 
         pr.NombrePresentacion AS Presentacion,
         p.IdCategoria, 
-        c.NombreCategoria AS Categoria
+        c.NombreCategoria AS Categoria,
+        p.IdColor,
+        col.NombreColor,
+        col.CodigoHex
     FROM dbo.PRODUCTOS p
     LEFT JOIN dbo.MARCAS m ON p.IdMarca = m.IdMarca
     LEFT JOIN dbo.PRESENTACIONES pr ON p.IdPresentacion = pr.IdPresentacion
     LEFT JOIN dbo.CATEGORIAS c ON p.IdCategoria = c.IdCategoria
+    LEFT JOIN dbo.COLORES col ON p.IdColor = col.IdColor
     ORDER BY p.IdProducto DESC;
 END;
 GO
@@ -403,7 +407,8 @@ CREATE OR ALTER PROCEDURE dbo.sp_CrearProducto
     @ManejaLote BIT,
     @IdMarca INT = NULL,
     @IdPresentacion INT = NULL,
-    @IdCategoria INT = NULL
+    @IdCategoria INT = NULL,
+    @IdColor INT = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -414,8 +419,8 @@ BEGIN
             RETURN;
         END
 
-        INSERT INTO dbo.PRODUCTOS (NombreProducto, PrecioVentaBase, ManejaLote, IdMarca, IdPresentacion, IdCategoria)
-        VALUES (@NombreProducto, @PrecioVentaBase, @ManejaLote, @IdMarca, @IdPresentacion, @IdCategoria);
+        INSERT INTO dbo.PRODUCTOS (NombreProducto, PrecioVentaBase, ManejaLote, IdMarca, IdPresentacion, IdCategoria, IdColor)
+        VALUES (@NombreProducto, @PrecioVentaBase, @ManejaLote, @IdMarca, @IdPresentacion, @IdCategoria, @IdColor);
 
         SELECT 1 AS Exito, 'Producto registrado exitosamente' AS Mensaje;
     END TRY
@@ -432,7 +437,8 @@ CREATE OR ALTER PROCEDURE dbo.sp_ActualizarProducto
     @ManejaLote BIT,
     @IdMarca INT = NULL,
     @IdPresentacion INT = NULL,
-    @IdCategoria INT = NULL
+    @IdCategoria INT = NULL,
+    @IdColor INT = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -449,7 +455,8 @@ BEGIN
             ManejaLote = @ManejaLote,
             IdMarca = @IdMarca,
             IdPresentacion = @IdPresentacion,
-            IdCategoria = @IdCategoria
+            IdCategoria = @IdCategoria,
+            IdColor = @IdColor
         WHERE IdProducto = @IdProducto;
 
         SELECT 1 AS Exito, 'Producto actualizado correctamente' AS Mensaje;
@@ -572,6 +579,14 @@ AS
 BEGIN
     SET NOCOUNT ON;
     SELECT IdPresentacion, NombrePresentacion FROM dbo.PRESENTACIONES;
+END;
+GO
+
+CREATE OR ALTER PROCEDURE dbo.sp_ObtenerColores
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT IdColor, NombreColor, CodigoHex FROM dbo.COLORES ORDER BY NombreColor ASC;
 END;
 GO
 CREATE OR ALTER PROCEDURE dbo.sp_ObtenerRoles

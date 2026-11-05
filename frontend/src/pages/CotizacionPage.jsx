@@ -230,7 +230,7 @@ const CotizacionPage = () => {
                   <option value="">Seleccione producto...</option>
                   {productos.map(p => (
                     <option key={p.IdProducto} value={p.IdProducto}>
-                      {p.NombreProducto} - Q{Number(p.PrecioVentaBase).toFixed(2)}
+                      {p.NombreProducto}{p.NombreColor ? ` [${p.NombreColor}]` : ''} - Q{Number(p.PrecioVentaBase).toFixed(2)}
                     </option>
                   ))}
                 </select>

@@ -337,7 +337,7 @@ const ComprasPage = () => {
                   >
                     <option value="">Seleccione un producto</option>
                     {productos.map(p => (
-                      <option key={p.IdProducto} value={p.IdProducto}>{p.NombreProducto}</option>
+                      <option key={p.IdProducto} value={p.IdProducto}>{p.NombreProducto}{p.NombreColor ? ` [${p.NombreColor}]` : ''}</option>
                     ))}
                   </select>
                   <input

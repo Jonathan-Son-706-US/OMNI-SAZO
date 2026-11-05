@@ -3,6 +3,7 @@ const {
   obtenerMarcasBD,
   obtenerCategoriasBD,
   obtenerPresentacionesBD,
+  obtenerColoresBD,
   obtenerBodegasBD,
   obtenerUbicacionesBD
 } = require('../services/catalogoService');
@@ -43,6 +44,15 @@ const getPresentaciones = async (req, res) => {
   }
 };
 
+const getColores = async (req, res) => {
+  try {
+    const colores = await obtenerColoresBD();
+    res.json(colores);
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error al consultar colores', error: error.message });
+  }
+};
+
 // @Javier: bodegas y ubicaciones
 const getBodegas = async (req, res) => {
   try {
@@ -63,4 +73,4 @@ const getUbicaciones = async (req, res) => {
   }
 };
 
-module.exports = { getRoles, getMarcas, getCategorias, getPresentaciones, getBodegas, getUbicaciones };
+module.exports = { getRoles, getMarcas, getCategorias, getPresentaciones, getColores, getBodegas, getUbicaciones };

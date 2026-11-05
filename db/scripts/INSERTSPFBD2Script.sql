@@ -40,7 +40,22 @@ VALUES
     ('Bolsa 1 kg');
 GO
 
--- 5. Insertar Usuario Administrador de Prueba, un cajero y un digitador
+-- 5. Insertar Colores
+INSERT INTO dbo.COLORES (NombreColor, CodigoHex)
+VALUES 
+    ('Blanco Ostión', '#FAF0E6'),
+    ('Blanco Nieve', '#FFFFFF'),
+    ('Negro Mate', '#282828'),
+    ('Rojo Teja', '#B22222'),
+    ('Azul Naval', '#00205B'),
+    ('Azul Caribe', '#007BA7'),
+    ('Verde Bosque', '#228B22'),
+    ('Amarillo Ocre', '#CC7722'),
+    ('Gris Perla', '#D3D3D3'),
+    ('Marfil Cálido', '#FFFFF0');
+GO
+
+-- 6. Insertar Usuario Administrador de Prueba, un cajero y un digitador
 -- (El IdRol 3 corresponde a 'Gerente' según la secuencia del INSERT)
 EXEC dbo.sp_RegistrarUsuario 
     @IdRol = 3, 
@@ -51,7 +66,7 @@ GO
 EXEC dbo.sp_RegistrarUsuario @IdRol = 2, @NombreUsuario = 'cajero_prueba',   @PasswordOriginal = 'Cajero123!';
 EXEC dbo.sp_RegistrarUsuario @IdRol = 1, @NombreUsuario = 'digitador_prueba', @PasswordOriginal = 'Digitador123!';
 
--- 6. Insertar Medios de Pago
+-- 7. Insertar Medios de Pago
 IF NOT EXISTS (SELECT 1 FROM dbo.MEDIOS_PAGO)
 BEGIN
     INSERT INTO dbo.MEDIOS_PAGO (NombreMedioPago)

@@ -26,6 +26,14 @@ export const getPresentaciones = async () => {
   return res.data;
 };
 
+export const getColores = async () => {
+  const token = localStorage.getItem('token');
+  const res = await axios.get(`${API_URL}/colores`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  return res.data;
+};
+
 export const getBodegas = async () => {
   const token = localStorage.getItem('token');
   const res = await axios.get(`${API_URL}/bodegas`, {

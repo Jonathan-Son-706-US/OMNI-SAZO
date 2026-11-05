@@ -6,7 +6,7 @@ async function obtenerProductosBD() {
   return result.recordset;
 }
 
-async function crearProductoBD(nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria) {
+async function crearProductoBD(nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria, idColor) {
   const pool = await sql.connect(dbConfig);
   const result = await pool.request()
     .input('NombreProducto', sql.VarChar(150), nombreProducto.trim())
@@ -15,11 +15,12 @@ async function crearProductoBD(nombreProducto, precioVentaBase, manejaLote, idMa
     .input('IdMarca', sql.Int, idMarca ? parseInt(idMarca, 10) : null)
     .input('IdPresentacion', sql.Int, idPresentacion ? parseInt(idPresentacion, 10) : null)
     .input('IdCategoria', sql.Int, idCategoria ? parseInt(idCategoria, 10) : null)
+    .input('IdColor', sql.Int, idColor ? parseInt(idColor, 10) : null)
     .execute('sp_CrearProducto');
   return result.recordset[0];
 }
 
-async function actualizarProductoBD(idProducto, nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria) {
+async function actualizarProductoBD(idProducto, nombreProducto, precioVentaBase, manejaLote, idMarca, idPresentacion, idCategoria, idColor) {
   const pool = await sql.connect(dbConfig);
   const result = await pool.request()
     .input('IdProducto', sql.Int, parseInt(idProducto, 10))
@@ -29,6 +30,7 @@ async function actualizarProductoBD(idProducto, nombreProducto, precioVentaBase,
     .input('IdMarca', sql.Int, idMarca ? parseInt(idMarca, 10) : null)
     .input('IdPresentacion', sql.Int, idPresentacion ? parseInt(idPresentacion, 10) : null)
     .input('IdCategoria', sql.Int, idCategoria ? parseInt(idCategoria, 10) : null)
+    .input('IdColor', sql.Int, idColor ? parseInt(idColor, 10) : null)
     .execute('sp_ActualizarProducto');
   return result.recordset[0];
 }
