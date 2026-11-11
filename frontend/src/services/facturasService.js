@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/facturas';
+const API_URL = '/api/facturas';
 
 // @Javi: procesar una factura transaccional (PEPS)
 export const crearFactura = async (data) => {

@@ -21,7 +21,7 @@ const UsuariosPage = () => {
 
             const [usuariosData, rolesRes] = await Promise.all([
                 getUsuarios(),
-                axios.get('http://localhost:5000/api/catalogos/roles', {
+                axios.get('/api/catalogos/roles', {
                     headers: { 'Authorization': `Bearer ${token}` } 
                 })
             ]);
