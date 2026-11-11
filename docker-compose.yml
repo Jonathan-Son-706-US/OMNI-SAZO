@@ -33,11 +33,9 @@ services:
     entrypoint: ["/bin/bash", "/scripts/init.sh"]
 
   backend:
-    build: ./backend
+    image: jonasgoat/omni-backend:latest
     container_name: omni_backend
     restart: always
-    ports:
-      - "5000:5000"
     environment:
       PORT: 5000
       DB_SERVER: sqlserver
@@ -49,15 +47,13 @@ services:
         condition: service_completed_successfully
 
   frontend:
-    build: ./frontend
+    image: jonasgoat/omni-frontend:latest
     container_name: omni_frontend
     restart: always
-    ports:
-      - "5173:5173"
-    environment:
-      VITE_API_URL: http://localhost:5000
     depends_on:
       - backend
+    #ports:
+    #  - "8080:80"
 
 volumes:
   mssql_data:

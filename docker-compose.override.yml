@@ -2,7 +2,9 @@ services:
   sqlserver:
     ports:
       - "1434:1433"
+
   backend:
+    image: omni-backend-dev
     build:
       context: ./backend
       dockerfile: dockerfile
@@ -12,7 +14,9 @@ services:
       - ./backend:/app
       - /app/node_modules
     command: npm run dev
+
   frontend:
+    image: omni-frontend-dev
     build:
       context: ./frontend
       dockerfile: dockerfile
