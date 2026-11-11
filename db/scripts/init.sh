@@ -1,3 +1,4 @@
+#!/bin/bash
 set -e
 
 SQLCMD=/opt/mssql-tools18/bin/sqlcmd
@@ -15,12 +16,12 @@ fi
 echo ">> Aplicando procedimientos almacenados"
 for f in /scripts/0[2-5]_*.sql; do
   echo "   $f"
-  run -i "$f"
+  run -d OMNISAZO -i "$f"
 done
 
 if [ "$(val "SELECT COUNT(*) FROM dbo.ROLES")" = "0" ]; then
   echo ">> Cargando datos iniciales"
-  run -i /scripts/06_INSERTSPFBD2Script.sql
+  run -d OMNISAZO -i /scripts/06_INSERTSPFBD2Script.sql
 fi
 
 echo ">> Base de datos lista"
