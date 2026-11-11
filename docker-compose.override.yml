@@ -1,0 +1,14 @@
+services:
+  sqlserver:
+    ports:
+      - "1434:1433"
+  backend:
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+  frontend:
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: npm run dev -- --host
