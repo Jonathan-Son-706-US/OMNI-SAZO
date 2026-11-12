@@ -19,7 +19,7 @@ const MODULOS = [
 
 // Texto que corre en la cinta de abajo, cambia segun el modulo en el que estemos
 const NOTICIAS = {
-    inicio:      ['Sistema en linea', 'Elegi un modulo en el menu', 'Ferreteria sazograndegordo'],
+    inicio:      ['Sistema en linea', 'Elegi un modulo en el menu', 'Ferreteria OMNISAZO'],
     usuarios:    ['Altas y bajas de personal', 'Revisa los roles antes de guardar', 'Cada quien con su llave'],
     clientes:    ['CF tambien es un cliente', 'Revisa bien el NIT antes de guardar', 'Empresa o persona, aqui quedan'],
     proveedores: ['Quien nos surte la bodega', 'Guarda bien el telefono de contacto', 'Sin proveedor no hay inventario'],
