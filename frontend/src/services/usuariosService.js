@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/usuarios';
-const ROLES_URL = 'http://localhost:5000/api/roles'; 
+const API_URL = '/api/usuarios';
+const ROLES_URL = '/api/roles'; 
 
 export const getUsuarios = async () => {
     const token = localStorage.getItem('token');

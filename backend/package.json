@@ -5,12 +5,12 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "nodemon app.js"
-    
+    "dev": "nodemon --legacy-watch app.js"
   },
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^4.22.3",
+    "jsonwebtoken": "^9.0.3",
     "mssql": "^10.0.5"
   },
   "keywords": [],

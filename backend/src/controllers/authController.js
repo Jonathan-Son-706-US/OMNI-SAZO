@@ -1,7 +1,6 @@
 const { validarLoginBD } = require('../services/authService.js');
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.JWT_SECRET || 'llave_secreta_omni_sazo';
-
+const { JWT_SECRET: SECRET_KEY } = require('../config/jwt');
 //@jonas funcion para logueo posteriormente usada para el fronted
 async function login(req, res) {
   const { usuario, password } = req.body;

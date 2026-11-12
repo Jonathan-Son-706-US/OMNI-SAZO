@@ -1,3 +1,5 @@
+USE [OMNISAZO];
+Go
 --1 @Abner implementación para Modulo de CajaYImpresión
 Create OR ALTER   PROCEDURE dbo.sp_ImpresionDeFacturas
     @IdFactura INT
