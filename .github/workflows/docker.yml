@@ -37,3 +37,11 @@ jobs:
           tags: |
             jonasgoat/omni-frontend:latest
             jonasgoat/omni-frontend:${{ github.sha }}
+      
+      - name: Desplegar en Dokploy
+        run: |
+          curl -fsS -X POST "${{ secrets.DOKPLOY_URL }}/api/compose.deploy" \
+            -H "accept: application/json" \
+            -H "Content-Type: application/json" \
+            -H "x-api-key: ${{ secrets.DOKPLOY_API_KEY }}" \
+            -d '{"composeId": "${{ secrets.DOKPLOY_COMPOSE_ID }}"}'
