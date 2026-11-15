@@ -2,7 +2,7 @@ name: Build y push a Docker Hub
 
 on:
   push:
-    branches: [main, dev-jonas]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
