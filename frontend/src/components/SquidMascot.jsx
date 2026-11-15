@@ -45,12 +45,12 @@ export const SquidMascot = ({ focusField }) => {
       {/* Globito de dialogo */}
       {focusField === 'password' && (
         <div className="squid-bubble bubble-password">
-          <span>feliz noche no voy a ver</span>
+          <span>No voy a ver</span>
         </div>
       )}
       {focusField === 'usuario' && (
         <div className="squid-bubble bubble-usuario">
-          <span>quien chota sos</span>
+          <span>Porfavor identificarse</span>
         </div>
       )}
     </div>

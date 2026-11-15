@@ -18,8 +18,7 @@ const app = express();
 // @jonas: middewares globales
 app.use(cors());
 app.use(express.json()); 
-app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
-
+app.get(['/health', '/api/health'], (req, res) => res.status(200).json({ status: 'ok' }));
 
 // @javi: endpoints para el mantenimiento de las tablas fuertes
 app.use('/api/auth', authRoutes);
@@ -34,6 +33,7 @@ app.use('/api/facturas', facturasRoutes); // @Javi: modulo de facturacion transa
 app.use('/api/medios-pago', mediosPagoRoutes); // @abner: nueva ruta para medios de pago e impresion
 app.use('/api/anulaciones', anulacionRoutes); // modulo de anulacion transaccional
 app.use('/api/reportes', reportesRoutes); // modulo de reportes gerenciales
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
