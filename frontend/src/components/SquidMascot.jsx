@@ -50,7 +50,7 @@ export const SquidMascot = ({ focusField }) => {
       )}
       {focusField === 'usuario' && (
         <div className="squid-bubble bubble-usuario">
-          <span>Porfavor identificarse</span>
+          <span>Tienes que identificarte...</span>
         </div>
       )}
     </div>
