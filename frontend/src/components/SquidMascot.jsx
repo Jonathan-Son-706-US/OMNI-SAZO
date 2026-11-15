@@ -45,7 +45,7 @@ export const SquidMascot = ({ focusField }) => {
       {/* Globito de dialogo */}
       {focusField === 'password' && (
         <div className="squid-bubble bubble-password">
-          <span>No voy ver</span>
+          <span>No voy a ver</span>
         </div>
       )}
       {focusField === 'usuario' && (
