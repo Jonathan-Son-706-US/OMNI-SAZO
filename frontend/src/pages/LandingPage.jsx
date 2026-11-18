@@ -11,7 +11,7 @@ export const LandingPage = () => {
 
         <h1 className="landing-titulo">
           Bienvenido a
-          <span className="linea-color">OMNI-SAZO</span>
+          <span className="linea-color">EJEMPLO</span>
         </h1>
 
         <p className="landing-subtitulo">
