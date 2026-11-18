@@ -59,12 +59,15 @@ GO
 -- (El IdRol 3 corresponde a 'Gerente' según la secuencia del INSERT)
 EXEC dbo.sp_RegistrarUsuario 
     @IdRol = 3, 
-    @NombreUsuario = 'admin_prueba', 
-    @PasswordOriginal = 'Admin123!';
+    @NombreUsuario = 'david', 
+    @PasswordOriginal = 'sazo123';
 GO
 
-EXEC dbo.sp_RegistrarUsuario @IdRol = 2, @NombreUsuario = 'cajero_prueba',   @PasswordOriginal = 'Cajero123!';
-EXEC dbo.sp_RegistrarUsuario @IdRol = 1, @NombreUsuario = 'digitador_prueba', @PasswordOriginal = 'Digitador123!';
+EXEC dbo.sp_RegistrarUsuario @IdRol = 2, @NombreUsuario = 'jonas',   @PasswordOriginal = 'jonas123';
+EXEC dbo.sp_RegistrarUsuario @IdRol = 2, @NombreUsuario = 'abner', @PasswordOriginal = 'abner123';
+EXEC dbo.sp_RegistrarUsuario @IdRol = 1, @NombreUsuario = 'jair', @PasswordOriginal = 'jair123';
+EXEC dbo.sp_RegistrarUsuario @IdRol = 1, @NombreUsuario = 'javier', @PasswordOriginal = 'javier123';
+
 
 -- 7. Insertar Medios de Pago
 IF NOT EXISTS (SELECT 1 FROM dbo.MEDIOS_PAGO)

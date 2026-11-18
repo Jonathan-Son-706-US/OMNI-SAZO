@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/medios-pago';
+const API_URL = '/api/medios-pago';
 
 // @abner: obtener la lista de medios de pago
 export const getMediosPago = async () => {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/reportes';
+const API_URL = '/api/reportes';
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');

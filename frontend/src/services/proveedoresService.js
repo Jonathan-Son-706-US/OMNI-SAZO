@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/proveedores';
+const API_URL = '/api/proveedores';
 
 export const getProveedores = async () => {
   const token = localStorage.getItem('token');

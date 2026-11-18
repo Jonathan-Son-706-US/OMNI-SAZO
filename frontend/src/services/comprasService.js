@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/compras';
+const API_URL = '/api/compras';
 
 const authHeaders = () => ({
   headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }

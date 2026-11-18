@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.JWT_SECRET || 'llave_secreta_omni_sazo';
-
+const { JWT_SECRET: SECRET_KEY } = require('../config/jwt');
 function verificarToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
